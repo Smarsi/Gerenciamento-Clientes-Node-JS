@@ -11,6 +11,9 @@ const router = express.Router();
 
 // ROTAS DA API (Endpoints)
 router.get('/cliente', costumersController.getAllCostumers);
-router.post('/cliente', validatecostumerfields_middleware, costumersController.createCostumer);
+router.post('/cliente', validatecostumerfields_middleware.validateFields, //middleware
+    validatecostumerfields_middleware.validateValues, //middleware
+    costumersController.createCostumer //model
+    );
 
 module.exports = router;

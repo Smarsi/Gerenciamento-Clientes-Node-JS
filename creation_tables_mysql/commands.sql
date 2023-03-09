@@ -7,7 +7,7 @@ CREATE TABLE cliente (
     email varchar(45) not null,
     senha varchar(200) not null,
     nome varchar(45) not null,
-    cpf varchar(11) not null unique  
+    cpf varchar(11) not null #unique  
 );
 
 CREATE TABLE endereco(

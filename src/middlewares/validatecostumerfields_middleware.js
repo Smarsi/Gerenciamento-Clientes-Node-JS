@@ -1,9 +1,9 @@
 const validateFields = async(request, response, next) => {
-    var all_fields_ok = true;
-
     const {body} = request;
-    var keys = Object.keys(body);
 
+    //============First Check (User fields) ============
+
+    var keys = Object.keys(body);
     var dictUserFields = {
         "email": "",
         "senha": "",
@@ -12,33 +12,65 @@ const validateFields = async(request, response, next) => {
         "cpf": "",
         "endereco": ""
     };
-    var dictKeys = Object.keys(dictUserFields);
+    var dictUserKeys = Object.keys(dictUserFields);
 
-    //First Check (User fields)
+
+    for(var i=0; i < dictUserKeys.length; i++){
+        if(keys.includes(dictUserKeys[i]) == false){ //Se não encontrar algum campo que deveria ser passado
+            return response.status(404).json({ mensagem: `O campo '${dictUserKeys[i]}' deve ser passado.` });
+        }
+    }
+
+    //============ Second Check (Address fields) ============
     if(body.endereco){
-        var incorrectFields = 0;
-        for(var i=0; i < dictKeys.length; i++){
-            if(keys.includes(dictKeys[i]) == false){
-                incorrectFields +=1;
+        var addressKeys = Object.keys(body.endereco);
+        var dictAddressFields = {
+            "titulo": "",
+            "cep": "",
+            "logradouro": "",
+            "numero": "",
+            "complemento": "",
+            "bairro": "",
+            "cidade": "",
+            "estado": ""
+        }
+        var dictAddressKeys = Object.keys(dictAddressFields);
+
+        for(var y=0; y < dictAddressKeys.length; y++ ){
+            if(addressKeys.includes(dictAddressKeys[y]) == false){ //Se não encontrar algum campo que deveria ser passado
+                return response.status(404).json({ mensagem: `O campo '${dictAddressKeys[y]}' do endereco deve ser passado.` })
             }
         }
     }else{
         return response.status(404).json({ mensagem: "O valor do campo 'endereco' deve ser passado." })
     }
-    
 
 
-    /*First Check (User fields)
-    if(JSON.stringify(dictUserFields) === JSON.stringify(keys)){
-        console.log("keys corretas em primeiro nivel")
-    }else{
-        console.log("keys incorretas");
-    }*/
-    
-    if(all_fields_ok == true){
-        next();
-    }
-
+    next(); //Se não cair em nenhum dos returns de erro continuar para a próxima tarefa.
 };
 
-module.exports = validateFields;
+const validateValues = async(request, response, next) => {
+    var {body} = request;
+
+    for(i in body){
+        if(body[i] == ""){
+            return response.status(404).json({ mensagem: `O campo ${i} não pode ser vazio!` })
+        }
+
+        if(typeof(body[i]) == 'object'){
+            for(y in body[i]){
+                if(body[i][y] == "" && y != "complemento"){
+                    return response.status(404).json({ mensagem: `O campo ${y} não pode ser vazio!` })
+                }
+            }            
+        }
+    }
+    
+
+    next();
+};
+
+module.exports = {
+    validateFields,
+    validateValues
+};

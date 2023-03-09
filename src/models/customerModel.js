@@ -14,7 +14,7 @@ const createCostumer = async (costumer) =>{
         addressId: null
     }
 
-    /*const {email, nome, cpf, senha, confirmasenha} = costumer;
+    const {email, nome, cpf, senha, confirmasenha} = costumer;
 
     //Criptografia de senha
     if(senha === confirmasenha){
@@ -40,7 +40,7 @@ const createCostumer = async (costumer) =>{
     } else{
         response.msg = "O endereço não foi enviado. Para cadastrar um usuário é necessário enviar os campos de endereço";
         return response;
-    }*/
+    }
 };
 
 module.exports = {
