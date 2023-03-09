@@ -23,4 +23,4 @@ CREATE TABLE endereco(
     cliente_id int
 );
 
-ALTER TABLE endereco ADD CONSTRAINT FOREIGN KEY (cliente_id) REFERENCES cliente(id);
+ALTER TABLE endereco ADD CONSTRAINT FOREIGN KEY (cliente_id) REFERENCES cliente(id) ON DELETE CASCADE;

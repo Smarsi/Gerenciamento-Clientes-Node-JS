@@ -4,16 +4,17 @@ const express = require('express');
 const costumersController = require('./controllers/customerController');
 
 //Import Middlewares
-const validatecostumerfields_middleware = require('./middlewares/validatecostumerfields_middleware');
+const validatecostumer_middleware = require('./middlewares/validatecostumer_middleware');
 const validatecpf_middleware = require('./middlewares/validatecpf_middleware');
 
 const router = express.Router();
 
 // ROTAS DA API (Endpoints)
 router.get('/cliente', costumersController.getAllCostumers);
-router.post('/cliente', validatecostumerfields_middleware.validateFields, //middleware
-    validatecostumerfields_middleware.validateValues, //middleware
+router.post('/cliente', validatecostumer_middleware.validateFields, //middleware
+    validatecostumer_middleware.validateValues, //middleware
     costumersController.createCostumer //model
     );
+router.delete('/cliente/:id', costumersController.deleteCustomer);
 
 module.exports = router;

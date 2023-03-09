@@ -43,7 +43,14 @@ const createCostumer = async (costumer) =>{
     }
 };
 
+const deleteCustomer = async (customerId) =>{
+    const query = "DELETE FROM cliente WHERE id=?;";
+    const [removedCustomer] = await connection.execute(query, [customerId]);
+    return removedCustomer;
+};
+
 module.exports = {
     getAllCustomers,
-    createCostumer
+    createCostumer,
+    deleteCustomer
 }
