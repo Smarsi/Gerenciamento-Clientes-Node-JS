@@ -1,7 +1,8 @@
 const express = require('express');
+const customerModel = require('./models/customerModel');
 
 const router = express.Router();
 
-router.get('/', (request, response) => response.status(200).json({ teste: "Olá, mundo!" }));
+router.get('/', async (request, response) => response.status(200).json(await customerModel.getAllCustomers()));
 
 module.exports = router;
