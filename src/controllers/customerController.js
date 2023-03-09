@@ -25,13 +25,21 @@ const createCostumer = async(request, response) => {
 const deleteCustomer = async(request, response) => {
     const { id } = request.params;
 
-    try {
-        await customerModel.deleteCustomer(id);
-        return response.status(200).json({ mensagem: "Cliente removido com sucesso." });
-    } catch (error) {
-        console.log(error);
-        return response.status(500).json({ mensagem: "Erro interno. Tente novamente mais tarde." });
-    }   
+    //Check if the customer exists
+    const exists = await customerModel.checkIfCustomerExists(id);
+    if(exists){
+        try {
+            await customerModel.deleteCustomer(id);
+            return response.status(200).json({ mensagem: "Cliente removido com sucesso." });
+        } catch (error) {
+            console.log(error);
+            return response.status(500).json({ mensagem: "Erro interno. Tente novamente mais tarde." });
+        }   
+    } else{
+        return response.status(404).json({ mensagem: "Erro. Não existe um cliente com o ID passado no sistema." });
+    }
+
+    
 };
 
 module.exports = {

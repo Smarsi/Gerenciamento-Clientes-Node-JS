@@ -47,10 +47,23 @@ const deleteCustomer = async (customerId) =>{
     const query = "DELETE FROM cliente WHERE id=?;";
     const [removedCustomer] = await connection.execute(query, [customerId]);
     return removedCustomer;
+    
+};
+
+const checkIfCustomerExists = async (customerId) => {
+    const consult = "SELECT * FROM gerenciamentoclientes.cliente WHERE id=?";
+    var [customer] = await connection.execute(consult, [customerId]);
+    
+    if(customer.length > 0){
+        return true;
+    } else{
+        return false;
+    }
 };
 
 module.exports = {
     getAllCustomers,
     createCostumer,
-    deleteCustomer
+    deleteCustomer,
+    checkIfCustomerExists
 }

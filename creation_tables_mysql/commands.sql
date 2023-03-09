@@ -4,11 +4,13 @@ USE gerenciamentoclientes;
 
 CREATE TABLE cliente (
 	id int not null auto_increment primary key,
-    email varchar(45) not null,
+    email varchar(45) not null #unique,
     senha varchar(200) not null,
     nome varchar(45) not null,
     cpf varchar(11) not null #unique  
 );
+# CPF e Email estão com o campo unique comentado apenas para fins de desenvolvimento (processos iniciais de testes e validações);
+
 
 CREATE TABLE endereco(
 	id int not null auto_increment primary key,
