@@ -65,6 +65,10 @@ const validateValues = async(request, response, next) => {
             }            
         }
     }
+
+    if(body.senha !== body.confirmasenha){
+        return response.status(401).json({ mensagem: "A senha e confirmação de senha não conferem." });
+    }
     
 
     next();

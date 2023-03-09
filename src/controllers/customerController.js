@@ -13,6 +13,22 @@ const getAllCostumers = async(request, response) => {
 
 //Função POST para criar um novo cliente
 const createCostumer = async(request, response) => {
+
+    //============ Validations ============
+
+    //Check If CPF is already in the database
+    const cpfInUse = await customerModel.checkIfCpfAlreadyExists(request.body.cpf);
+    if(cpfInUse){
+        return response.status(409).json({ mensagem: "Erro. Um usuário com este CPF já está cadastrado no sistema." });
+    }
+    //Check If E-mail already in use
+    const emailInUse = await customerModel.checkIfEmailAreadyInUse(request.body.email);
+    if(emailInUse){
+        return response.status(409).json({ mensagem: "Erro. Um usuário com este Email já está cadastrado no sistema." });
+    }
+
+    //============ END Validations ============
+
     try {
         const createdCostumer = await customerModel.createCostumer(request.body);
         return response.status(201).json(createdCostumer); 

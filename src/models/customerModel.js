@@ -61,9 +61,34 @@ const checkIfCustomerExists = async (customerId) => {
     }
 };
 
+// Validações para evitar duplicidades no sistema.
+const checkIfCpfAlreadyExists = async (cpf) => {
+    const query = "SELECT * FROM gerenciamentoclientes.cliente WHERE cpf=?";
+    var [cpf] = await connection.execute(query, [cpf]);
+
+    if(cpf.length > 0){
+        return true;
+    } else{
+        return false;
+    }
+};
+
+const checkIfEmailAreadyInUse = async (email) => {
+    const query = "SELECT * FROM gerenciamentoclientes.cliente WHERE email=?";
+    var [email] = await connection.execute(query, [email]);
+
+    if(email.length > 0){
+        return true;
+    } else{
+        return false;
+    }
+};
+
 module.exports = {
     getAllCustomers,
     createCostumer,
     deleteCustomer,
-    checkIfCustomerExists
+    checkIfCustomerExists,
+    checkIfCpfAlreadyExists,
+    checkIfEmailAreadyInUse,
 }
