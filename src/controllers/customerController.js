@@ -11,6 +11,13 @@ const getAllCostumers = async(request, response) => {
     }
 };
 
+//Função POST para criar um novo cliente
+const createCostumer = async(request, response) => {
+    const createdCostumer = await customerModel.createCostumer(request.body);
+    return response.status(201).json(createdCostumer);
+};
+
 module.exports = {
-    getAllCostumers
+    getAllCostumers,
+    createCostumer,
 }

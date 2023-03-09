@@ -5,6 +5,8 @@ const costumersController = require('./controllers/customerController');
 
 const router = express.Router();
 
-router.get('/', costumersController.getAllCostumers);
+// ROTAS DA API (Endpoints)
+router.get('/cliente', costumersController.getAllCostumers);
+router.post('/cliente', costumersController.createCostumer);
 
 module.exports = router;
