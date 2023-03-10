@@ -32,14 +32,15 @@ const validateCPF = (request, response, next) => {
         treated_cpf.splice(-2);
         const my_new_cpf = (_ExecuteCount(treated_cpf).join('')); 
 
-        if(my_new_cpf != cpf){
+        if(my_new_cpf == cpf){
+            request.body.cpf = my_new_cpf.toString();
+            next(); // Só passar para a próxima action se o CPF for válido
+        }else{
             return response.status(422).json({ mensagem: "ERRO - CPF Inválido" });
         }
     } else{ 
         return response.status(422).json({ mensagem: "ERRO - CPF Inválido (Menos de 11 digitos)" });
-    }
-
-    next();
+    } 
 };
 
 module.exports = {

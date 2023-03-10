@@ -33,6 +33,7 @@ const createCostumer = async(request, response) => {
         const createdCostumer = await customerModel.createCostumer(request.body);
         return response.status(201).json(createdCostumer); 
     } catch (error) {
+        console.log(error);
         return response.status(500).json({ mensagem: "Erro interno. Tente novamente mais tarde." })
     }
 };
