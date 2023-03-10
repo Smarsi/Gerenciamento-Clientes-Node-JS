@@ -11,8 +11,10 @@ const router = express.Router();
 
 // ROTAS DA API (Endpoints)
 router.get('/cliente', costumersController.getAllCostumers);
-router.post('/cliente', validatecostumer_middleware.validateFields, //middleware
+router.post('/cliente', 
+    validatecostumer_middleware.validateFields, //middleware
     validatecostumer_middleware.validateValues, //middleware
+    validatecpf_middleware.validateCPF, //middleware
     costumersController.createCostumer //model
     );
 router.delete('/cliente/:id', costumersController.deleteCustomer);
