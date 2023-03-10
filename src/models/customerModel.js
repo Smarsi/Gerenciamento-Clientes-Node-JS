@@ -3,7 +3,6 @@ const createPassword = require("../utils/createPassword")
 
 const getAllCustomers = async () =>{
     const query = "SELECT * FROM cliente";
-    //const queryteste = "SELECT * FROM cliente INNER JOIN endereco";
     const [costumers] = await connection.execute(query);
     return costumers;
 };
