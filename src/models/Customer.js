@@ -9,8 +9,12 @@ class Customer extends Model {
             senha: DataTypes.STRING
         }, {
             sequelize: connection,
-            tableName: 'customer'
+            tableName: 'cliente'
         })
+    }
+
+    static associate(models) {
+        this.hasOne(models.Address, { foreignKey: 'cliente_id', as: 'enderecos' });
     }
 }
 

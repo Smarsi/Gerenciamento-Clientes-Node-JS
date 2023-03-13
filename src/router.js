@@ -2,6 +2,7 @@ const express = require('express');
 
 //Import Controllers
 const CustomerController = require('./controllers/CustomerController');
+const AddressController = require('./controllers/AddressController');
 
 //Import Middlewares
 const validatecostumer_middleware = require('./middlewares/validatecostumer_middleware');
@@ -12,6 +13,9 @@ const router = express.Router();
 //ROTA TESTE SEQUELIZE
 router.get('/cliente', CustomerController.getAll); 
 router.post('/cliente', CustomerController.create);
+
+router.get('/cliente/:cliente_id/endereco', AddressController.get);
+router.post('/cliente/:cliente_id/endereco', AddressController.create);
 
 // ROTAS DA API (Endpoints)
 /*
