@@ -20,14 +20,14 @@ router.post('/cliente',
                 validatecostumer_middleware.validateValues, 
                 CustomerController.create
             );
-router.get('/cliente/:id-cliente', CustomerController.getById);
-router.put('/cliente/:id-cliente', CustomerController.updateById);
-router.delete('/cliente/:id-cliente', CustomerController.deleteById);
+router.get('/cliente/:id_cliente', CustomerController.getById);
+router.put('/cliente/:id_cliente', CustomerController.updateById);
+router.delete('/cliente/:id_cliente', CustomerController.deleteById);
 // --- FIM Endpoints Cliente ---
 
 // --- Endpoints Endereco ---
-router.get('/cliente/:id-cliente/endereco', AddressController.getCostumerAddress);
-router.post('/cliente/:id-cliente/endereco', AddressController.createCostumerAddress);
+router.get('/cliente/:id_cliente/endereco', AddressController.getCostumerAddress);
+router.post('/cliente/:id_cliente/endereco', AddressController.createCostumerAddress);
 router.put('/endereco/:id-endereco', AddressController.updateAddress);
 router.delete('/endereco/:id-endereco', AddressController.deleteAddress);
 // --- FIM Endpoints Endereco ---

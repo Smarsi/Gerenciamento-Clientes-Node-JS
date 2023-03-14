@@ -57,7 +57,7 @@ const create = async(request, response) =>{
 }
 
 const getById = async(request, response) =>{
-    const {cliente_id} = request.params
+    const {id-cliente} = request.params
     const Clientes = await Cliente.findAll();
     return response.status(200).json(Clientes);
 }
