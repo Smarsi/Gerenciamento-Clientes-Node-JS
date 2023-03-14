@@ -14,7 +14,7 @@ class Customer extends Model {
     }
 
     static associate(models) {
-        this.hasOne(models.Address, { foreignKey: 'cliente_id', as: 'enderecos' });
+        this.hasMany(models.Address, { foreignKey: 'cliente_id', as: 'enderecos' });
     }
 }
 

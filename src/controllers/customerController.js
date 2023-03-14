@@ -43,17 +43,10 @@ const create = async(request, response) =>{
             //preparando parametros para criação do endereco
             request.params = { cliente_id: cliente.id }
 
-            const endereco = await EnderecoController.create(request, response);
+            const endereco = await EnderecoController._internalCreate(request, response);
             return response.status(200).json({cliente, endereco});
         } catch (error) {
             console.log(error);
-
-            //Deletando dados caso ocorra erro
-            await Cliente.destroy({
-                where: {
-                  id: cliente.id
-                }
-            });
 
             return response.status(500).json({ mensagem: "Erro interno. Tente novamente mais tarde." })
         }
@@ -63,7 +56,24 @@ const create = async(request, response) =>{
     }
 }
 
+const getById = async(request, response) =>{
+    const {cliente_id} = request.params
+    const Clientes = await Cliente.findAll();
+    return response.status(200).json(Clientes);
+}
+
+const updateById = async(request, response) => {
+    return response.status(200).json({mensagem: "Endpoint funcionando corretamente."}); 
+}
+
+const deleteById = async(request, response) => {
+    return response.status(200).json({mensagem: "Endpoint funcionando corretamente."}); 
+}
+
 module.exports = {
     getAll,
-    create
+    create,
+    getById,
+    updateById,
+    deleteById
 };

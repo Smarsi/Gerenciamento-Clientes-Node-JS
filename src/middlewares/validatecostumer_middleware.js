@@ -17,7 +17,7 @@ const validateFields = async(request, response, next) => {
 
     for(var i=0; i < dictUserKeys.length; i++){
         if(keys.includes(dictUserKeys[i]) == false){ //Se não encontrar algum campo que deveria ser passado
-            return response.status(404).json({ mensagem: `O campo '${dictUserKeys[i]}' deve ser passado.` });
+            return response.status(400).json({ mensagem: `O campo '${dictUserKeys[i]}' deve ser passado.` });
         }
     }
 
@@ -38,11 +38,11 @@ const validateFields = async(request, response, next) => {
 
         for(var y=0; y < dictAddressKeys.length; y++ ){
             if(addressKeys.includes(dictAddressKeys[y]) == false){ //Se não encontrar algum campo que deveria ser passado
-                return response.status(404).json({ mensagem: `O campo '${dictAddressKeys[y]}' do endereco deve ser passado.` })
+                return response.status(400).json({ mensagem: `O campo '${dictAddressKeys[y]}' do endereco deve ser passado.` })
             }
         }
     }else{
-        return response.status(404).json({ mensagem: "O valor do campo 'endereco' deve ser passado." })
+        return response.status(400).json({ mensagem: "O valor do campo 'endereco' deve ser passado." })
     }
 
 
@@ -54,13 +54,13 @@ const validateValues = async(request, response, next) => {
 
     for(i in body){
         if(body[i] == ""){
-            return response.status(404).json({ mensagem: `O campo ${i} não pode ser vazio!` })
+            return response.status(400).json({ mensagem: `O campo ${i} não pode ser vazio!` })
         }
 
         if(typeof(body[i]) == 'object'){
             for(y in body[i]){
                 if(body[i][y] == "" && y != "complemento"){
-                    return response.status(404).json({ mensagem: `O campo ${y} não pode ser vazio!` })
+                    return response.status(400).json({ mensagem: `O campo ${y} não pode ser vazio!` })
                 }
             }            
         }

@@ -1,16 +1,18 @@
 const express = require('express');
+const router = express.Router();
 
 //Import Controllers
 const CustomerController = require('./controllers/CustomerController');
 const AddressController = require('./controllers/AddressController');
+const AuthController = require('./controllers/AuthController');
 
 //Import Middlewares
 const validatecostumer_middleware = require('./middlewares/validatecostumer_middleware');
 const validatecpf_middleware = require('./middlewares/validatecpf_middleware');
+const check_token_middleware = require('./middlewares/check_token_middleware');
 
-const router = express.Router();
 
-//ROTA TESTE SEQUELIZE
+// --- Endpoints Cliente ---
 router.get('/cliente', CustomerController.getAll); 
 router.post('/cliente',
                 validatecpf_middleware.validateCPF,
@@ -18,20 +20,22 @@ router.post('/cliente',
                 validatecostumer_middleware.validateValues, 
                 CustomerController.create
             );
+router.get('/cliente/:id-cliente', CustomerController.getById);
+router.put('/cliente/:id-cliente', CustomerController.updateById);
+router.delete('/cliente/:id-cliente', CustomerController.deleteById);
+// --- FIM Endpoints Cliente ---
 
-router.get('/cliente/:cliente_id/endereco', AddressController.get);
-router.post('/cliente/:cliente_id/endereco', AddressController.create);
+// --- Endpoints Endereco ---
+router.get('/cliente/:id-cliente/endereco', AddressController.getCostumerAddress);
+router.post('/cliente/:id-cliente/endereco', AddressController.createCostumerAddress);
+router.put('/endereco/:id-endereco', AddressController.updateAddress);
+router.delete('/endereco/:id-endereco', AddressController.deleteAddress);
+// --- FIM Endpoints Endereco ---
 
-// ROTAS DA API (Endpoints)
-/*
-router.get('/cliente', costumersController.getAllCostumers);
-router.post('/cliente', 
-    validatecostumer_middleware.validateFields, //middleware
-    validatecostumer_middleware.validateValues, //middleware
-    validatecpf_middleware.validateCPF, //middleware
-    costumersController.createCostumer //model
-    );
-router.delete('/cliente/:id', costumersController.deleteCustomer);
-*/
+// --- Endpoints Auth/Login
+router.post('/auth/login', AuthController.login);
+router.post('/auth/register', AuthController.register);
+// --- FIM Endpoints Auth/Login
+
 
 module.exports = router;
