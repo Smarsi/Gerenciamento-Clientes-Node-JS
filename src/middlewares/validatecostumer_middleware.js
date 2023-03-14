@@ -25,7 +25,7 @@ const validateFields = async(request, response, next) => {
     if(body.endereco){
         var addressKeys = Object.keys(body.endereco);
         var dictAddressFields = {
-            "titulo": "",
+            "titulo_endereco": "",
             "cep": "",
             "logradouro": "",
             "numero": "",

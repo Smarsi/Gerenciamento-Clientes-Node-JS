@@ -17,9 +17,7 @@ const get = async(request, response) =>{
 
 const create = async(request, response) =>{
     const { cliente_id } = request.params;
-    const { titulo_endereco, cep, logradouro, numero, complemento, bairro, cidade, estado } = request.body;
-
-
+    const { titulo_endereco, cep, logradouro, numero, complemento, bairro, cidade, estado } = request.body.endereco;
     const cliente = await Cliente.findByPk(cliente_id);
 
     if(!cliente){
@@ -37,7 +35,7 @@ const create = async(request, response) =>{
         cliente_id,
     });
 
-    return response.status(200).json(endereco);
+    return endereco;
 }
 
 module.exports = {

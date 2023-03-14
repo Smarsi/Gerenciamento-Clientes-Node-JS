@@ -12,7 +12,12 @@ const router = express.Router();
 
 //ROTA TESTE SEQUELIZE
 router.get('/cliente', CustomerController.getAll); 
-router.post('/cliente', CustomerController.create);
+router.post('/cliente',
+                validatecpf_middleware.validateCPF,
+                validatecostumer_middleware.validateFields,
+                validatecostumer_middleware.validateValues, 
+                CustomerController.create
+            );
 
 router.get('/cliente/:cliente_id/endereco', AddressController.get);
 router.post('/cliente/:cliente_id/endereco', AddressController.create);
