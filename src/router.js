@@ -21,7 +21,11 @@ router.post('/cliente',
                 CustomerController.create
             );
 router.get('/cliente/:id_cliente', CustomerController.getById);
-router.put('/cliente/:id_cliente', CustomerController.updateById);
+router.put('/cliente/:id_cliente', 
+                validatecostumer_middleware.checkIfIdIsRegistred,
+                validatecostumer_middleware.checkIfEmailAlreadyInUse,
+                CustomerController.updateById
+          );
 router.delete('/cliente/:id_cliente', CustomerController.deleteById);
 // --- FIM Endpoints Cliente ---
 
@@ -35,6 +39,7 @@ router.delete('/endereco/:id-endereco', AddressController.deleteAddress);
 // --- Endpoints Auth/Login
 router.post('/auth/login', AuthController.login);
 router.post('/auth/register', AuthController.register);
+router.post('/auth/changePassword', AuthController.changePassword);
 // --- FIM Endpoints Auth/Login
 
 

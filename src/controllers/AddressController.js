@@ -3,16 +3,15 @@ const Endereco = require("../models/Address");
 const Cliente = require("../models/Customer");
 
 const getCostumerAddress = async(request, response) =>{
-    const { cliente_id } = request.params;
+    const { id_cliente } = request.params;
 
-    const cliente = await Cliente.findByPk(cliente_id, {
+    const cliente = await Cliente.findByPk(id_cliente, {
         include: { association: 'enderecos' }
     });
-
+    
     if(!cliente){
         return response.status(404).json({mensagem: "Não há cliente com o ID informado."})
     }else{
-        console.log(cliente.enderecos);
         if(cliente.enderecos !== null && cliente.enderecos !== ""){
             return response.status(200).json(cliente.enderecos);
         }else{
@@ -22,9 +21,9 @@ const getCostumerAddress = async(request, response) =>{
 }
 
 const createCostumerAddress = async(request, response) =>{
-    const { cliente_id } = request.params;
+    const { id_cliente } = request.params;
     const { titulo_endereco, cep, logradouro, numero, complemento, bairro, cidade, estado } = request.body;
-    const cliente = await Cliente.findByPk(cliente_id);
+    const cliente = await Cliente.findByPk(id_cliente);
 
     if(!cliente){
         return response.status(404).json({mensagem: "ERRO - Usuário não encontrado"});       
@@ -38,16 +37,16 @@ const createCostumerAddress = async(request, response) =>{
         bairro, 
         cidade, 
         estado,
-        cliente_id,
+        id_cliente,
     });
 
     return response.status(200).json(endereco);
 }
 
 const _internalCreate = async(request, response) => { //Usado durante a criação de cliente
-    const { cliente_id } = request.params;
+    const { id_cliente } = request.params;
     const { titulo_endereco, cep, logradouro, numero, complemento, bairro, cidade, estado } = request.body.endereco;
-    const cliente = await Cliente.findByPk(cliente_id);
+    const cliente = await Cliente.findByPk(id_cliente);
 
     if(!cliente){
         return response = "Erro";       
@@ -61,7 +60,7 @@ const _internalCreate = async(request, response) => { //Usado durante a criaçã
             bairro, 
             cidade, 
             estado,
-            cliente_id,
+            id_cliente,
         });
 
         return endereco;

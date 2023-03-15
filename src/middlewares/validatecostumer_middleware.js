@@ -1,3 +1,7 @@
+const { Op } = require("sequelize");
+
+const Cliente = require('../models/Customer');
+
 const validateFields = async(request, response, next) => {
     const {body} = request;
 
@@ -72,7 +76,44 @@ const validateValues = async(request, response, next) => {
     next();
 };
 
+const checkIfIdIsRegistred = async (request, response, next) => { //Verifica se o ID existe no BD
+    var { id_cliente } = request.params;
+    const cliente = await Cliente.findByPk(id_cliente);
+
+    if (cliente) {
+        next();
+    } else {
+        return response.status(404).json({ mensagem: `ERRO - Não existe um cliente com este ID (${id_cliente}) cadastrado no sistema.` })
+    }
+
+};
+
+const checkIfEmailAlreadyInUse = async (request, response, next) => { //Verifica se já existe um cliente com o Email passado
+    var { id_cliente } = request.params;
+    var { email } = request.body;
+
+    if (email) {
+        const cliente = await Cliente.findAll({
+            where: {
+                email: email
+            }
+        });
+
+        if (cliente.length > 0) {
+            if (cliente[0].id != id_cliente) {               
+                return response.status(400).json({ mensagem: "ERRO - Email já registrado no sistema." });
+            } else {
+                next();
+            }
+        } else {
+            next();
+        }
+    };     
+};
+
 module.exports = {
     validateFields,
-    validateValues
+    validateValues,
+    checkIfIdIsRegistred,
+    checkIfEmailAlreadyInUse,
 };
