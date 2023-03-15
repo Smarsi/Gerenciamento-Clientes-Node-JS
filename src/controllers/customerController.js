@@ -75,7 +75,21 @@ const updateById = async (request, response) => {
 }
 
 const deleteById = async (request, response) => {
-    return response.status(200).json({ mensagem: "Endpoint funcionando corretamente." });
+    const { id_cliente } = request.params;
+
+    try {
+        await Cliente.destroy({
+            where: {
+              id: id_cliente
+            },
+            force: true
+          });
+    
+        return response.status(200).json();
+    } catch (error) {
+        console.log(error);
+        return response.status(500).json({mensagem: "ERRO - Tente novamente mais tarde."});
+    }
 }
 
 const _internalDeleteById = async (cliente_id) =>{
