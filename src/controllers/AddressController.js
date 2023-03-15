@@ -90,7 +90,22 @@ const updateAddress = async (request, response) => {
 }
 
 const deleteAddress = async (request, response) => {
-    return response.status(200).json({ mensagem: "Endepoint funcionando corretamente." });
+    const { id_endereco } = request.params;
+
+    try {        
+        const deleteEndereco = await Endereco.destroy({
+            where: {
+              id: id_endereco
+            },
+            force: true
+          });
+
+        return response.status(200).json();
+
+    } catch (error) {
+        console.log(error);
+        return response.status(500).json({ mensagem: "Erro interno. Tente novamente mais tarde." });
+    }
 }
 
 module.exports = {
