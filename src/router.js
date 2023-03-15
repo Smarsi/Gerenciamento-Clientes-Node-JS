@@ -8,6 +8,7 @@ const AuthController = require('./controllers/AuthController');
 
 //Import Middlewares
 const validatecostumer_middleware = require('./middlewares/validatecostumer_middleware');
+validate_address_middleware = require('./middlewares/validate_address_middleware');
 const validatecpf_middleware = require('./middlewares/validatecpf_middleware');
 const check_token_middleware = require('./middlewares/check_token_middleware');
 
@@ -16,24 +17,43 @@ const check_token_middleware = require('./middlewares/check_token_middleware');
 router.get('/cliente', CustomerController.getAll); 
 router.post('/cliente',
                 validatecpf_middleware.validateCPF,
-                validatecostumer_middleware.validateFields,
-                validatecostumer_middleware.validateValues, 
+                validatecostumer_middleware.validateFieldsAndValuesOnPost,
+                validatecostumer_middleware.checkIfAlreadyRegistred,
                 CustomerController.create
             );
-router.get('/cliente/:id_cliente', CustomerController.getById);
+router.get('/cliente/:id_cliente', 
+                validatecostumer_middleware.checkIfIdExists, 
+                CustomerController.getById
+          );
 router.put('/cliente/:id_cliente', 
-                validatecostumer_middleware.checkIfIdIsRegistred,
-                validatecostumer_middleware.checkIfEmailAlreadyInUse,
+                validatecostumer_middleware.checkIfIdExists,
+                validatecostumer_middleware.checkEmailOnUpdate,
                 CustomerController.updateById
           );
-router.delete('/cliente/:id_cliente', CustomerController.deleteById);
+router.delete('/cliente/:id_cliente',
+                validatecostumer_middleware.checkIfIdExists,
+                CustomerController.deleteById);
 // --- FIM Endpoints Cliente ---
 
 // --- Endpoints Endereco ---
-router.get('/cliente/:id_cliente/endereco', AddressController.getCostumerAddress);
-router.post('/cliente/:id_cliente/endereco', AddressController.createCostumerAddress);
-router.put('/endereco/:id-endereco', AddressController.updateAddress);
-router.delete('/endereco/:id-endereco', AddressController.deleteAddress);
+router.get('/cliente/:id_cliente/endereco',
+                validatecostumer_middleware.checkIfIdExists,
+                AddressController.getCostumerAddress
+          );
+router.post('/cliente/:id_cliente/endereco', 
+                validatecostumer_middleware.checkIfIdExists,
+                validate_address_middleware.validateFieldsAndValuesOnPost,
+                AddressController.createCostumerAddress
+           );
+router.put('/endereco/:id_endereco', 
+                validate_address_middleware.checkIfIdExists,
+                validate_address_middleware.validateFieldsAndValuesOnPut,
+                AddressController.updateAddress
+          );
+router.delete('/endereco/:id_endereco', 
+                validate_address_middleware.checkIfIdExists,
+                AddressController.deleteAddress
+             );
 // --- FIM Endpoints Endereco ---
 
 // --- Endpoints Auth/Login

@@ -17,34 +17,21 @@ const create = async (request, response) => {
     if (senha !== confirmasenha) {
         return response.status(400).json({ mensagem: "As senhas são diferentes" });
     }
-    const clienteJaRegistrado = await Cliente.findAll({
-        where: {
-            [Op.or]: [
-                { cpf: cpf },
-                { email: email }
-            ]
-        }
-    });
-
-    if (clienteJaRegistrado.length > 0) {
-        if (clienteJaRegistrado[0].cpf == cpf) {
-            return response.status(400).json({ mensagem: "ERRO - CPF já registrado" });
-        }
-        if (clienteJaRegistrado[0].email == email) {
-            return response.status(400).json({ mensagem: "ERRO - Email já registrado" });
-        }
-    }
-    //============ END Validations ============
 
     if (senha === confirmasenha) {
         try {
             const cliente = await Cliente.create({ nome, cpf, email, senha });
 
             //preparando parametros para criação do endereco
-            request.params = { cliente_id: cliente.id }
+            request.params = { id_cliente: cliente.id }
 
             const endereco = await EnderecoController._internalCreate(request, response);
-            return response.status(200).json({ cliente, endereco });
+            if(endereco != "Erro"){
+                return response.status(200).json({ cliente, endereco });
+            }else{                
+                const error = _internalDeleteById(cliente.id);
+                return response.status(500).json({mensagem: "Erro interno. Tente novamente mais tarde."});
+            }            
         } catch (error) {
             console.log(error);
 
@@ -89,6 +76,25 @@ const updateById = async (request, response) => {
 
 const deleteById = async (request, response) => {
     return response.status(200).json({ mensagem: "Endpoint funcionando corretamente." });
+}
+
+const _internalDeleteById = async (cliente_id) =>{
+
+    try {
+        await Cliente.destroy({
+            where: {
+              id: cliente_id
+            },
+            force: true
+          });
+    
+        return "Success"; 
+    } catch (error) {
+        console.log("Erro ao deletar cliente passado");
+        console.log(error);
+        return "Erro ao deletar cliente passado";
+    }
+    
 }
 
 module.exports = {

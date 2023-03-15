@@ -2,7 +2,7 @@ const { Op } = require("sequelize");
 
 const Cliente = require('../models/Customer');
 
-const validateFields = async(request, response, next) => {
+const validateFieldsAndValuesOnPost = async(request, response, next) => {
     const {body} = request;
 
     //============First Check (User fields) ============
@@ -49,13 +49,7 @@ const validateFields = async(request, response, next) => {
         return response.status(400).json({ mensagem: "O valor do campo 'endereco' deve ser passado." })
     }
 
-
-    next(); //Se não cair em nenhum dos returns de erro continuar para a próxima tarefa.
-};
-
-const validateValues = async(request, response, next) => {
-    var {body} = request;
-
+    //============ Third Check (Customer and Address values) ============
     for(i in body){
         if(body[i] == ""){
             return response.status(400).json({ mensagem: `O campo ${i} não pode ser vazio!` })
@@ -73,10 +67,12 @@ const validateValues = async(request, response, next) => {
     if(body.senha !== body.confirmasenha){
         return response.status(401).json({ mensagem: "A senha e confirmação de senha não conferem." });
     }
-    next();
+
+
+    next(); //Se não cair em nenhum dos returns de erro continuar para a próxima tarefa.
 };
 
-const checkIfIdIsRegistred = async (request, response, next) => { //Verifica se o ID existe no BD
+const checkIfIdExists = async (request, response, next) => { //Verifica se o ID existe no BD
     var { id_cliente } = request.params;
     const cliente = await Cliente.findByPk(id_cliente);
 
@@ -88,7 +84,7 @@ const checkIfIdIsRegistred = async (request, response, next) => { //Verifica se 
 
 };
 
-const checkIfEmailAlreadyInUse = async (request, response, next) => { //Verifica se já existe um cliente com o Email passado
+const checkEmailOnUpdate = async (request, response, next) => { //Verifica se já existe um cliente com o Email passado
     var { id_cliente } = request.params;
     var { email } = request.body;
 
@@ -101,7 +97,7 @@ const checkIfEmailAlreadyInUse = async (request, response, next) => { //Verifica
 
         if (cliente.length > 0) {
             if (cliente[0].id != id_cliente) {               
-                return response.status(400).json({ mensagem: "ERRO - Email já registrado no sistema." });
+                return response.status(400).json({ mensagem: "ERRO - Este email já registrado por outro usuário no sistema." });
             } else {
                 next();
             }
@@ -111,9 +107,33 @@ const checkIfEmailAlreadyInUse = async (request, response, next) => { //Verifica
     };     
 };
 
+const checkIfAlreadyRegistred = async(request, response, next) => {
+    const {cpf, email} = request.body;
+    
+    const clienteJaRegistrado = await Cliente.findAll({
+        where: {
+            [Op.or]: [
+                { cpf: cpf },
+                { email: email }
+            ]
+        }
+    });
+
+    if (clienteJaRegistrado.length > 0) {
+        if (clienteJaRegistrado[0].cpf == cpf) {
+            return response.status(400).json({ mensagem: "ERRO - CPF já registrado" });
+        }
+        if (clienteJaRegistrado[0].email == email) {
+            return response.status(400).json({ mensagem: "ERRO - Email já registrado" });
+        }
+    }else{
+        next();
+    }
+};
+
 module.exports = {
-    validateFields,
-    validateValues,
-    checkIfIdIsRegistred,
-    checkIfEmailAlreadyInUse,
+    validateFieldsAndValuesOnPost,
+    checkIfIdExists,
+    checkEmailOnUpdate,
+    checkIfAlreadyRegistred,
 };
