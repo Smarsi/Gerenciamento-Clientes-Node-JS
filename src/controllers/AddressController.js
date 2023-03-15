@@ -67,7 +67,26 @@ const _internalCreate = async (request, response) => { //Usado durante a criaÃ§Ã
 }
 
 const updateAddress = async (request, response) => {
-    return response.status(200).json({ mensagem: "Endepoint funcionando corretamente." });
+    const { id_endereco } = request.params;
+    const { titulo_endereco, numero, complemento } = request.body;
+
+    try {
+        await Endereco.update({
+            titulo_endereco: titulo_endereco,
+            numero: numero,
+            complemento: complemento
+        }, {
+            where: { id: id_endereco },
+            returning: true,
+            plain: true,
+        });
+        const newEndereco = await Endereco.findByPk(id_endereco);
+
+        return response.status(200).json(newEndereco);
+    } catch (error) {
+        console.log(error);
+        return response.status(500).json({ mensagem: "ERRO - Tente novamente mais tarde." });
+    }
 }
 
 const deleteAddress = async (request, response) => {

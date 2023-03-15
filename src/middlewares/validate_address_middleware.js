@@ -37,7 +37,34 @@ const validateFieldsAndValuesOnPost = async (request, response, next) => {
 };
 
 const validateFieldsAndValuesOnPut = async (request, response, next) => {
+    const {body} = request;
 
+    if(body){
+        var addressKeys = Object.keys(body);
+        var dictAddressFields = {
+            "titulo_endereco": "",
+            "numero": "",
+            "complemento": ""
+        }
+        var dictAddressKeys = Object.keys(dictAddressFields);
+
+        for(var y=0; y < dictAddressKeys.length; y++ ){
+            if(addressKeys.includes(dictAddressKeys[y]) == false){ //Se não encontrar algum campo que deveria ser passado
+                return response.status(400).json({ mensagem: `O campo '${dictAddressKeys[y]}' do endereco deve ser passado.` })
+            }
+        }
+    }else{
+        return response.status(400).json({ mensagem: "ERRO - Um 'body' deve ser passado para esta requisição." })
+    }
+
+    // ------- Validate Values -------
+    for(i in body){
+        if(body[i] == "" && i != "complemento"){
+            return response.status(400).json({ mensagem: `O campo ${i} não pode ser vazio!` })
+        }           
+    }
+
+    next(); //Se não cair em nenhum dos returns de erro continuar para a próxima tarefa.
 };
 
 const checkIfIdExists = async (request, response, next) => {
