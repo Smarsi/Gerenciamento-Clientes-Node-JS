@@ -12,6 +12,15 @@ validate_address_middleware = require('./middlewares/validate_address_middleware
 const validatecpf_middleware = require('./middlewares/validatecpf_middleware');
 const check_token_middleware = require('./middlewares/check_token_middleware');
 
+// --- Endoint Documentação
+router.get('/swagger', (request, response) => {
+      return response.sendFile(process.cwd() + "/src/swagger.json");
+});
+
+router.get('/docs', (request, response) => {
+      return response.sendFile(process.cwd() + "/docs/index.html");
+});
+
 
 // --- Endpoints Cliente ---
 router.get('/cliente', CustomerController.getAll); 
