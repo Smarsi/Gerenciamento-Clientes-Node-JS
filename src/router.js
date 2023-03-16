@@ -27,6 +27,7 @@ router.get('/cliente/:id_cliente',
           );
 router.put('/cliente/:id_cliente', 
                 validatecostumer_middleware.checkIfIdExists,
+                validatecostumer_middleware.validateFieldsAndValuesOnPut,
                 validatecostumer_middleware.checkEmailOnUpdate,
                 CustomerController.updateById
           );

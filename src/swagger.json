@@ -82,24 +82,22 @@
                     }
                 },
                 "responses": {
-                    "422":{
-                        "description": "CPF Inválido",
+                    "200": {
+                        "description": "OK",
                         "content": {
                             "application/json": {
                                 "schema":{
                                     "type": "object",
                                     "properties": {
-                                        "mensagem": {
-                                            "type": "string"
+                                        "cliente": {
+                                            "type": "object",
+                                            "$ref": "#/components/schemas/Cliente_GET"
+                                        },
+                                        "endereco": {
+                                            "type": "object",
+                                            "$ref": "#/components/schemas/Endereco_GET"
                                         }
-                                    }                                                                                                        
-                                },
-                                "examples":{
-                                    "cpf invalido": {
-                                        "value": {
-                                            "mensagem": "CPF Inválido"
-                                        }
-                                    }
+                                    }                               
                                 }
                             }
                         }
@@ -180,6 +178,28 @@
                             }
                         }
                     },
+                    "422":{
+                        "description": "CPF Inválido",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "mensagem": {
+                                            "type": "string"
+                                        }
+                                    }                                                                                                        
+                                },
+                                "examples":{
+                                    "cpf invalido": {
+                                        "value": {
+                                            "mensagem": "CPF Inválido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },                
                     "500": {
                         "description": "Erro interno",
                         "content": {
@@ -201,31 +221,11 @@
                                 }
                             }
                         }
-                    },
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema":{
-                                    "type": "object",
-                                    "properties": {
-                                        "cliente": {
-                                            "type": "object",
-                                            "$ref": "#/components/schemas/Cliente_GET"
-                                        },
-                                        "endereco": {
-                                            "type": "object",
-                                            "$ref": "#/components/schemas/Endereco_GET"
-                                        }
-                                    }                               
-                                }
-                            }
-                        }
-                    }
+                    }                    
                 }
             }
         },
-        "/cliente/{id}": {
+        "/cliente/{id_cliente}": {
             "get": {
                 "description": "Pega cliente pelo Id",
                 "summary": "Pega informações de um cliente específico recebendo o Id",
@@ -290,12 +290,110 @@
                     }
                 ],
                 "responses": {
-                    
+                    "200": {
+                        "description": "OK - Sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "mensagem": {
+                                            "type": "string"
+                                        }
+                                    }                                                                                                        
+                                },
+                                "examples":{
+                                    "sucesso": {
+                                        "value": {
+                                            "mensagem": "Cliente com id x atualizado com sucesso."
+                                        }
+                                    }                                
+                                }
+                            }
+                        }
+                    },                    
+                    "400": {
+                        "description": "Email já registrado",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Mensagem"                                                                 
+                                },
+                                "examples": {
+                                    "erro": {
+                                        "value": {
+                                            "mensagem": "ERRO - Este email já registrado por outro usuário no sistema."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },   
+                    "404": {
+                        "description": "Id incorreto",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Mensagem"                                                                 
+                                },
+                                "examples": {
+                                    "erro": {
+                                        "value": {
+                                            "mensagem": "ERRO - Não existe um cliente com este ID (x) cadastrado no sistema."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },   
+                    "409": {
+                        "description": "Erro de campos incorretos",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Mensagem"                                                                 
+                                },
+                                "examples": {
+                                    "erro campo": {
+                                        "value": {
+                                            "mensagem": "O campo 'x' deve ser passado."
+                                        }
+                                    },
+                                    "erro valor": {
+                                        "value": {
+                                            "mensagem": "O valor do campo 'x' não pode ser vazio!"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },                 
+                    "500": {
+                        "description": "Erro interno",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Mensagem"                                                                 
+                                },
+                                "examples":{
+                                    "erro interno": {
+                                        "value": {
+                                            "mensagem": "Erro interno. Tente novamente mais tarde."
+                                        }
+                                    }                                
+                                }
+                            }
+                        }
+                    }
                 }
             },
             "delete": {
                 "description": "Deleta informações de um cliente pelo Id",
-                "summary": "Deleta informações de um cliente específico recebendo o Id",
+                "summary": "Deleta as informações de um cliente específico recebendo o Id",
                 "tags": ["Clientes"],
                 "parameters": [
                     {
@@ -306,7 +404,330 @@
                     }
                 ],
                 "responses": {
-                    
+                    "200": {
+                        "description": "OK - Sucesso"                        
+                    },                      
+                    "404": {
+                        "description": "Id incorreto",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Mensagem"                                                                 
+                                },
+                                "examples": {
+                                    "erro": {
+                                        "value": {
+                                            "mensagem": "ERRO - Não existe um cliente com este ID (x) cadastrado no sistema."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },                 
+                    "500": {
+                        "description": "Erro interno",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Mensagem"                                                                 
+                                },
+                                "examples":{
+                                    "erro interno": {
+                                        "value": {
+                                            "mensagem": "Erro interno. Tente novamente mais tarde."
+                                        }
+                                    }                                
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/cliente/{id_cliente}/endereco": {
+            "get": {
+                "description": "Pega o endereço de um cliente pelo Id",
+                "summary": "Pega o endereço de um cliente em específico recebendo o Id",
+                "tags": ["Endereço"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de um cliente",
+                        "required": "true"
+                    }
+                ],
+                "responses": {
+                    "200":{
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Endereco_GET"                                                                                                       
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Id incorreto",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Mensagem"                                                                 
+                                },
+                                "examples": {
+                                    "erro": {
+                                        "value": {
+                                            "mensagem": "ERRO - Não existe um cliente com este ID (x) cadastrado no sistema."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Sem endereço",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Mensagem"                                                                 
+                                },
+                                "examples": {
+                                    "erro": {
+                                        "value": {
+                                            "mensagem": "ERRO - O cliente não contém nenhum endereço cadastrado"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Cadastro de endereço para um cliente",
+                "description": "Essa rota será responsável por cadastrar um novo endereço para um cliente recebendo seu Id",
+                "tags": ["Endereço"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Endereco_POST"
+                            },
+                            "examples": {
+                                "cliente": {
+                                    "value": {
+                                        "titulo_endereco": "Trabalho",
+                                        "cep": "03478423",
+                                        "logradouro": "Av Express",
+                                        "numero": "385",
+                                        "complemento": "",
+                                        "bairro": "Centro",
+                                        "cidade": "Rio de Janeiro",
+                                        "estado": "RJ"
+                                }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Endereco_GET"                             
+                                }
+                            }
+                        }
+                    },
+                    "400":{
+                        "description": "Campos ou valores incorretos",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "mensagem": {
+                                            "type": "string"
+                                        }
+                                    }                                                                                                        
+                                },
+                                "examples":{
+                                    "erro campo": {
+                                        "value": {
+                                            "mensagem": "O campo 'logradouro' do endereco deve ser passado"
+                                        }
+                                    },
+                                    "erro valor": {
+                                        "value": {
+                                            "mensagem": "O campo 'numero' não deve ser vazio"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Sem Body",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "mensagem": {
+                                            "type": "string"
+                                        }
+                                    }                                                                                                        
+                                },
+                                "examples":{
+                                    "body error": {
+                                        "value": {
+                                            "mensagem": "ERRO - Um 'body' deve ser passado para esta requisição."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }                    
+                }
+            }            
+        },
+        "/endereco/{id_endereco}": {
+            "put": {
+                "description": "Altera informações de um endereço pelo Id",
+                "summary": "Altera informações de um endereço específico recebendo o Id",
+                "tags": ["Endereço"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de um endereço",
+                        "required": "true"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Endereco_PUT"
+                            },
+                            "examples": {
+                                "cliente": {
+                                    "value": {
+                                        "titulo_endereco": "Trabalho",
+                                        "numero": "1456",
+                                        "complemento": "Escritório 98"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK - Sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Endereco_GET"                                                                                                       
+                                }
+                            }
+                        }
+                    },                    
+                    "400":{
+                        "description": "Campos ou valores incorretos",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "mensagem": {
+                                            "type": "string"
+                                        }
+                                    }                                                                                                        
+                                },
+                                "examples":{
+                                    "erro campo": {
+                                        "value": {
+                                            "mensagem": "O campo 'logradouro' do endereco deve ser passado"
+                                        }
+                                    },
+                                    "erro valor": {
+                                        "value": {
+                                            "mensagem": "O campo 'numero' não deve ser vazio"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Sem Body",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "mensagem": {
+                                            "type": "string"
+                                        }
+                                    }                                                                                                        
+                                },
+                                "examples":{
+                                    "body error": {
+                                        "value": {
+                                            "mensagem": "ERRO - Um 'body' deve ser passado para esta requisição."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },    
+                    "404": {
+                        "description": "Id incorreto",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Mensagem"                                                                 
+                                },
+                                "examples": {
+                                    "erro": {
+                                        "value": {
+                                            "mensagem": "ERRO - Não existe um endereço com o id passado (x)"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Deleta informações de um endereço pelo Id",
+                "summary": "Deleta as informações de um endereço específico recebendo o Id",
+                "tags": ["Endereço"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de um cliente",
+                        "required": "true"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK - Sucesso"                        
+                    }
                 }
             }
         }
@@ -443,6 +864,68 @@
                         "type": "string"
                     },
                     "createdAt": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Endereco_POST": {
+                "type": "object",
+                "properties": {
+                    "titulo_endereco": {
+                        "type": "string",
+                        "required": "true"
+                    },
+                    "cep": {
+                        "type": "string",
+                        "required": "true"
+                    },
+                    "logradouro": {
+                        "type": "string",
+                        "required": "true"
+                    },
+                    "numero": {
+                        "type": "number",
+                        "required": "true"
+                    },
+                    "complemento": {
+                        "type": "string",
+                        "required": "false"
+                    },
+                    "bairro": {
+                        "type": "string",
+                        "required": "true"
+                    },
+                    "cidade": {
+                        "type": "string",
+                        "required": "true"
+                    },
+                    "estado": {
+                        "type": "string",
+                        "required": "true"
+                    }
+                }
+            },
+            "Endereco_PUT": {
+                "type": "object",
+                "properties": {
+                    "titulo_endereco": {
+                        "type": "string",
+                        "required": "true"
+                    },                    
+                    "numero": {
+                        "type": "number",
+                        "required": "true"
+                    },
+                    "complemento": {
+                        "type": "string",
+                        "required": "false"
+                    }
+                }
+            },
+            "Mensagem": {
+                "type": "object",
+                "properties": {
+                    "mensagem": {
                         "type": "string"
                     }
                 }
