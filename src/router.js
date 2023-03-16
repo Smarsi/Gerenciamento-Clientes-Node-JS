@@ -12,9 +12,9 @@ validate_address_middleware = require('./middlewares/validate_address_middleware
 const validatecpf_middleware = require('./middlewares/validatecpf_middleware');
 const check_token_middleware = require('./middlewares/check_token_middleware');
 
-// --- Endoint Documentação
+// --- Endpoint Documentação
 router.get('/swagger', (request, response) => {
-      return response.sendFile(process.cwd() + "/src/swagger.json");
+      return response.sendFile(process.cwd() + "/docs/swagger.json");
 });
 
 router.get('/docs', (request, response) => {

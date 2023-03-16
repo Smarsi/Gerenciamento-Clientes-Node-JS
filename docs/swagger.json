@@ -13,7 +13,7 @@
     "description" : "SwaggerHub API Auto Mocking"
   }, {
     "url" : "http://localhost:3000",
-    "description" : "API de teste"
+    "description" : "API ambiente de desenvolvimento"
   } ],
   "paths" : {
     "/cliente" : {
