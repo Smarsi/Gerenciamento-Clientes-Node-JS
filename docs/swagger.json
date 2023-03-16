@@ -2,7 +2,7 @@
   "openapi" : "3.0.0",
   "info" : {
     "title" : "API Gerenciamento de clientes",
-    "description" : "Esta API tem como objetivo o controle e manipulação de clientes (bem como seus logins e tokens) e endereços.",
+    "description" : "Esta API tem como objetivo o controle e manipulação de clientes (bem como seus logins e tokens) e endereços. Este é um caso de testes.",
     "contact" : {
       "email" : "ricsmarsi@gmail.com"
     },
