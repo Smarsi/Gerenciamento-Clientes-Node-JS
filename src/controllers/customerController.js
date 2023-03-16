@@ -13,11 +13,6 @@ const getAll = async (request, response) => {
 const create = async (request, response) => {
     const { nome, cpf, email, senha, confirmasenha } = request.body;
 
-    //============ Validations ============
-    if (senha !== confirmasenha) {
-        return response.status(400).json({ mensagem: "As senhas são diferentes" });
-    }
-
     if (senha === confirmasenha) {
         try {
             const cliente = await Cliente.create({ nome, cpf, email, senha });
@@ -39,7 +34,7 @@ const create = async (request, response) => {
         }
 
     } else {
-        return response.status(400).json({ mensagem: "As senhas são diferentes" });
+        return response.status(401).json({ mensagem: "A senha e confirmação de senha não conferem." });
     }
 }
 

@@ -1,0 +1,281 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Gerenciamento de clientes",
+        "description": "Esta API tem como objetivo o controle e manipulação de clientes (bem como seus logins e tokens) e endereços.",
+        "contact": {
+            "email": "ricsmarsi@gmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000",
+            "description": "API de teste"
+        }
+    ],
+    "paths": {
+        "/cliente": {
+            "post": {
+                "summary": "Cadastro de clientes",
+                "description": "Essa rota será responsável por cadastrar clientes no sistema",
+                "tags": ["Customers"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Cliente"
+                            },
+                            "examples": {
+                                "cliente": {
+                                    "value": {
+                                        "nome": "John Dutton",
+                                        "email": "dutton@email.com",
+                                        "senha": "umasenhapersonalizada",
+                                        "confirmasenha": "umasenhapersonalizada",
+                                        "cpf": "482.905.810-25",
+                                        "endereco": {
+                                            "titulo_endereco": "Yellowstone",
+                                            "cep": "12345678",
+                                            "logradouro": "Rua Teste",
+                                            "numero": "555",
+                                            "complemento": "Casa 1",
+                                            "bairro": "Centro",
+                                            "cidade": "Sao Paulo",
+                                            "estado": "SP"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "422":{
+                        "description": "CPF Inválido",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "mensagem": {
+                                            "type": "string"
+                                        }
+                                    }                                                                                                        
+                                },
+                                "examples":{
+                                    "cpf invalido": {
+                                        "value": {
+                                            "mensagem": "CPF Inválido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400":{
+                        "description": "Campos ou valores incorretos",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "mensagem": {
+                                            "type": "string"
+                                        }
+                                    }                                                                                                        
+                                },
+                                "examples":{
+                                    "erro campo senha": {
+                                        "value": {
+                                            "mensagem": "O campo 'senha' deve ser passado"
+                                        }
+                                    },
+                                    "erro valor nome": {
+                                        "value": {
+                                            "mensagem": "O campo 'nome' não deve ser vazio"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "A senha e confirmação de senha não conferem",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "mensagem": {
+                                            "type": "string"
+                                        }
+                                    }                                                                                                        
+                                },
+                                "examples":{
+                                    "erro confirmacao senha": {
+                                        "value": {
+                                            "mensagem": "A senha e confirmação de senha não conferem"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "CPF ou Email já registrados no sistema",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "mensagem": {
+                                            "type": "string"
+                                        }
+                                    }                                                                                                        
+                                },
+                                "examples":{
+                                    "cpf existente": {
+                                        "value": {
+                                            "mensagem": "ERRO - CPF já registrado"
+                                        }
+                                    },
+                                    "email existente": {
+                                        "value": {
+                                            "mensagem": "ERRO - EMAIL já registrado"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "mensagem": {
+                                            "type": "string"
+                                        }
+                                    }                                                                                                        
+                                },
+                                "examples":{
+                                    "erro interno": {
+                                        "value": {
+                                            "mensagem": "Erro interno. Tente novamente mais tarde."
+                                        }
+                                    }                                
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "cliente": {
+                                            "type": "object",
+                                            "$ref": "#/components/schemas/Cliente"
+                                        },
+                                        "endereco": {
+                                            "type": "object",
+                                            "$ref": "#/components/schemas/Endereco"
+                                        }
+                                    }                               
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Cliente":{
+                "type": "object",
+                "properties": {
+                    "nome": {
+                        "type": "string"
+                    },
+                    "cpf": {
+                        "type": "string",
+                        "description": "Pode ser passado com ou sem os caracteres especiais (' . ' e ' - ')"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "senha": {
+                        "type": "string"
+                    },
+                    "confirmasenha": {
+                        "type": "string"
+                    },
+                    "endereco": {
+                        "type": "object",
+                        "properties": {
+                            "titulo_endereco": {
+                                "type": "string"
+                            },
+                            "cep": {
+                                "type": "string"
+                            },
+                            "logradouro": {
+                                "type": "string"
+                            },
+                            "numero": {
+                                "type": "number"
+                            },
+                            "complemento": {
+                                "type": "string"
+                            },
+                            "bairro": {
+                                "type": "string"
+                            },
+                            "cidade": {
+                                "type": "string"
+                            },
+                            "estado": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "Endereco": {
+                "type": "object",
+                "properties": {
+                    "titulo_endereco": {
+                        "type": "string"
+                    },
+                    "cep": {
+                        "type": "string"
+                    },
+                    "logradouro": {
+                        "type": "string"
+                    },
+                    "numero": {
+                        "type": "number"
+                    },
+                    "complemento": {
+                        "type": "string"
+                    },
+                    "bairro": {
+                        "type": "string"
+                    },
+                    "cidade": {
+                        "type": "string"
+                    },
+                    "estado": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}
