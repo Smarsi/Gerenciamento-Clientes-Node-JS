@@ -16,33 +16,64 @@
     ],
     "paths": {
         "/cliente": {
+            "get": {
+                "summary": "Listagem de clientes",
+                "description": "Essa rota será responsável por listar todos os clientes cadastrados no sistema",
+                "tags": ["Clientes"],
+                "responses": {
+                    "200":{
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "array",
+                                    "items": {
+                                        "type":"object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "number"
+                                            },
+                                            "nome": {
+                                                "type": "string"
+                                            },
+                                            "email": {
+                                                "type": "string"
+                                            }
+                                        }                                        
+                                    }                                                                                                        
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "post": {
                 "summary": "Cadastro de clientes",
                 "description": "Essa rota será responsável por cadastrar clientes no sistema",
-                "tags": ["Customers"],
+                "tags": ["Clientes"],
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Cliente"
+                                "$ref": "#/components/schemas/Cliente_POST"
                             },
                             "examples": {
                                 "cliente": {
                                     "value": {
-                                        "nome": "John Dutton",
-                                        "email": "dutton@email.com",
+                                        "nome": "Hebert Richards",
+                                        "email": "heds@email.com",
                                         "senha": "umasenhapersonalizada",
                                         "confirmasenha": "umasenhapersonalizada",
                                         "cpf": "482.905.810-25",
                                         "endereco": {
-                                            "titulo_endereco": "Yellowstone",
+                                            "titulo_endereco": "Meu Rancho",
                                             "cep": "12345678",
-                                            "logradouro": "Rua Teste",
-                                            "numero": "555",
-                                            "complemento": "Casa 1",
+                                            "logradouro": "Rua Inventada",
+                                            "numero": "4845",
+                                            "complemento": "",
                                             "bairro": "Centro",
-                                            "cidade": "Sao Paulo",
-                                            "estado": "SP"
+                                            "cidade": "Ponte Branca",
+                                            "estado": "MT"
                                         }
                                     }
                                 }
@@ -180,11 +211,11 @@
                                     "properties": {
                                         "cliente": {
                                             "type": "object",
-                                            "$ref": "#/components/schemas/Cliente"
+                                            "$ref": "#/components/schemas/Cliente_GET"
                                         },
                                         "endereco": {
                                             "type": "object",
-                                            "$ref": "#/components/schemas/Endereco"
+                                            "$ref": "#/components/schemas/Endereco_GET"
                                         }
                                     }                               
                                 }
@@ -193,13 +224,101 @@
                     }
                 }
             }
+        },
+        "/cliente/{id}": {
+            "get": {
+                "description": "Pega cliente pelo Id",
+                "summary": "Pega informações de um cliente específico recebendo o Id",
+                "tags": ["Clientes"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de um cliente",
+                        "required": "true"
+                    }
+                ],
+                "responses": {
+                    "200":{
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "array",
+                                    "items": {
+                                        "type":"object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "number"
+                                            },
+                                            "nome": {
+                                                "type": "string"
+                                            },
+                                            "cpf": {
+                                                "type": "string"
+                                            },
+                                            "email": {
+                                                "type": "string"
+                                            },
+                                            "senha": {
+                                                "type": "string"
+                                            },
+                                            "createdAt": {
+                                                "type": "string"
+                                            },
+                                            "updatedAt": {
+                                                "type": "string"
+                                            }
+                                        }                                        
+                                    }                                                                                                        
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Altera informações de um cliente pelo Id",
+                "summary": "Altera informações de um cliente específico recebendo o Id",
+                "tags": ["Clientes"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de um cliente",
+                        "required": "true"
+                    }
+                ],
+                "responses": {
+                    
+                }
+            },
+            "delete": {
+                "description": "Deleta informações de um cliente pelo Id",
+                "summary": "Deleta informações de um cliente específico recebendo o Id",
+                "tags": ["Clientes"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id de um cliente",
+                        "required": "true"
+                    }
+                ],
+                "responses": {
+                    
+                }
+            }
         }
     },
     "components": {
         "schemas": {
-            "Cliente":{
+            "Cliente_GET":{
                 "type": "object",
                 "properties": {
+                    "id": {
+                        "type":"number"
+                    },
                     "nome": {
                         "type": "string"
                     },
@@ -216,40 +335,83 @@
                     "confirmasenha": {
                         "type": "string"
                     },
+                    "updatedAt": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Cliente_POST":{
+                "type": "object",
+                "properties": {
+                    "nome": {
+                        "type": "string",
+                        "required": "true"
+                    },
+                    "cpf": {
+                        "type": "string",
+                        "description": "Pode ser passado com ou sem os caracteres especiais (' . ' e ' - ')",
+                        "required": "true"
+                    },
+                    "email": {
+                        "type": "string",
+                        "required": "true"
+                    },
+                    "senha": {
+                        "type": "string",
+                        "required": "true"
+                    },
+                    "confirmasenha": {
+                        "type": "string",
+                        "required": "true"
+                    },
                     "endereco": {
                         "type": "object",
                         "properties": {
                             "titulo_endereco": {
-                                "type": "string"
+                                "type": "string",
+                                "required": "true"
                             },
                             "cep": {
-                                "type": "string"
+                                "type": "string",
+                                "required": "true"
                             },
                             "logradouro": {
-                                "type": "string"
+                                "type": "string",
+                                "required": "true"
                             },
                             "numero": {
-                                "type": "number"
+                                "type": "number",
+                                "required": "true"
                             },
                             "complemento": {
-                                "type": "string"
+                                "type": "string",
+                                "required": false
                             },
                             "bairro": {
-                                "type": "string"
+                                "type": "string",
+                                "required": "true"
                             },
                             "cidade": {
-                                "type": "string"
+                                "type": "string",
+                                "required": "true"
                             },
                             "estado": {
-                                "type": "string"
+                                "type": "string",
+                                "required": "true"
                             }
                         }
                     }
                 }
             },
-            "Endereco": {
+            "Endereco_GET": {
                 "type": "object",
                 "properties": {
+                    "id": {
+                        "type":"number"
+                    },
                     "titulo_endereco": {
                         "type": "string"
                     },
@@ -272,6 +434,15 @@
                         "type": "string"
                     },
                     "estado": {
+                        "type": "string"
+                    },
+                    "cliente_id": {
+                        "type": "number"
+                    },
+                    "updatedAt": {
+                        "type": "string"
+                    },
+                    "createdAt": {
                         "type": "string"
                     }
                 }
