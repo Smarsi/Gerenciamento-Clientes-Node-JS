@@ -890,7 +890,7 @@
         }
       },
       "Cliente_POST_endereco" : {
-        "required" : [ "bairro", "cep", "cidade", "complemento", "estado", "logradouro", "numero", "titulo_endereco" ],
+        "required" : [ "bairro", "cep", "cidade", "estado", "logradouro", "numero", "titulo_endereco" ],
         "type" : "object",
         "properties" : {
           "titulo_endereco" : {
