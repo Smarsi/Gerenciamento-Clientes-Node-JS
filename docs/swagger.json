@@ -924,10 +924,7 @@
     "name" : "General",
     "tags" : [ "Clientes", "Endereços" ]
   }, {
-    "name" : "User Management",
-    "tags" : [ "user" ]
-  }, {
     "name" : "Models",
-    "tags" : [ "pet_model", "store_model" ]
+    "tags" : [ "Cliente_Model", "Endereço_Model" ]
   } ]
 }
