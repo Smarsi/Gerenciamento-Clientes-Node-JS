@@ -6,7 +6,15 @@
     "contact" : {
       "email" : "ricsmarsi@gmail.com"
     },
-    "version" : "v1.0.0"
+    "version" : "v1.0.0",
+    "x-logo" : {
+      "url" : "https://redocly.github.io/redoc/petstore-logo.png",
+      "altText" : "Petstore logo"
+    }
+  },
+  "externalDocs" : {
+    "description" : "Descubra como criar um repositório do github para seu modelo OpenAPI.",
+    "url" : "https://github.com/Rebilly/generator-openapi-repo"
   },
   "servers" : [ {
     "url" : "https://virtserver.swaggerhub.com/RICSMARSI/GerenciamentoDeClientes/v1.0.0",
@@ -14,6 +22,21 @@
   }, {
     "url" : "http://localhost:3000",
     "description" : "Ambiente de desenvolvimento"
+  } ],
+  "tags" : [ {
+    "name" : "Clientes",
+    "description" : "Tudo sobre clientes"
+  }, {
+    "name" : "Endereços",
+    "description" : "Tudo sobre endereços de clientes"
+  }, {
+    "name" : "Cliente_Model",
+    "description" : "<SchemaDefinition schemaRef=\"#/components/schemas/Cliente_GET\" />\n",
+    "x-displayName" : "Modelo de dados para clientes"
+  }, {
+    "name" : "Endereço_Model",
+    "description" : "<SchemaDefinition schemaRef=\"#/components/schemas/Order\" exampleRef=\"#/components/examples/Endereco_GET\" showReadOnly={true} showWriteOnly={true} />\n",
+    "x-displayName" : "Modelo de dados para endereços"
   } ],
   "paths" : {
     "/cliente" : {
@@ -896,5 +919,15 @@
         }
       }
     }
-  }
+  },
+  "x-tagGroups" : [ {
+    "name" : "General",
+    "tags" : [ "pet", "store" ]
+  }, {
+    "name" : "User Management",
+    "tags" : [ "user" ]
+  }, {
+    "name" : "Models",
+    "tags" : [ "pet_model", "store_model" ]
+  } ]
 }
