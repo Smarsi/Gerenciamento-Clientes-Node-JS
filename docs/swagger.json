@@ -2,7 +2,7 @@
   "openapi" : "3.0.0",
   "info" : {
     "title" : "API Gerenciamento de clientes",
-    "description" : "# Introdução\n\nEsta é uma API criada por [Richard Smarsi](https://www.github.com/smarsi) para gerenciamento de clientes, feita para exemplificar conhecimentos de NodeJs, ExpressJs, MySQL e Swagger.\n\nO objetivo core desta aplicação é de ser um sistema simples, porém que permita evoluções para ser implementado dentro de um sistema mais complexo futuramente.\n\nNo momento a API está em sua primeira versão e ainda não tem suporte para autenticação. Em suas próximas versões será implementado o funcionamento com tokens JWT e gerenciamento de sessões de usuários.\n\n\n# Sobre a Documentação\n\nEsta API está documentada seguindo o modelo **Open API**. Toda a documentação foi criada utilizando o **Swagger**. Este template utilizado neste página de documentação é o Redocly que pode ser encontrado no [Github Redocly](https://www.github.com/Redocly/redoc).\n",
+    "description" : "# Introdução\n\nEsta é uma API criada por [Richard Smarsi](https://www.github.com/smarsi) para gerenciamento de clientes, feita para exemplificar conhecimentos de NodeJs, ExpressJs, MySQL e Swagger.\n\nO objetivo core desta aplicação é de ser um sistema simples, porém que permita evoluções para ser implementado dentro de um sistema mais complexo futuramente.\n\nNo momento a API está em sua primeira versão e ainda não tem suporte para autenticação. Em suas próximas versões será implementado o funcionamento com tokens JWT e gerenciamento de sessões de usuários.\n\n\n# Sobre a Documentação\n\nEsta API está documentada seguindo o modelo **Open API**. Toda a documentação foi criada utilizando o **Swagger**. Este template utilizado nesta página de documentação é o Redocly que pode ser encontrado no [Github Redocly](https://www.github.com/Redocly/redoc).\n",
     "contact" : {
       "email" : "ricsmarsi@gmail.com"
     },
@@ -401,7 +401,7 @@
     },
     "/cliente/{id_cliente}/endereco" : {
       "get" : {
-        "tags" : [ "Endereço" ],
+        "tags" : [ "Endereços" ],
         "summary" : "Pega o endereço de um cliente em específico recebendo o Id",
         "description" : "Pega o endereço de um cliente pelo Id",
         "parameters" : [ {
@@ -463,7 +463,7 @@
         }
       },
       "post" : {
-        "tags" : [ "Endereço" ],
+        "tags" : [ "Endereços" ],
         "summary" : "Cadastro de endereço para um cliente",
         "description" : "Essa rota será responsável por cadastrar um novo endereço para um cliente recebendo seu Id",
         "parameters" : [ {
@@ -555,7 +555,7 @@
     },
     "/endereco/{id_endereco}" : {
       "put" : {
-        "tags" : [ "Endereço" ],
+        "tags" : [ "Endereços" ],
         "summary" : "Altera informações de um endereço específico recebendo o Id",
         "description" : "Altera informações de um endereço pelo Id",
         "parameters" : [ {
@@ -657,7 +657,7 @@
         }
       },
       "delete" : {
-        "tags" : [ "Endereço" ],
+        "tags" : [ "Endereços" ],
         "summary" : "Deleta as informações de um endereço específico recebendo o Id",
         "description" : "Deleta informações de um endereço pelo Id",
         "parameters" : [ {
@@ -922,7 +922,7 @@
   },
   "x-tagGroups" : [ {
     "name" : "General",
-    "tags" : [ "pet", "store" ]
+    "tags" : [ "Clientes", "Endereços" ]
   }, {
     "name" : "User Management",
     "tags" : [ "user" ]
