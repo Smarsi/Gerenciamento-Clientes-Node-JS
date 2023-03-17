@@ -35,7 +35,7 @@
     "x-displayName" : "Clientes Model"
   }, {
     "name" : "Endereco_Model",
-    "description" : "<SchemaDefinition schemaRef=\"#/components/schemas/Endereco_GET\" exampleRef=\"#/components/examples/Endereco_GET\"/>\n",
+    "description" : "<SchemaDefinition schemaRef=\"#/components/schemas/Endereco_GET\"/>\n",
     "x-displayName" : "Endereço Model"
   } ],
   "paths" : {
