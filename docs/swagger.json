@@ -32,11 +32,11 @@
   }, {
     "name" : "Cliente_Model",
     "description" : "<SchemaDefinition schemaRef=\"#/components/schemas/Cliente_GET\" />\n",
-    "x-displayName" : "ClientesModel"
+    "x-displayName" : "Clientes Model"
   }, {
     "name" : "Endereco_Model",
     "description" : "<SchemaDefinition schemaRef=\"#/components/schemas/Endereco_GET\" exampleRef=\"#/components/examples/Endereco_GET\"/>\n",
-    "x-displayName" : "Endereços Model"
+    "x-displayName" : "Endereço Model"
   } ],
   "paths" : {
     "/cliente" : {
@@ -926,6 +926,6 @@
     "tags" : [ "Clientes", "Endereços" ]
   }, {
     "name" : "Models",
-    "tags" : [ "Cliente_Model", "Endereço_Model" ]
+    "tags" : [ "Cliente_Model", "Endereco_Model" ]
   } ]
 }
