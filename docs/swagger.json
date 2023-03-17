@@ -32,11 +32,11 @@
   }, {
     "name" : "Cliente_Model",
     "description" : "<SchemaDefinition schemaRef=\"#/components/schemas/Cliente_GET\" />\n",
-    "x-displayName" : "Modelo de dados para clientes"
+    "x-displayName" : "Clientes Model"
   }, {
-    "name" : "Endereço_Model",
-    "description" : "<SchemaDefinition schemaRef=\"#/components/schemas/Order\" exampleRef=\"#/components/examples/Endereco_GET\" showReadOnly={true} showWriteOnly={true} />\n",
-    "x-displayName" : "Modelo de dados para endereços"
+    "name" : "Endereco_Model",
+    "description" : "<SchemaDefinition schemaRef=\"#/components/schemas/Endereco_GET\" />\n",
+    "x-displayName" : "Endereço Model"
   } ],
   "paths" : {
     "/cliente" : {
@@ -778,7 +778,7 @@
         }
       },
       "Endereco_POST" : {
-        "required" : [ "bairro", "cep", "cidade", "complemento", "estado", "logradouro", "numero", "titulo_endereco" ],
+        "required" : [ "bairro", "cep", "cidade", "estado", "logradouro", "numero", "titulo_endereco" ],
         "type" : "object",
         "properties" : {
           "titulo_endereco" : {
@@ -808,7 +808,7 @@
         }
       },
       "Endereco_PUT" : {
-        "required" : [ "complemento", "numero", "titulo_endereco" ],
+        "required" : ["numero", "titulo_endereco" ],
         "type" : "object",
         "properties" : {
           "titulo_endereco" : {
@@ -890,6 +890,7 @@
         }
       },
       "Cliente_POST_endereco" : {
+        "required" : [ "bairro", "cep", "cidade", "estado", "logradouro", "numero", "titulo_endereco" ],
         "type" : "object",
         "properties" : {
           "titulo_endereco" : {
