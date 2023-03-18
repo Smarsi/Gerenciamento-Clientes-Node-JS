@@ -39,7 +39,8 @@ const validateCPF = (request, response, next) => {
             return response.status(422).json({ mensagem: "ERRO - CPF Inválido" });
         }
     } else{ 
-        return response.status(422).json({ mensagem: "ERRO - CPF Inválido (Menos de 11 digitos)" });
+        //Menos de 11 Digitos
+        return response.status(422).json({ mensagem: "ERRO - CPF Inválido" });
     } 
 };
 

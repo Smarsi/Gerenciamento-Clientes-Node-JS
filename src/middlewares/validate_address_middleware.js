@@ -23,7 +23,7 @@ const validateFieldsAndValuesOnPost = async (request, response, next) => {
             }
         }
     }else{
-        return response.status(400).json({ mensagem: "ERRO - Um 'body' deve ser passado para esta requisição." })
+        return response.status(401).json({ mensagem: "ERRO - Um 'body' deve ser passado para esta requisição." })
     }
 
     // ------- Validate Values -------
@@ -54,7 +54,7 @@ const validateFieldsAndValuesOnPut = async (request, response, next) => {
             }
         }
     }else{
-        return response.status(400).json({ mensagem: "ERRO - Um 'body' deve ser passado para esta requisição." })
+        return response.status(401).json({ mensagem: "ERRO - Um 'body' deve ser passado para esta requisição." })
     }
 
     // ------- Validate Values -------

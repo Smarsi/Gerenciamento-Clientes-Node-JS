@@ -72,6 +72,35 @@ const validateFieldsAndValuesOnPost = async(request, response, next) => {
     next(); //Se não cair em nenhum dos returns de erro continuar para a próxima tarefa.
 };
 
+const validateFieldsAndValuesOnPut = async (request, response, next) => {
+    const {body} = request;
+
+    //============First Check (User fields) ============
+
+    var keys = Object.keys(body);
+    var dictUserFields = {
+        "nome": "",
+        "email": ""                
+    };
+    var dictUserKeys = Object.keys(dictUserFields);
+
+
+    for(var i=0; i < dictUserKeys.length; i++){
+        if(keys.includes(dictUserKeys[i]) == false){ //Se não encontrar algum campo que deveria ser passado
+            return response.status(409).json({ mensagem: `O campo '${dictUserKeys[i]}' deve ser passado.` });
+        }
+    }    
+
+    //============ Third Check (Fields values) ============
+    for(i in body){
+        if(body[i] == ""){
+            return response.status(409).json({ mensagem: `O valor do campo ${i} não pode ser vazio!` })
+        }        
+    }
+
+    next(); //Se não cair em nenhum dos returns de erro continuar para a próxima tarefa.
+};
+
 const checkIfIdExists = async (request, response, next) => { //Verifica se o ID existe no BD
     var { id_cliente } = request.params;
     const cliente = await Cliente.findByPk(id_cliente);
@@ -121,10 +150,10 @@ const checkIfAlreadyRegistred = async(request, response, next) => {
 
     if (clienteJaRegistrado.length > 0) {
         if (clienteJaRegistrado[0].cpf == cpf) {
-            return response.status(400).json({ mensagem: "ERRO - CPF já registrado" });
+            return response.status(403).json({ mensagem: "ERRO - CPF já registrado" });
         }
         if (clienteJaRegistrado[0].email == email) {
-            return response.status(400).json({ mensagem: "ERRO - Email já registrado" });
+            return response.status(403).json({ mensagem: "ERRO - Email já registrado" });
         }
     }else{
         next();
@@ -133,6 +162,7 @@ const checkIfAlreadyRegistred = async(request, response, next) => {
 
 module.exports = {
     validateFieldsAndValuesOnPost,
+    validateFieldsAndValuesOnPut,
     checkIfIdExists,
     checkEmailOnUpdate,
     checkIfAlreadyRegistred,
