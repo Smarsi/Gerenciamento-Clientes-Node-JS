@@ -830,6 +830,36 @@
           }
         }
       },
+      "Cliente_POST_endereco" : {
+        "required" : [ "bairro", "cep", "cidade", "estado", "logradouro", "numero", "titulo_endereco" ],
+        "type" : "object",
+        "properties" : {
+          "titulo_endereco" : {
+            "type" : "string"
+          },
+          "cep" : {
+            "type" : "string"
+          },
+          "logradouro" : {
+            "type" : "string"
+          },
+          "numero" : {
+            "type" : "number"
+          },
+          "complemento" : {
+            "type" : "string"
+          },
+          "bairro" : {
+            "type" : "string"
+          },
+          "cidade" : {
+            "type" : "string"
+          },
+          "estado" : {
+            "type" : "string"
+          }
+        }
+      },
       "inline_response_200" : {
         "type" : "object",
         "properties" : {
@@ -885,36 +915,6 @@
             "type" : "string"
           },
           "updatedAt" : {
-            "type" : "string"
-          }
-        }
-      },
-      "Cliente_POST_endereco" : {
-        "required" : [ "bairro", "cep", "cidade", "estado", "logradouro", "numero", "titulo_endereco" ],
-        "type" : "object",
-        "properties" : {
-          "titulo_endereco" : {
-            "type" : "string"
-          },
-          "cep" : {
-            "type" : "string"
-          },
-          "logradouro" : {
-            "type" : "string"
-          },
-          "numero" : {
-            "type" : "number"
-          },
-          "complemento" : {
-            "type" : "string"
-          },
-          "bairro" : {
-            "type" : "string"
-          },
-          "cidade" : {
-            "type" : "string"
-          },
-          "estado" : {
             "type" : "string"
           }
         }
