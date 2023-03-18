@@ -12,6 +12,15 @@ validate_address_middleware = require('./middlewares/validate_address_middleware
 const validatecpf_middleware = require('./middlewares/validatecpf_middleware');
 const check_token_middleware = require('./middlewares/check_token_middleware');
 
+// --- Endpoint Documentação
+router.get('/swagger', (request, response) => {
+      return response.sendFile(process.cwd() + "/docs/swagger.json");
+});
+
+router.get('/docs', (request, response) => {
+      return response.sendFile(process.cwd() + "/docs/index.html");
+});
+
 
 // --- Endpoints Cliente ---
 router.get('/cliente', CustomerController.getAll); 
@@ -27,6 +36,7 @@ router.get('/cliente/:id_cliente',
           );
 router.put('/cliente/:id_cliente', 
                 validatecostumer_middleware.checkIfIdExists,
+                validatecostumer_middleware.validateFieldsAndValuesOnPut,
                 validatecostumer_middleware.checkEmailOnUpdate,
                 CustomerController.updateById
           );

@@ -12,7 +12,7 @@ const getCostumerAddress = async (request, response) => {
     if (cliente.enderecos.length > 0 && cliente.enderecos !== null && cliente.enderecos !== "") {
         return response.status(200).json(cliente.enderecos);
     } else {
-        return response.status(404).json({ mensagem: "ERRO - O cliente não contém nenhum endereço cadastrado" });
+        return response.status(409).json({ mensagem: "ERRO - O cliente não contém nenhum endereço cadastrado" });
     }
 }
 

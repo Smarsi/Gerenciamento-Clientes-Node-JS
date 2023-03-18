@@ -13,11 +13,6 @@ const getAll = async (request, response) => {
 const create = async (request, response) => {
     const { nome, cpf, email, senha, confirmasenha } = request.body;
 
-    //============ Validations ============
-    if (senha !== confirmasenha) {
-        return response.status(400).json({ mensagem: "As senhas são diferentes" });
-    }
-
     if (senha === confirmasenha) {
         try {
             const cliente = await Cliente.create({ nome, cpf, email, senha });
@@ -26,12 +21,12 @@ const create = async (request, response) => {
             request.params = { id_cliente: cliente.id }
 
             const endereco = await EnderecoController._internalCreate(request, response);
-            if(endereco != "Erro"){
+            if (endereco != "Erro") {
                 return response.status(200).json({ cliente, endereco });
-            }else{                
+            } else {
                 const error = _internalDeleteById(cliente.id);
-                return response.status(500).json({mensagem: "Erro interno. Tente novamente mais tarde."});
-            }            
+                return response.status(500).json({ mensagem: "Erro interno. Tente novamente mais tarde." });
+            }
         } catch (error) {
             console.log(error);
 
@@ -39,7 +34,7 @@ const create = async (request, response) => {
         }
 
     } else {
-        return response.status(400).json({ mensagem: "As senhas são diferentes" });
+        return response.status(401).json({ mensagem: "A senha e confirmação de senha não conferem." });
     }
 }
 
@@ -54,24 +49,21 @@ const updateById = async (request, response) => {
     const { id_cliente } = request.params;
     const { nome, email } = request.body;
 
-    if (nome, email) {
-        try {
-            const update_cliente = await Cliente.update({ nome, email }, {
-                where: {
-                    id: id_cliente
-                }
-            });
+    try {
+        const update_cliente = await Cliente.update({ nome, email }, {
+            where: {
+                id: id_cliente
+            }
+        });
 
-            return response.status(200).json({ mensagem: `Cliente com id ${id_cliente} atualizado com sucesso.` });
-        } catch (error) {
-            console.log(error);
+        return response.status(200).json({ mensagem: `Cliente com id ${id_cliente} atualizado com sucesso.` });
+    } catch (error) {
+        console.log(error);
 
-            return response.status(500).json({ mensagem: "Erro interno. Tente novamente mais tarde" });
-        }
-
-    } else {
-        return response.status(400).json({ mensagem: "Os campos 'nome' e 'email' são obrigatórios." });
+        return response.status(500).json({ mensagem: "Erro interno. Tente novamente mais tarde" });
     }
+
+
 }
 
 const deleteById = async (request, response) => {
@@ -80,35 +72,35 @@ const deleteById = async (request, response) => {
     try {
         await Cliente.destroy({
             where: {
-              id: id_cliente
+                id: id_cliente
             },
             force: true
-          });
-    
+        });
+
         return response.status(200).json();
     } catch (error) {
         console.log(error);
-        return response.status(500).json({mensagem: "ERRO - Tente novamente mais tarde."});
+        return response.status(500).json({ mensagem: "ERRO - Tente novamente mais tarde." });
     }
 }
 
-const _internalDeleteById = async (cliente_id) =>{
+const _internalDeleteById = async (cliente_id) => {
 
     try {
         await Cliente.destroy({
             where: {
-              id: cliente_id
+                id: cliente_id
             },
             force: true
-          });
-    
-        return "Success"; 
+        });
+
+        return "Success";
     } catch (error) {
         console.log("Erro ao deletar cliente passado");
         console.log(error);
         return "Erro ao deletar cliente passado";
     }
-    
+
 }
 
 module.exports = {
