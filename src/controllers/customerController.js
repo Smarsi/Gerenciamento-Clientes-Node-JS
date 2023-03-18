@@ -1,4 +1,5 @@
 const { Op } = require("sequelize");
+const Password = require('../utils/Passwords');
 
 const Cliente = require("../models/Customer");
 
@@ -11,10 +12,14 @@ const getAll = async (request, response) => {
 }
 
 const create = async (request, response) => {
-    const { nome, cpf, email, senha, confirmasenha } = request.body;
-
+    var { nome, cpf, email, senha, confirmasenha } = request.body;
+    
     if (senha === confirmasenha) {
-        try {
+        //Build Password        
+        buildedPassword = await Password.newPassword(senha);
+        senha = buildedPassword;
+        
+        try {            
             const cliente = await Cliente.create({ nome, cpf, email, senha });
 
             //preparando parametros para criação do endereco

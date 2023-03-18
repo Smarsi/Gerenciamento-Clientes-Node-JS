@@ -152,7 +152,7 @@ const checkIfAlreadyRegistred = async(request, response, next) => {
         if (clienteJaRegistrado[0].cpf == cpf) {
             return response.status(403).json({ mensagem: "ERRO - CPF já registrado" });
         }
-        if (clienteJaRegistrado[0].email == email) {
+        if ((clienteJaRegistrado[0].email).toLowerCase() == email.toLowerCase()) {
             return response.status(403).json({ mensagem: "ERRO - Email já registrado" });
         }
     }else{
