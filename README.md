@@ -26,12 +26,18 @@ Existe um módulo de validação de CPFs e controle de duplicidade. O projeto co
  <div id="documentacao"/>
 
 ## 	📰 Documentação
-A documentação da API estará disponível em breve.
+Esta API está documentada seguindo o padrão **Open API 3.0.0** e você pode encontrar a documentação no link abaixo:
+
+[Acesse a Documentação](https://smarsi.github.io/Gerenciamento-Clientes-Node-JS/)
+
+
+A documentação foi criada utilizando **Swagger** e renderizada com o template [**Redoc**](https://github.com/Redocly/redoc).
+Em caso de dúvidas ou sugestões entre em contato.
 
 
 <div id="requisitos"/>
 
-### 📋 Pré-requisitos
+### 📋 Pré-requisitos para rodar o projeto (localmente)
 
 * <b>Git</b> instalado
 * <b>NodeJS</b> instalado
