@@ -3,30 +3,21 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    return queryInterface.createTable('conta', {
+    return queryInterface.createTable('permissions', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false,
       },
-      cliente_id: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-        references: { model: 'cliente', key: 'id'},
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
-      },
-      admin_id: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-        references: { model: 'admin', key: 'id' },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
-      },
-      senha: {
+      titulo: {
         type: Sequelize.STRING,
         allowNull: false,
+      },
+      descricao: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
       },
       created_at: {
         type: Sequelize.DATE,
@@ -40,6 +31,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('conta');
+    await queryInterface.dropTable('permissions');
   }
 };

@@ -1,7 +1,4 @@
 const bcrypt = require('bcrypt');
-const Token = require("./Token");
-
-const Conta = require('../models/Account');
 
 async function newPassword(passPhrase) {
     const salt = await bcrypt.genSalt(12);

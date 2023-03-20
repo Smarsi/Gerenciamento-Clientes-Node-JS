@@ -12,6 +12,7 @@ class Account extends Model {
 
     static associate(models){
         this.belongsTo(models.Customer, { foreignKey: 'cliente_id', as: 'cliente'});
+        this.belongsTo(models.Admin, { foreignKey: 'admin_id', as: 'admin' });
     }
 }
 
