@@ -13,10 +13,10 @@ async function generateToken(clienteId) {
 
 async function checkToken(token){ //recebe um token e verifica se é válido (retorna true ou false);
     const secret = process.env.SECRET;
-    console.log(secret);
     try {
         jwt.verify(token, secret);
-        return true;
+        const decoder = jwt.decode(token);        
+        return {status: true, customer: decoder.id};
     } catch (error) {
         return false;
     }

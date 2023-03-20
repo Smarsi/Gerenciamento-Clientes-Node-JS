@@ -9,7 +9,7 @@ const teste = async (request, response) => {
     const authHeader = request.headers['authorization'];
     const token =  authHeader && authHeader.split(" ")[1]; //Pegando apenas o token do header
     const checkToken = await Token.checkToken(token);
-    if(checkToken == true){
+    if(checkToken.status == true){
         return response.status(200).json({mensagem:"token valido"});
     }else{
         return response.status(400).json({mensagem:"token invalido"});
