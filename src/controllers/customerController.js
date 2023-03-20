@@ -1,6 +1,7 @@
 const { Op } = require("sequelize");
 
 const Cliente = require("../models/Customer");
+const Conta = require("../models/Account");
 
 //Import Relacionamentos
 const EnderecoController = require("./AddressController"); //Um cliente não pode ser registrado sem um endereço
@@ -72,6 +73,13 @@ const deleteById = async (request, response) => {
     const { id_cliente } = request.params;
 
     try {
+        //Deletando a conta do usuário
+        await Conta.destroy({ 
+            where: {
+                cliente_id: id_cliente
+            }
+         });
+
         await Cliente.destroy({
             where: {
                 id: id_cliente
