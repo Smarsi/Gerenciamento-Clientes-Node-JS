@@ -3,26 +3,23 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    return queryInterface.createTable('cliente', {
+    return queryInterface.createTable('conta', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false,
       },
-      nome: {
+      cliente_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: 'cliente', key: 'id'},
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+      },
+      senha: {
         type: Sequelize.STRING,
         allowNull: false,
-      },
-      cpf: {
-        type: Sequelize.STRING(11),
-        allowNull: false,
-        unique: true,
-      },
-      email: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
       },
       created_at: {
         type: Sequelize.DATE,
@@ -36,6 +33,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('cliente');
+    await queryInterface.dropTable('conta');
   }
 };

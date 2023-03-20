@@ -1,10 +1,10 @@
 const { Op } = require("sequelize");
-const Password = require('../utils/Passwords');
 
 const Cliente = require("../models/Customer");
 
 //Import Relacionamentos
-const EnderecoController = require("../controllers/AddressController"); //Um cliente não pode ser registrado sem um endereço
+const EnderecoController = require("./AddressController"); //Um cliente não pode ser registrado sem um endereço
+const AuthController = require("./AuthController"); //Um cliente não pode ser registrado sem uma conta do sistema
 
 const getAll = async (request, response) => {
     const Clientes = await Cliente.findAll({ attributes: ['id', 'nome', 'email'] });
@@ -14,20 +14,17 @@ const getAll = async (request, response) => {
 const create = async (request, response) => {
     var { nome, cpf, email, senha, confirmasenha } = request.body;
     
-    if (senha === confirmasenha) {
-        //Build Password        
-        buildedPassword = await Password.newPassword(senha);
-        senha = buildedPassword;
-        
+    if (senha === confirmasenha) {   
         try {            
-            const cliente = await Cliente.create({ nome, cpf, email, senha });
+            const cliente = await Cliente.create({ nome, cpf, email });
 
-            //preparando parametros para criação do endereco
+            //preparando parametros para criação do endereco e conta
             request.params = { id_cliente: cliente.id }
 
             const endereco = await EnderecoController._internalCreate(request, response);
-            if (endereco != "Erro") {
-                return response.status(200).json({ cliente, endereco });
+            const conta = await AuthController.register(request, response);
+            if (endereco != "Erro" && conta != "Erro") {
+                return response.status(200).json({ cliente, endereco, id_conta: conta });
             } else {
                 const error = _internalDeleteById(cliente.id);
                 return response.status(500).json({ mensagem: "Erro interno. Tente novamente mais tarde." });
