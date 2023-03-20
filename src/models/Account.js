@@ -2,8 +2,7 @@ const { Model, DataTypes } = require('sequelize');
 
 class Account extends Model {
     static init(connection){
-        super.init({            
-            email: DataTypes.STRING,
+        super.init({      
             senha: DataTypes.STRING,            
         }, {
             sequelize: connection,

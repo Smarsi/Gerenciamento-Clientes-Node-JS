@@ -70,6 +70,7 @@ router.delete('/endereco/:id_endereco',
 router.post('/auth/login', AuthController.login);
 router.post('/auth/register', AuthController.register);
 router.post('/auth/changePassword', AuthController.changePassword);
+router.get('/auth/checkToken', AuthController.teste);
 // --- FIM Endpoints Auth/Login
 
 
