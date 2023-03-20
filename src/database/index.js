@@ -9,12 +9,14 @@ const Account = require('../models/Account');
 
 const connection = new Sequelize(dbConfig);
 
+//Iniciando tabelas
 Customer.init(connection);
 Address.init(connection);
 Admin.init(connection);
 Permissions.init(connection);
 Account.init(connection);
 
+//Fazendo relacionamentos de tabelas
 Customer.associate(connection.models);
 Address.associate(connection.models);
 Admin.associate(connection.models);
