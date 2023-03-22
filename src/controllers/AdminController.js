@@ -73,6 +73,8 @@ const update = async (request, response) => {
 };
 
 const givePermissions = async (request, response) => {
+    const id_admin = request.requested_by;
+    const { permissions } = request.body;
 
     return response.status(200).json({ mensagem: "Endpoint funcionando corretamente" });
 };

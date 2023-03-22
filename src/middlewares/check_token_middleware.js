@@ -1,6 +1,8 @@
 const Token = require('../utils/Token');
 
-const checkToken = async (request, response, next) => {
+const Admin = require('../models/Admin');
+
+const checkTokenAndSetupPermissions = async (request, response, next) => {
     const authHeader = request.headers['authorization'];
     const token =  authHeader && authHeader.split(" ")[1]; //Pegando apenas o token do header
 
@@ -10,6 +12,14 @@ const checkToken = async (request, response, next) => {
 
         if(checkProvidedToken.status == true){
             request.requested_by = checkProvidedToken.id; //Armazenando dono do token para verificar regras e níveis de acesso.
+            request.isAdmin = checkProvidedToken.isAdmin;
+
+            if(request.isAdmin == true){
+                const admin_permissions = await Admin.findByPk(request.requested_by, {
+                    include: {association: 'permissions'}
+                });
+                request.permissions = admin_permissions.permissions;
+            }     
             next();
         }else{ 
             return response.status(401).json({mensagem: "Usuário não autenticado"});
@@ -21,5 +31,5 @@ const checkToken = async (request, response, next) => {
 }
 
 module.exports = {
-    checkToken
+    checkTokenAndSetupPermissions
 }

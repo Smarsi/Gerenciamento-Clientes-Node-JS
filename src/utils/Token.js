@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-async function generateToken(clienteId, type) {
+async function generateToken(clienteId) {
     const secret = process.env.SECRET;
     const token = jwt.sign({
         id: clienteId,
@@ -27,11 +27,14 @@ async function checkToken(token){ //recebe um token e verifica se é válido (re
     const secret = process.env.SECRET;
     try {
         jwt.verify(token, secret);
-        const decoder = jwt.decode(token);    
-        console.log(decoder); 
-        return {status: true, customer: decoder.id, admin: decoder.admin};
+        const decoder = jwt.decode(token);
+        return {
+            status: true,
+            id: decoder.id,
+            isAdmin: decoder.admin
+        };
     } catch (error) {
-        return false;
+        return { status: false };
     }
 }
 
