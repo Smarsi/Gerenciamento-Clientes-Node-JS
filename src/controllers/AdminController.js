@@ -10,8 +10,6 @@ const Token = require('../utils/Token');
 
 const register = async (request, response) => {
     var { nome, email, senha, confirmasenha } = request.body;
-    console.log("AWWEUQWEIUQIODSAKLASDHASL")
-    console.log(nome, email, senha);
 
     if (senha === confirmasenha) {
         try {
@@ -48,7 +46,35 @@ const list = async (request, response) => {
 };
 
 const update = async (request, response) => {
+    const { id_admin } = request.params;
+    const { nome, email } = request.body;
 
+    if (id_admin) {
+        try {
+            const findAdmin = await Admin.findByPk(id_admin);
+            if(findAdmin){
+                findAdmin.nome = nome;
+                findAdmin.email = email;
+                findAdmin.save();
+
+                return response.status(200).json({ mensagem: `Admin ${id_admin} atualizado com sucesso.` });
+
+            }else{
+                return response.status(404).json({ mensagem: `Admin com Id ${id_admin} não encontrado no sistema.` });
+            }
+        } catch (error) {
+            console.log(error);
+            return response.status(500).json({ mensagem: `Erro interno. Tente novamente mais tarde.` });
+        }
+    }else{
+        return response.status(400).json({ mansagem: "ERRO - Um id válido deve ser passado no Path" });
+    }
+
+};
+
+const givePermissions = async (request, response) => {
+
+    return response.status(200).json({ mensagem: "Endpoint funcionando corretamente" });
 };
 
 const login = async (request, response) => {
@@ -66,7 +92,7 @@ const login = async (request, response) => {
             const verifyPassword = await Password.checkPassword(senha, findByEmail.conta.senha);
             if (verifyPassword == true) {
                 const newToken = await Token.generateAdminToken(findByEmail.id);
-                return response.status(200).json({token: newToken});
+                return response.status(200).json({ token: newToken });
             }
 
         }
@@ -75,11 +101,6 @@ const login = async (request, response) => {
         return response.status(401).json({ mensagem: "Erro no login" });
     }
 
-};
-
-const givePermissions = async (request, response) => {
-
-    return response.status(200).json({ mensagem: "Endpoint funcionando corretamente" });
 };
 
 module.exports = {

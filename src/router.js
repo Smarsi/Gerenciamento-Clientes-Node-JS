@@ -77,7 +77,7 @@ router.get('/auth/checkToken', AuthController.teste);
 router.get('/admin/listAccounts', AdminController.list);
 router.post('/admin/register', AdminController.register);
 router.post('/admin/login', AdminController.login);
-router.put('/admin/update', AdminController.update);
+router.put('/admin/update/:id_admin', AdminController.update);
 // --- FIM Endpoints Administração
 
 // --- Endpoint Documentação
