@@ -6,7 +6,7 @@ const CustomerController = require('./controllers/CustomerController');
 const AddressController = require('./controllers/AddressController');
 const AuthController = require('./controllers/AuthController');
 const PermissionsController = require('./controllers/PermissionsController');
-const AdminController = require('./controllers/AdminController'); 
+const AdminController = require('./controllers/AdminController');
 
 //Import Middlewares
 const validatecostumer_middleware = require('./middlewares/validatecostumer_middleware');
@@ -82,6 +82,13 @@ router.post('/permissions',
       validate_permissions_middleware.checkIfAlreadyRegistred,
       validate_permissions_middleware.validateFieldsAndValuesOnPost,
       PermissionsController.create
+);
+router.get('/permissions',
+      PermissionsController.getAll
+);
+router.delete('/permissions/:id_permission',
+      validate_permissions_middleware.checkIfIdExists,
+      PermissionsController.deleteById
 );
 // --- FIM Endpoints Permissions
 

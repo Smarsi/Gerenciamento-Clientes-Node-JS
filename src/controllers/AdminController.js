@@ -7,6 +7,7 @@ const AuthController = require('../controllers/AuthController');
 //Imports modulo de autenticação e permissões
 const Password = require('../utils/Passwords');
 const Token = require('../utils/Token');
+const { where } = require('sequelize');
 
 const register = async (request, response) => {
     var { nome, email, senha, confirmasenha } = request.body;
@@ -51,22 +52,13 @@ const update = async (request, response) => {
 
     if (id_admin) {
         try {
-            const findAdmin = await Admin.findByPk(id_admin);
-            if(findAdmin){
-                findAdmin.nome = nome;
-                findAdmin.email = email;
-                findAdmin.save();
-
-                return response.status(200).json({ mensagem: `Admin ${id_admin} atualizado com sucesso.` });
-
-            }else{
-                return response.status(404).json({ mensagem: `Admin com Id ${id_admin} não encontrado no sistema.` });
-            }
+            const update_admin = await Admin.update({ nome, email }, { where: { id: id_admin } });
+            return response.status(200).json({ mensagem: `Admin ${id_admin} atualizado com sucesso.` });
         } catch (error) {
             console.log(error);
             return response.status(500).json({ mensagem: `Erro interno. Tente novamente mais tarde.` });
         }
-    }else{
+    } else {
         return response.status(400).json({ mansagem: "ERRO - Um id válido deve ser passado no Path" });
     }
 
@@ -81,7 +73,6 @@ const givePermissions = async (request, response) => {
 
 const login = async (request, response) => {
     const { email, senha } = request.body;
-
     try {
         const findByEmail = await Admin.findOne({
             where: {
@@ -89,20 +80,17 @@ const login = async (request, response) => {
             },
             include: { association: 'conta' }
         });
-
         if (findByEmail) {
             const verifyPassword = await Password.checkPassword(senha, findByEmail.conta.senha);
             if (verifyPassword == true) {
                 const newToken = await Token.generateAdminToken(findByEmail.id);
                 return response.status(200).json({ token: newToken });
             }
-
         }
     } catch (error) {
         console.log(error);
         return response.status(401).json({ mensagem: "Erro no login" });
     }
-
 };
 
 module.exports = {

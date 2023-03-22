@@ -13,11 +13,11 @@ module.exports = {
       titulo: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: true,
       },
       descricao: {
         type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
+        allowNull: false
       },
       created_at: {
         type: Sequelize.DATE,
