@@ -46,7 +46,7 @@ const changePassword = async (request, response) => {
 }
 
 const register = async (request, response) => {
-    const { id_cliente } = request.params;
+    const { id_cliente, id_admin } = request.params;
     var { senha, confirmasenha } = request.body;
 
     if (senha === confirmasenha) {
@@ -55,8 +55,12 @@ const register = async (request, response) => {
             buildedPassword = await Password.newPassword(senha);
             senha = buildedPassword;
 
+            console.log("AQUI CREDENCIAIS ID ");
+            console.log(id_cliente, id_admin);
+
             const conta = await Conta.create({
                 cliente_id: id_cliente,
+                admin_id: id_admin,
                 senha
             });
 

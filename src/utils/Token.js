@@ -27,7 +27,8 @@ async function checkToken(token){ //recebe um token e verifica se é válido (re
     const secret = process.env.SECRET;
     try {
         jwt.verify(token, secret);
-        const decoder = jwt.decode(token);     
+        const decoder = jwt.decode(token);    
+        console.log(decoder); 
         return {status: true, customer: decoder.id, admin: decoder.admin};
     } catch (error) {
         return false;

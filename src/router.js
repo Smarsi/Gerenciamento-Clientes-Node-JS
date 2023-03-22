@@ -5,6 +5,7 @@ const router = express.Router();
 const CustomerController = require('./controllers/CustomerController');
 const AddressController = require('./controllers/AddressController');
 const AuthController = require('./controllers/AuthController');
+const AdminController = require('./controllers/AdminController');''
 
 //Import Middlewares
 const validatecostumer_middleware = require('./middlewares/validatecostumer_middleware');
@@ -71,6 +72,13 @@ router.post('/auth/register', AuthController.register);
 router.post('/auth/changePassword', AuthController.changePassword);
 router.get('/auth/checkToken', AuthController.teste);
 // --- FIM Endpoints Auth/Login
+
+// --- Endpoints Administração
+router.get('/admin/listAccounts', AdminController.list);
+router.post('/admin/register', AdminController.register);
+router.post('/admin/login', AdminController.login);
+router.put('/admin/update', AdminController.update);
+// --- FIM Endpoints Administração
 
 // --- Endpoint Documentação
 router.get('/swagger', (request, response) => {
