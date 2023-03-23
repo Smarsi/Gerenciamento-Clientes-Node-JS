@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const myRoutes = require('./routes/');
+
 //Import Controllers
 const CustomerController = require('./controllers/CustomerController');
 const AddressController = require('./controllers/AddressController');
