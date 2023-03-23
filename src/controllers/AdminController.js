@@ -66,44 +66,70 @@ const update = async (request, response) => {
 
 };
 
-const givePermissions = async (request, response) => {
+const getPermissionsByAdminId = async (request, response) => {
     const { id_admin } = request.params;
-    const { permissions } = request.body;
-
     try {
-
-        var findPermissions = await Permissions.findAll({
-            attributes: ['id'],
-            where: {
-                id: {
-                    [Op.or]: permissions
-                }
+        const admin = await Admin.findByPk(id_admin, {
+            attributes: ['id', 'nome'],
+            include: {
+                association: 'permissions',
+                attributes: ['id', 'titulo'],
+                through: { attributes: [] }
             }
         });
-        for (i in findPermissions) {
-            findPermissions[i] = findPermissions[i].id; //Transformando em lista
-        }
-
-        if (permissions.length > findPermissions.length) {
-            for (var i = 0; i < permissions.length; i++) {
-                if (!findPermissions.includes(permissions[i])) {
-                    return response.status(400).json({ mensagem: `Permission com id (${permissions[i]}) inválida.` });
-                }
-            }
-        }
-
-        const admin = await Admin.findByPk(id_admin);
-        await admin.addPermission(findPermissions);
-
-
-        return response.status(200).json({ mensagem: "Endpoint funcionando" });
+        return response.status(200).json(admin);
 
     } catch (error) {
         console.log(error);
         return response.status(500).json({ mensagem: "Erro interno. Tente novamente mais tarde." });
     }
+};
 
-    return response.status(200).json({ mensagem: "Endpoint funcionando corretamente" });
+const givePermissions = async (request, response) => {
+    const { id_admin } = request.params;
+    const { permissions } = request;
+    try {
+        const admin = await Admin.findByPk(id_admin);
+        await admin.addPermissions(permissions);
+
+        // recarrega a instância do objeto admin
+        const updatedAdmin = await Admin.findByPk(id_admin, {
+            attributes: ['id', 'nome'],
+            include: {
+                association: 'permissions',
+                attributes: ['id', 'titulo'],
+                through: { attributes: [] }
+            }
+        });
+        return response.status(200).json(updatedAdmin);
+    } catch (error) {
+        console.log(error);
+        return response.status(500).json({ mensagem: "Erro interno. Tente novamente mais tarde." });
+    }
+};
+
+const removePermissions = async (request, response) => {
+    const { id_admin } = request.params;
+    const { permissions } = request;
+    try {
+        const admin = await Admin.findByPk(id_admin);
+        await admin.removePermissions(permissions);
+
+        // recarrega a instância do objeto admin
+        const updatedAdmin = await Admin.findByPk(id_admin, {
+            attributes: ['id', 'nome'],
+            include: {
+                association: 'permissions',
+                attributes: ['id', 'titulo'],
+                through: { attributes: [] }
+            }
+        });
+
+        return response.status(200).json(updatedAdmin);
+    } catch (error) {
+        console.log(error);
+        return response.status(500).json({ mensagem: "Erro interno. Tente novamente mais tarde." });
+    }
 };
 
 const login = async (request, response) => {
@@ -133,5 +159,7 @@ module.exports = {
     list,
     update,
     login,
+    getPermissionsByAdminId,
     givePermissions,
+    removePermissions,
 }

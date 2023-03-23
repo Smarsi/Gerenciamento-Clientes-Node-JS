@@ -12,7 +12,7 @@ class Admin extends Model {
     }
 
     static associate(models) {
-        this.belongsToMany(models.Permissions, { foreignKey: 'admin_id', through: 'admin_permissions', as: 'permission' });
+        this.belongsToMany(models.Permissions, { foreignKey: 'admin_id', through: 'admin_permissions', as: 'permissions' });
         this.hasOne(models.Account, { foreignKey: 'admin_id', as: 'conta' });
     }
 }
