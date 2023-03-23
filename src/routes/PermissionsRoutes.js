@@ -9,8 +9,8 @@ const validate_permissions_middleware = require('../middlewares/validate_permiss
 
 //Register a new permission
 router.post('/',
-      validate_permissions_middleware.checkIfAlreadyRegistred,
       validate_permissions_middleware.validateFieldsAndValuesOnPost,
+      validate_permissions_middleware.checkIfAlreadyRegistred,
       PermissionsController.create
 );
 
