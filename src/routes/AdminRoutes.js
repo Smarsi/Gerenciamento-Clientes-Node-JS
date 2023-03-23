@@ -24,13 +24,14 @@ router.get('/:id_admin/permissions',
 
 //Relate new permissions for a admin
 router.post('/:id_admin/permissions',
-    validate_admin_middleware.validateFieldsAndValuesOnGivePermissions,
+    validate_admin_middleware.validateFieldsAndValuesOnAdminPermissions,
     validate_admin_middleware.checkPermissionsAndSetupRequest,
     AdminController.givePermissions
 );
 
 //Remove permissions for a specific admin
 router.post('/:id_admin/remove-permissions',
+    validate_admin_middleware.validateFieldsAndValuesOnAdminPermissions,
     validate_admin_middleware.checkPermissionsAndSetupRequest,
     AdminController.removePermissions
 );

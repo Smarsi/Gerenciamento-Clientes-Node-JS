@@ -2,10 +2,8 @@ const { Op } = require("sequelize");
 
 const Permissions = require('../models/Permissions');
 
-const validateFieldsAndValuesOnGivePermissions  = async (request, response, next) =>{
+const validateFieldsAndValuesOnAdminPermissions  = async (request, response, next) =>{
     const {body} = request;
-
-    //============First Check (User fields) ============
 
     var keys = Object.keys(body);
     var dictUserFields = {
@@ -21,8 +19,6 @@ const validateFieldsAndValuesOnGivePermissions  = async (request, response, next
     }
 
     for(i in body){
-        console.log('AQUIIIIIII IMPORTANTE');
-        console.log(typeof(body[i]));
         if(body[i] == ""){
             return response.status(400).json({ mensagem: `O campo ${i} não pode ser vazio!` });
         }
@@ -67,6 +63,6 @@ const checkPermissionsAndSetupRequest = async (request, response, next) =>{
 };
 
 module.exports = {
-    validateFieldsAndValuesOnGivePermissions,
+    validateFieldsAndValuesOnAdminPermissions,
     checkPermissionsAndSetupRequest,
 }

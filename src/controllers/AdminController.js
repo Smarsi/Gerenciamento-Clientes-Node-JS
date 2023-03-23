@@ -1,8 +1,6 @@
 const { Op } = require("sequelize");
 
 const Admin = require('../models/Admin');
-const Conta = require('../models/Account');
-const Permissions = require('../models/Permissions');
 
 //Imports controllers dos relacionamentos
 const AuthController = require('../controllers/AuthController');
