@@ -20,8 +20,7 @@ const checkTokenAndSetupPermissions = async (request, response, next) => {
                         through: { attributes: [] }
                     }
                 });
-                var admin_permissions = [];
-                for(i in find_admin_permissions.permissions){console.log(admin_permissions.push(find_admin_permissions.permissions[i].titulo)) }
+                const admin_permissions = find_admin_permissions.permissions.map(permission => permission.titulo);                
                 request.permissions = admin_permissions;
             }     
             next();
