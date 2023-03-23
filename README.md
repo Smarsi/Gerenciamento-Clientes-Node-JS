@@ -37,7 +37,7 @@ Em caso de dúvidas ou sugestões entre em contato.
 
 <div id="requisitos"/>
 
-### 📋 Pré-requisitos para rodar o projeto (localmente)
+## 📋 Pré-requisitos para rodar o projeto (localmente)
 
 * <b>Git</b> instalado
 * <b>NodeJS</b> instalado
