@@ -12,8 +12,8 @@ class Admin extends Model {
     }
 
     static associate(models) {
+        this.belongsToMany(models.Permissions, { foreignKey: 'admin_id', through: 'admin_permissions', as: 'permission' });
         this.hasOne(models.Account, { foreignKey: 'admin_id', as: 'conta' });
-        this.belongsToMany(models.Permissions, { foreignKey: 'permission_id', through: 'admin_permissions', as: 'permissions' });
     }
 }
 

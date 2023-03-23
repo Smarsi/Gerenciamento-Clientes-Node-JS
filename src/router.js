@@ -96,6 +96,7 @@ router.delete('/permissions/:id_permission',
 router.get('/admin/listAccounts', AdminController.list);
 router.post('/admin/register', AdminController.register);
 router.post('/admin/login', AdminController.login);
+router.post('/admin/givepermissions/:id_admin', AdminController.givePermissions);
 router.put('/admin/update/:id_admin', AdminController.update);
 // --- FIM Endpoints Administração
 

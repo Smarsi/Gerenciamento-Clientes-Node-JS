@@ -3,8 +3,6 @@ const Permissions = require('../models/Permissions');
 const validateFieldsAndValuesOnPost = async (request, response, next) => {
     const {body} = request;
 
-    //============First Check (User fields) ============
-
     var keys = Object.keys(body);
     var dictPermissionFields = {
         "titulo": "",
@@ -26,10 +24,6 @@ const validateFieldsAndValuesOnPost = async (request, response, next) => {
     }
 
     next(); //Se não cair em nenhum dos returns de erro continuar para a próxima tarefa.
-};
-
-const validateFieldsAndValuesOnPut = async (request, response, next) => {
-    next();
 };
 
 const checkIfAlreadyRegistred = async (request, response, next) => {
@@ -61,7 +55,6 @@ const checkIfIdExists = async (request, response, next) => {
 
 module.exports = {
     validateFieldsAndValuesOnPost,
-    validateFieldsAndValuesOnPut,
     checkIfAlreadyRegistred,
     checkIfIdExists,
 }

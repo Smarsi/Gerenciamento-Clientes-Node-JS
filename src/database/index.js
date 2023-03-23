@@ -12,15 +12,15 @@ const connection = new Sequelize(dbConfig);
 //Iniciando tabelas
 Customer.init(connection);
 Address.init(connection);
-Admin.init(connection);
 Permissions.init(connection);
+Admin.init(connection);
 Account.init(connection);
 
 //Fazendo relacionamentos de tabelas
 Customer.associate(connection.models);
 Address.associate(connection.models);
-Admin.associate(connection.models);
 Permissions.associate(connection.models);
+Admin.associate(connection.models);
 Account.associate(connection.models);
 
 module.exports = connection;

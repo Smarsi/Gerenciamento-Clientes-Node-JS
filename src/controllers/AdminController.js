@@ -1,5 +1,8 @@
+const { Op } = require("sequelize");
+
 const Admin = require('../models/Admin');
 const Conta = require('../models/Account');
+const Permissions = require('../models/Permissions');
 
 //Imports controllers dos relacionamentos
 const AuthController = require('../controllers/AuthController');
@@ -7,7 +10,6 @@ const AuthController = require('../controllers/AuthController');
 //Imports modulo de autenticação e permissões
 const Password = require('../utils/Passwords');
 const Token = require('../utils/Token');
-const { where } = require('sequelize');
 
 const register = async (request, response) => {
     var { nome, email, senha, confirmasenha } = request.body;
@@ -65,8 +67,41 @@ const update = async (request, response) => {
 };
 
 const givePermissions = async (request, response) => {
-    const id_admin = request.requested_by;
+    const { id_admin } = request.params;
     const { permissions } = request.body;
+
+    try {
+
+        var findPermissions = await Permissions.findAll({
+            attributes: ['id'],
+            where: {
+                id: {
+                    [Op.or]: permissions
+                }
+            }
+        });
+        for (i in findPermissions) {
+            findPermissions[i] = findPermissions[i].id; //Transformando em lista
+        }
+
+        if (permissions.length > findPermissions.length) {
+            for (var i = 0; i < permissions.length; i++) {
+                if (!findPermissions.includes(permissions[i])) {
+                    return response.status(400).json({ mensagem: `Permission com id (${permissions[i]}) inválida.` });
+                }
+            }
+        }
+
+        const admin = await Admin.findByPk(id_admin);
+        await admin.addPermission(findPermissions);
+
+
+        return response.status(200).json({ mensagem: "Endpoint funcionando" });
+
+    } catch (error) {
+        console.log(error);
+        return response.status(500).json({ mensagem: "Erro interno. Tente novamente mais tarde." });
+    }
 
     return response.status(200).json({ mensagem: "Endpoint funcionando corretamente" });
 };

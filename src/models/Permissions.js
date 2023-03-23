@@ -12,7 +12,7 @@ class Permissions extends Model {
     }
 
     static associate(models){
-        this.belongsToMany(models.Admin, { foreignKey: 'admin_id', through: 'admin_permissions', as: 'admin'});
+        this.belongsToMany(models.Admin, { foreignKey: 'permission_id', through: 'admin_permissions', as: 'admin'});
     }
 }
 
