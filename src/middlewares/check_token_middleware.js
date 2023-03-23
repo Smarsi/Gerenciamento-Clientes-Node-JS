@@ -8,17 +8,21 @@ const checkTokenAndSetupPermissions = async (request, response, next) => {
 
     try {
         const checkProvidedToken = await Token.checkToken(token);
-        console.log(checkProvidedToken); //provisório ! Por favor remover.
-
         if(checkProvidedToken.status == true){
             request.requested_by = checkProvidedToken.id; //Armazenando dono do token para verificar regras e níveis de acesso.
             request.isAdmin = checkProvidedToken.isAdmin;
 
             if(request.isAdmin == true){
-                const admin_permissions = await Admin.findByPk(request.requested_by, {
-                    include: {association: 'permissions'}
+                var find_admin_permissions = await Admin.findByPk(request.requested_by, {
+                    include: {
+                        association: 'permissions',
+                        attributes: ['titulo'],
+                        through: { attributes: [] }
+                    }
                 });
-                request.permissions = admin_permissions.permissions;
+                var admin_permissions = [];
+                for(i in find_admin_permissions.permissions){console.log(admin_permissions.push(find_admin_permissions.permissions[i].titulo)) }
+                request.permissions = admin_permissions;
             }     
             next();
         }else{ 

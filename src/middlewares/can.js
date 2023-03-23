@@ -1,6 +1,9 @@
 const can = (needed_permissions) => {
     return (request, response, next) => {
-        const user_permissions = request.permissions;
+        var user_permissions = request.permissions;
+        if(!user_permissions){
+            user_permissions = "";
+        }
 
         //Validating permissions for admin.
         for (var i=0; i < needed_permissions.length; i++){
@@ -8,7 +11,6 @@ const can = (needed_permissions) => {
                 var allPerm = false;
             }
         }
-
         if(allPerm != false){     
             next();
         }else{

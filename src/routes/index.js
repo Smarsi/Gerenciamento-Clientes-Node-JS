@@ -8,7 +8,7 @@ const AuthRoutes = require('./AuthRoutes');
 const PermissionsRoutes = require('./PermissionsRoutes');
 const DocsRoutes = require('./DocsRoutes');
 
-router.use('/clientes', CustomerRoutes);
+router.use('/cliente', CustomerRoutes);
 router.use('/endereco', AddressesRoutes);
 router.use('/admin', AdminRoutes);
 router.use('/auth', AuthRoutes);

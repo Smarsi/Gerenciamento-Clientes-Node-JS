@@ -20,10 +20,10 @@ const login = async (request, response) => {
     const { email, senha } = request.body;
 
     //Check if User exists
-    const cliente = await Cliente.findOne({ email: email });
+    const cliente = await Cliente.findOne({ where: { email: email }});
 
     if (cliente) {
-        const conta = await Conta.findOne({ cliente_id: cliente.id });
+        const conta = await Conta.findOne({ where: { cliente_id: cliente.id }});
         if (conta) {
             registredPassword = conta.senha;
             const checkPassword = await Password.checkPassword(senha, registredPassword, cliente._id);
