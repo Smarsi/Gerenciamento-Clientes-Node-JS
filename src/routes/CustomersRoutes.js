@@ -29,6 +29,7 @@ router.post('/',
 //Get a specific customer
 router.get('/:id_cliente',
       check_token_middleware.checkTokenAndSetupPermissions,
+      onlyWhoCan_middleware.can(['list-clientes']),
       validatecostumer_middleware.checkIfIdExists,
       CustomerController.getById
 );
@@ -36,6 +37,7 @@ router.get('/:id_cliente',
 //Alter specific customer info
 router.put('/:id_cliente',
       check_token_middleware.checkTokenAndSetupPermissions,
+      onlyWhoCan_middleware.can(['alter-clientes']),
       validatecostumer_middleware.checkIfIdExists,
       validatecostumer_middleware.validateFieldsAndValuesOnPut,
       validatecostumer_middleware.checkEmailOnUpdate,
@@ -45,6 +47,7 @@ router.put('/:id_cliente',
 //Remove specific customer
 router.delete('/:id_cliente',
       check_token_middleware.checkTokenAndSetupPermissions,
+      onlyWhoCan_middleware.can(['delete-clientes']),
       validatecostumer_middleware.checkIfIdExists,
       CustomerController.deleteById
 );
@@ -52,6 +55,7 @@ router.delete('/:id_cliente',
 //Get addresses from a specific customer 
 router.get('/:id_cliente/endereco',
       check_token_middleware.checkTokenAndSetupPermissions,
+      onlyWhoCan_middleware.can(['list-enderecos']),
       validatecostumer_middleware.checkIfIdExists,
       AddressController.getCostumerAddress
 );
@@ -59,6 +63,7 @@ router.get('/:id_cliente/endereco',
 //Create a address for a specific customer
 router.post('/:id_cliente/endereco',
       check_token_middleware.checkTokenAndSetupPermissions,
+      onlyWhoCan_middleware.can(['create-enderecos']),
       validatecostumer_middleware.checkIfIdExists,
       validate_address_middleware.validateFieldsAndValuesOnPost,
       AddressController.createCostumerAddress
