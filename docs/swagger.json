@@ -139,6 +139,16 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Erro de confirmação de senha" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "A senha e confirmação de senha não conferem."
+                      }
+                    }
+                  }
                 }
               }
             }
