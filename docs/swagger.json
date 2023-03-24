@@ -597,7 +597,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Mensagem"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
                   "erro" : {
@@ -861,11 +861,16 @@
       "inline_error_response" : {
         "type" : "object",
         "properties" : {
-          "name" : {
-            "type" : "string"
-          },
           "error" : {
-            "type" : "string"
+            "type" : "object",
+            "properties" : {
+              "name" : {
+                "type" : "string"
+              },
+              "message" : {
+                "type" : "string"
+              }
+            }
           }
         }
       }
