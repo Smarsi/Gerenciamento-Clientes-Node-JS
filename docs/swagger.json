@@ -111,6 +111,24 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Erro no campo senha" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo 'senha' deve ser passado."
+                      }
+                    }
+                  },
+                  "Erro no valor do campo nome" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo nome não pode ser vazio!"
+                      }
+                    }
+                  }
                 }
               }
             }
