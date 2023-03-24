@@ -28,7 +28,7 @@
     "description" : "Este endpoint diz respeito a todas as operações relacionadas aos clientes do sistema (os clientes são a entidade core da API). Considere os clientes como usuários finais do sistema (que apenas teriam direito de de cadastrar e consultar outras informações não sensíveis no so sistema, como produtos por exemplo).\n"
   }, {
     "name" : "Endereços",
-    "description" : "Tudo sobre endereços de clientes"
+    "description" : "Este endpoint diz respeito a todas as operações relacionadas aos endereços cadastrados no sistema. Um endereço está obrigatóriamente atrelado a um cliente.\n### 1:n \nUm cliente pode ter muitos endereços cadastros no sistema, cada qual com um título definido por ele.\n"
   }, {
     "name" : "Cliente_Model",
     "description" : "<SchemaDefinition schemaRef=\"#/components/schemas/Cliente_GET\" />\n",
