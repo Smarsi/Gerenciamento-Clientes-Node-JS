@@ -100,7 +100,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_200_1"
+                  "$ref" : "#/components/schemas/inline_response_200_create_cliente"
                 }
               }
             }
@@ -110,19 +110,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_400"
-                },
-                "examples" : {
-                  "erro campo senha" : {
-                    "value" : {
-                      "mensagem" : "O campo 'senha' deve ser passado"
-                    }
-                  },
-                  "erro valor nome" : {
-                    "value" : {
-                      "mensagem" : "O campo 'nome' não deve ser vazio"
-                    }
-                  }
+                  "$ref" : "#/components/schemas/inline_error_response"
                 }
               }
             }
@@ -132,7 +120,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_400"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
                   "erro confirmacao senha" : {
@@ -149,7 +137,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_400"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
                   "cpf existente" : {
@@ -171,7 +159,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_400"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
                   "cpf invalido" : {
@@ -188,7 +176,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_400"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
                   "erro interno" : {
@@ -822,14 +810,6 @@
           }
         }
       },
-      "Mensagem" : {
-        "type" : "object",
-        "properties" : {
-          "mensagem" : {
-            "type" : "string"
-          }
-        }
-      },
       "Cliente_POST_endereco" : {
         "required" : [ "bairro", "cep", "cidade", "estado", "logradouro", "numero", "titulo_endereco" ],
         "type" : "object",
@@ -874,7 +854,7 @@
           }
         }
       },
-      "inline_response_200_1" : {
+      "inline_response_200_create_cliente" : {
         "type" : "object",
         "properties" : {
           "cliente" : {
@@ -882,14 +862,6 @@
           },
           "endereco" : {
             "$ref" : "#/components/schemas/Endereco_GET"
-          }
-        }
-      },
-      "inline_response_400" : {
-        "type" : "object",
-        "properties" : {
-          "mensagem" : {
-            "type" : "string"
           }
         }
       },
@@ -915,6 +887,17 @@
             "type" : "string"
           },
           "updatedAt" : {
+            "type" : "string"
+          }
+        }
+      },
+      "inline_error_response" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "error" : {
             "type" : "string"
           }
         }
