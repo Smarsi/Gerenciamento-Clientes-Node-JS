@@ -25,7 +25,7 @@
   } ],
   "tags" : [ {
     "name" : "Clientes",
-    "description" : "Tudo sobre clientes"
+    "description" : "Este endpoint diz respeito a todas as operações relacionadas aos clientes do sistema (os clientes são a entidade core da API). Considere os clientes como usuários finais do sistema (que apenas teriam direito de de cadastrar e consultar outras informações não sensíveis no so sistema, como produtos por exemplo).\n"
   }, {
     "name" : "Endereços",
     "description" : "Tudo sobre endereços de clientes"
