@@ -2,14 +2,14 @@
   "openapi" : "3.0.0",
   "info" : {
     "title" : "API Gerenciamento de clientes",
-    "description" : "# Introdução\nTEST Esta é uma API criada por [Richard Smarsi](https://www.github.com/smarsi) para gerenciamento de clientes, feita para exemplificar conhecimentos de NodeJs, ExpressJs, MySQL e Swagger.\n\nO objetivo core desta aplicação é de ser um sistema simples, porém que permita evoluções para ser implementado dentro de um sistema mais complexo futuramente.\n\nNo momento a API está em sua primeira versão e ainda não tem suporte para autenticação. Em suas próximas versões será implementado o funcionamento com tokens JWT e gerenciamento de sessões de usuários.\n\n\n# Sobre a Documentação\n\nEsta API está documentada seguindo o modelo **Open API**. Toda a documentação foi criada utilizando o **Swagger**. Este template utilizado nesta página de documentação é o Redocly que pode ser encontrado no [Github Redocly](https://www.github.com/Redocly/redoc).\n",
+    "description" : "# Introdução\nEsta é uma API criada por [Richard Smarsi](https://www.github.com/smarsi) para gerenciamento de clientes, feita para exemplificar conhecimentos de NodeJs, ExpressJs, MySQL e Swagger. Além disso, também é oportunidade para exibir  conhecimentos como login, armazenamento de senhas, sessões e permissões dentro de sistemas.\n\nO objetivo core desta aplicação é de ser um sistema simples, porém que permita evoluções para ser implementado dentro de um sistema mais complexo futuramente.\n\nNo momento a API está em sua primeira versão. O tipo de autenticação usada é BarearToken implementado com JWT.\n\n\n# Sobre a Documentação\n\nEsta API está documentada seguindo o modelo **Open API**. Toda a documentação foi criada utilizando o **Swagger**. O template utilizado nesta página de documentação é o Redocly, que pode ser encontrado no [Github Redocly](https://www.github.com/Redocly/redoc).\n",
     "contact" : {
       "email" : "ricsmarsi@gmail.com"
     },
     "version" : "v1.0.0",
     "x-logo" : {
       "url" : "https://user-images.githubusercontent.com/38111460/226025407-0d47cacd-cd6f-41b9-83a5-1c96f9547270.png",
-      "altText" : "Petstore logo"
+      "altText" : "Customers Management Logo"
     }
   },
   "externalDocs" : {
@@ -20,7 +20,7 @@
     "url" : "https://virtserver.swaggerhub.com/RICSMARSI/GerenciamentoDeClientes/v1.0.0",
     "description" : "SwaggerHub"
   }, {
-    "url" : "http://localhost:3000",
+    "url" : "http://localhost:3000/api",
     "description" : "Ambiente de desenvolvimento"
   } ],
   "tags" : [ {
