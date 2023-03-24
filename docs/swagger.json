@@ -42,8 +42,8 @@
     "/cliente" : {
       "get" : {
         "tags" : [ "Clientes" ],
-        "summary" : "Listagem de clientes",
-        "description" : "Essa rota será responsável por listar todos os clientes cadastrados no sistema",
+        "summary" : "Listar todos os clientes cadastrados",
+        "description" : "Essa rota retorna informações de id, nome e email de todos os clientes cadastrados no sistema.",
         "responses" : {
           "200" : {
             "description" : "OK",
@@ -62,8 +62,8 @@
       },
       "post" : {
         "tags" : [ "Clientes" ],
-        "summary" : "Cadastro de clientes",
-        "description" : "Essa rota será responsável por cadastrar clientes no sistema",
+        "summary" : "Cadastrar um novo cliente",
+        "description" : "Essa rota é responsável por cadastrar clientes no sistema. Vale ressaltar que para um cliente ser cadastrado no sistema ele deve ter obrigatóriamente um endereço atrelado. Quando um novo cliente é cadastrado, automaticamente são inseridos  dados nas tabelas: Cliente, Conta e Enderecos.\n",
         "requestBody" : {
           "content" : {
             "application/json" : {
