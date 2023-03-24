@@ -1,5 +1,7 @@
 const Permissions = require('../models/Permissions');
 
+const err = require('../errors');
+
 const validateFieldsAndValuesOnPost = async (request, response, next) => {
     const {body} = request;
 
@@ -13,13 +15,15 @@ const validateFieldsAndValuesOnPost = async (request, response, next) => {
 
     for(var i=0; i < dictPermissionKeys.length; i++){
         if(keys.includes(dictPermissionKeys[i]) == false){ //Se não encontrar algum campo que deveria ser passado
-            return response.status(400).json({ mensagem: `O campo '${dictPermissionKeys[i]}' deve ser passado.` });
+            next(new err.BadRequestError(`O campo '${dictPermissionKeys[i]}' deve ser passado.`));
+            return
         }
     }
 
     for(i in body){
         if(body[i] == ""){
-            return response.status(400).json({ mensagem: `O campo ${i} não pode ser vazio!` })
+            next(new err.BadRequestError(`O campo ${i} não pode ser vazio!`));
+            return
         }
     }
 
@@ -36,7 +40,8 @@ const checkIfAlreadyRegistred = async (request, response, next) => {
     });
 
     if(find_by_titulo.length > 0){
-        return response.status(400).json({ mensagem: `Já existe uma permissão com este titulo (${titulo}) cadastrada no sistema.` });
+        next(new err.ConflictError(`Já existe uma permissão (${titulo}) cadastrada no sistema.`));
+        return
     }else{
         next();
     }
@@ -49,7 +54,8 @@ const checkIfIdExists = async (request, response, next) => {
     if (permission) {
         next();
     } else {
-        return response.status(404).json({ mensagem: `ERRO - Não existe uma permission com este ID (${id_permission}) cadastrada no sistema.` })
+        next(new err.NotFoundError(`ERRO - ID (${id_permission}) não encontrado no sistema.`));
+        return
     }
 };
 

@@ -2,6 +2,8 @@ const Token = require('../utils/Token');
 
 const Admin = require('../models/Admin');
 
+const UnauthorizedError = require('../errors/UnauthorizedError');
+
 const checkTokenAndSetupPermissions = async (request, response, next) => {
     const authHeader = request.headers['authorization'];
     const token =  authHeader && authHeader.split(" ")[1]; //Pegando apenas o token do header
@@ -25,11 +27,11 @@ const checkTokenAndSetupPermissions = async (request, response, next) => {
             }     
             next();
         }else{ 
-            return response.status(401).json({mensagem: "Usuário não autenticado"});
+            next(new UnauthorizedError("Usuário não autenticado."));
         }
     } catch (error) {
         console.log(error);
-        return response.status(401).json({mensagem: "Usuário não autenticado"});
+        next(new UnauthorizedError("Usuário não autenticado."));
     }
 }
 

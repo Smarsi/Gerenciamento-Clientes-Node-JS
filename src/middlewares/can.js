@@ -1,3 +1,5 @@
+const err = require('../errors');
+
 const can = (needed_permissions) => {
     return (request, response, next) => {
         var user_permissions = request.permissions;
@@ -14,7 +16,8 @@ const can = (needed_permissions) => {
         if(allPerm != false){     
             next();
         }else{
-            return response.status(401).json({ mensagem: "Sem permissão para realizar esta operação" });
+            next(new err.UnauthorizedError("Não autorizado para realizar esta operação."));
+            return
         }
     }
 }

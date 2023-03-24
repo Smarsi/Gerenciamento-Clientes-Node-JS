@@ -1,3 +1,5 @@
+const err = require('../errors');
+
 function _ExecuteCount(lista){
     //transformando valores da lista em int
     for(i in lista){
@@ -36,11 +38,13 @@ const validateCPF = (request, response, next) => {
             request.body.cpf = my_new_cpf.toString();
             next(); // Só passar para a próxima action se o CPF for válido
         }else{
-            return response.status(422).json({ mensagem: "ERRO - CPF Inválido" });
+            next(new err.UnprocessableError("ERRO - CPF inválido."));
+            return
         }
     } else{ 
         //Menos de 11 Digitos
-        return response.status(422).json({ mensagem: "ERRO - CPF Inválido" });
+        next(new err.UnprocessableError("ERRO - CPF inválido"));
+        return
     } 
 };
 

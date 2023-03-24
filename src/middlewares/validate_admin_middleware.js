@@ -1,5 +1,7 @@
 const { Op } = require("sequelize");
 
+const err = require('../errors');
+
 const Permissions = require('../models/Permissions');
 
 const validateFieldsAndValuesOnAdminPermissions  = async (request, response, next) =>{
@@ -14,21 +16,25 @@ const validateFieldsAndValuesOnAdminPermissions  = async (request, response, nex
 
     for(var i=0; i < dictUserKeys.length; i++){
         if(keys.includes(dictUserKeys[i]) == false){ //Se não encontrar algum campo que deveria ser passado
-            return response.status(400).json({ mensagem: `O campo '${dictUserKeys[i]}' deve ser passado.` });
+            next(new err.BadRequestError(`O campo '${dictUserKeys[i]}' deve ser passado.`));
+            return 
         }
     }
 
     for(i in body){
         if(body[i] == ""){
-            return response.status(400).json({ mensagem: `O campo ${i} não pode ser vazio!` });
+            next(new err.BadRequestError(`O campo ${i} não pode ser vazio!`));
+            return
         }
         if(typeof(body[i]) != 'object') {
-            return response.status(400).json({ mensagem: `O campo ${i} deve ser um array com ids.` });
+            next(new err.BadRequestError(`O campo ${i} deve ser um array com ids.`));
+            return
         }
     }
 
     if(body.senha !== body.confirmasenha){
-        return response.status(401).json({ mensagem: "A senha e confirmação de senha não conferem." });
+        next(new err.UnauthorizedError("A senha e confirmação de senha não conferem."));
+        return
     }
 
 
@@ -53,7 +59,8 @@ const checkPermissionsAndSetupRequest = async (request, response, next) =>{
     if (permissions.length > findPermissions.length) {
         for (var i = 0; i < permissions.length; i++) {
             if (!findPermissions.includes(permissions[i])) {
-                return response.status(400).json({ mensagem: `Permission com id (${permissions[i]}) inválida.` });
+                next(new err.NotFoundError(`ERRO - ID (${id_permission}) não encontrado no sistema.`));
+                return
             }
         }
     }else{

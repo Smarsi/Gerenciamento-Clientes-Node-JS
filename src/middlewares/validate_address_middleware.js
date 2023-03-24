@@ -1,5 +1,7 @@
 const Endereco = require('../models/Address');
 
+const err = require('../errors');
+
 const validateFieldsAndValuesOnPost = async (request, response, next) => {
     const {body} = request;
 
@@ -19,17 +21,20 @@ const validateFieldsAndValuesOnPost = async (request, response, next) => {
 
         for(var y=0; y < dictAddressKeys.length; y++ ){
             if(addressKeys.includes(dictAddressKeys[y]) == false){ //Se não encontrar algum campo que deveria ser passado
-                return response.status(400).json({ mensagem: `O campo '${dictAddressKeys[y]}' do endereco deve ser passado.` })
+                next(new err.BadRequestError(`O campo '${dictAddressKeys[y]}' do endereco deve ser passado.`));
+                return
             }
         }
     }else{
-        return response.status(401).json({ mensagem: "ERRO - Um 'body' deve ser passado para esta requisição." })
+        next(new err.ConflictError("ERRO - Um 'body' deve ser passado para esta requisição."));
+        return
     }
 
     // ------- Validate Values -------
     for(i in body){
         if(body[i] == "" && i != "complemento"){
-            return response.status(400).json({ mensagem: `O campo ${i} não pode ser vazio!` })
+            next(new err.BadRequestError(`O campo ${i} não pode ser vazio!`));
+            return
         }           
     }
 
@@ -50,17 +55,19 @@ const validateFieldsAndValuesOnPut = async (request, response, next) => {
 
         for(var y=0; y < dictAddressKeys.length; y++ ){
             if(addressKeys.includes(dictAddressKeys[y]) == false){ //Se não encontrar algum campo que deveria ser passado
-                return response.status(400).json({ mensagem: `O campo '${dictAddressKeys[y]}' do endereco deve ser passado.` })
+                next(new err.BadRequestError(`O campo '${dictAddressKeys[y]}' do endereco deve ser passado.`));
             }
         }
     }else{
-        return response.status(401).json({ mensagem: "ERRO - Um 'body' deve ser passado para esta requisição." })
+        next(new err.ConflictError("ERRO - Um 'body' deve ser passado para esta requisição."));
+        return
     }
 
     // ------- Validate Values -------
     for(i in body){
         if(body[i] == "" && i != "complemento"){
-            return response.status(400).json({ mensagem: `O campo ${i} não pode ser vazio!` })
+            next(new err.BadRequestError(`O campo ${i} não pode ser vazio!`));
+            return
         }           
     }
 
@@ -72,7 +79,7 @@ const checkIfIdExists = async (request, response, next) => {
     const endereco = await Endereco.findByPk(id_endereco);
 
     if (!endereco) {
-        return response.status(404).json({ mensagem: `ERRO - Não existe um endereço com o id passado (${id_endereco})` });
+        next(new err.NotFoundError(`Erro - ID (${id_endereco}) não encontrado no sistema.`));
     } else {
         next();
     }
