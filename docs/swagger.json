@@ -206,8 +206,8 @@
     "/cliente/{id_cliente}" : {
       "get" : {
         "tags" : [ "Clientes" ],
-        "summary" : "Pega informações de um cliente específico recebendo o Id",
-        "description" : "Pega cliente pelo Id",
+        "summary" : "Consultar informções de um cliente",
+        "description" : "Este endpoint pega informações específicas de um cliente através de seu Id. Retorna dados de Id, Nome, Email e CPF.\n",
         "parameters" : [ {
           "name" : "id_cliente",
           "in" : "path",
