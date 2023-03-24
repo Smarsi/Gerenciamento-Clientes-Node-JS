@@ -121,13 +121,6 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/inline_error_response"
-                },
-                "examples" : {
-                  "erro confirmacao senha" : {
-                    "value" : {
-                      "mensagem" : "A senha e confirmação de senha não conferem"
-                    }
-                  }
                 }
               }
             }
@@ -138,18 +131,6 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/inline_error_response"
-                },
-                "examples" : {
-                  "cpf existente" : {
-                    "value" : {
-                      "mensagem" : "ERRO - CPF já registrado"
-                    }
-                  },
-                  "email existente" : {
-                    "value" : {
-                      "mensagem" : "ERRO - EMAIL já registrado"
-                    }
-                  }
                 }
               }
             }
@@ -160,13 +141,6 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/inline_error_response"
-                },
-                "examples" : {
-                  "cpf invalido" : {
-                    "value" : {
-                      "mensagem" : "CPF Inválido"
-                    }
-                  }
                 }
               }
             }
@@ -177,13 +151,6 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/inline_error_response"
-                },
-                "examples" : {
-                  "erro interno" : {
-                    "value" : {
-                      "mensagem" : "Erro interno. Tente novamente mais tarde."
-                    }
-                  }
                 }
               }
             }
@@ -244,7 +211,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_400"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
                   "sucesso" : {
@@ -261,7 +228,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Mensagem"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
                   "erro" : {
@@ -278,7 +245,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Mensagem"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
                   "erro" : {
@@ -295,7 +262,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Mensagem"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
                   "erro campo" : {
@@ -317,7 +284,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Mensagem"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
                   "erro interno" : {
@@ -355,7 +322,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Mensagem"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
                   "erro" : {
@@ -372,7 +339,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Mensagem"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
                   "erro interno" : {
@@ -419,7 +386,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Mensagem"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
                   "erro" : {
@@ -436,7 +403,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Mensagem"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
                   "erro" : {
@@ -504,7 +471,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_400"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
                   "erro campo" : {
@@ -526,7 +493,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_400"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
                   "body error" : {
@@ -591,7 +558,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_400"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
                   "erro campo" : {
@@ -613,7 +580,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_400"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
                   "body error" : {
