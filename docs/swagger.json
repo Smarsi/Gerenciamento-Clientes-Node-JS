@@ -366,16 +366,55 @@
             }
           },
           "400" : {
-            "description" : "Email já registrado",
+            "description" : "Campos ou valores incorretos",
             "content" : {
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
-                  "erro" : {
+                  "Erro no campo senha" : {
                     "value" : {
-                      "mensagem" : "ERRO - Este email já registrado por outro usuário no sistema."
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo 'nome' deve ser passado."
+                      }
+                    }
+                  },
+                  "Erro no valor do campo nome" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo email não pode ser vazio!"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Erro de autenticação",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Usuário não autenticado."
+                      }
+                    }
+                  },
+                  "Sem permissão" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Não autorizado para realizar esta operação."
+                      }
                     }
                   }
                 }
@@ -383,16 +422,19 @@
             }
           },
           "404" : {
-            "description" : "Id incorreto",
+            "description" : "Não encontrado",
             "content" : {
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
-                  "erro" : {
+                  "Não autenticado" : {
                     "value" : {
-                      "mensagem" : "ERRO - Não existe um cliente com este ID (x) cadastrado no sistema."
+                      "error" : {
+                        "name" : "NotFoundError",
+                        "message" : "ERRO - ID (x) não encontrado no sistema."
+                      }
                     }
                   }
                 }
@@ -400,21 +442,19 @@
             }
           },
           "409" : {
-            "description" : "Erro de campos incorretos",
+            "description" : "Email já registrados por outro usuário",
             "content" : {
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
-                  "erro campo" : {
+                  "EMAIL já registrado" : {
                     "value" : {
-                      "mensagem" : "O campo 'x' deve ser passado."
-                    }
-                  },
-                  "erro valor" : {
-                    "value" : {
-                      "mensagem" : "O valor do campo 'x' não pode ser vazio!"
+                      "error" : {
+                        "name" : "ConflictError",
+                        "message" : "Erro - Este email já está registrado no sistema."
+                      }
                     }
                   }
                 }
