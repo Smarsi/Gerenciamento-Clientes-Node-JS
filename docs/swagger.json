@@ -162,13 +162,41 @@
             }
           },
           "403" : {
-            "description" : "Senha e confirmação de senha não conferem",
+            "description" : "Erro na confirmação de senha",
             "content" : {
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
+                  "Senha e confirmação de senha" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "ForbiddenError",
+                        "message" : "A senha e confirmação de senha não conferem."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409" : {
+            "description" : "CPF ou Email já registrados no sistema",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "CPF já registrado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "ConflictError",
+                        "message" : "Erro - Este CPF já está registrado no sistema."
+                      }
+                    }
+                  },
                   "EMAIL já registrado" : {
                     "value" : {
                       "error" : {
@@ -227,8 +255,8 @@
     "/cliente/{id_cliente}" : {
       "get" : {
         "tags" : [ "Clientes" ],
-        "summary" : "Consultar informações de um cliente",
-        "description" : "Este endpoint pega informações específicas de um cliente através de seu Id. Retorna dados de Id, Nome, Email e CPF.\n",
+        "summary" : "Consultar informações de um cliente específico.",
+        "description" : "Este endpoint pega informações de um cliente específico através de seu Id. Retorna dados de Id, Nome, Email e CPF.\n",
         "parameters" : [ {
           "name" : "id_cliente",
           "in" : "path",
@@ -248,7 +276,55 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/inline_response_200_2"
+                    "$ref" : "#/components/schemas/inline_response_200_get_specifc_cliente"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Erro de autenticação",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Usuário não autenticado."
+                      }
+                    }
+                  },
+                  "Sem permissão" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Não autorizado para realizar esta operação."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Não encontrado",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "NotFoundError",
+                        "message" : "ERRO - ID (x) não encontrado no sistema."
+                      }
+                    }
                   }
                 }
               }
@@ -898,7 +974,7 @@
           }
         }
       },
-      "inline_response_200_2" : {
+      "inline_response_200_get_specifc_cliente" : {
         "type" : "object",
         "properties" : {
           "id" : {
