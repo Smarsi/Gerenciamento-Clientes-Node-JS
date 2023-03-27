@@ -134,18 +134,26 @@
             }
           },
           "401" : {
-            "description" : "A senha e confirmação de senha não conferem",
+            "description" : "Erro de autenticação",
             "content" : {
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
-                  "Erro de confirmação de senha" : {
+                  "Não autenticado" : {
                     "value" : {
                       "error" : {
                         "name" : "UnauthorizedError",
-                        "message" : "A senha e confirmação de senha não conferem."
+                        "message" : "Usuário não autenticado."
+                      }
+                    }
+                  },
+                  "Sem permissão" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Não autorizado para realizar esta operação."
                       }
                     }
                   }
@@ -154,11 +162,21 @@
             }
           },
           "403" : {
-            "description" : "CPF ou Email já registrados no sistema",
+            "description" : "Senha e confirmação de senha não conferem",
             "content" : {
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "EMAIL já registrado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "ConflictError",
+                        "message" : "Erro - Este email já está registrado no sistema."
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -169,6 +187,16 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "CPF inválido" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnprocessableError",
+                        "message" : "ERRO - CPF inválido."
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -179,6 +207,16 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Internal Error" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "InternalError",
+                        "message" : "Erro interno. Tente novamente mais tarde."
+                      }
+                    }
+                  }
                 }
               }
             }
