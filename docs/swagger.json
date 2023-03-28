@@ -1239,7 +1239,27 @@
                     "value" : {
                       "error" : {
                         "name" : "ConflictError",
-                        "message" : "Erro - Este email já está registrado para uma conta de administrador."
+                        "message" : "Erro - Este email já está registrado para outra conta de administrador."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Erro interno",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "erro interno" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "InternalError",
+                        "message" : "Erro interno. Tente novamente mais tarde."
                       }
                     }
                   }
@@ -1250,11 +1270,173 @@
         }
       }
     },
-    "/{id_admin}/permissions" : {
-      "post" : {
+    "/admin/update/{id_admin}" : {
+      "put" : {
         "tags" : [ "Admin" ],
-        "summary" : "Adiciona permissions para uma conta de administrador",
-        "description" : "Esta rota permite atrelar permissões existentes no sistema para um administrador específico (através de seu id). A relação de permissões para administradores é de M:N.\n",
+        "summary" : "Atualizar informações de uma conta admin",
+        "description" : "Esta rota permite atualizar informaçoes de um administrador. A atualização é feita através do id do administrador.\n",
+        "parameters" : [ {
+          "name" : "id_admin",
+          "in" : "path",
+          "description" : "Id de um administrador",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "properties" : {
+                    "mensagem" : {
+                      "type" : "string"
+                    }
+                  }
+                },
+                "example" : {
+                  "mensagem" : "Admin x atualizado com sucesso."
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Campos ou valores incorretos",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Erro no campo nome" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo 'nome' deve ser passado."
+                      }
+                    }
+                  },
+                  "Erro no valor do campo email" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo email não pode ser vazio!"
+                      }
+                    }
+                  },
+                  "Erro lista" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo permissions deve ser um array com ids."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Erro de autenticação",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Usuário não autenticado."
+                      }
+                    }
+                  },
+                  "Sem permissão" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Não autorizado para realizar esta operação."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Admin não encontrado",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não encontrado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "NotFoundError",
+                        "message" : "ERRO - Não existe um admin com id x."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409" : {
+            "description" : "Já registrado",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não encontrado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "ConflictError",
+                        "message" : "Erro - Este email já está registrado para outra conta de administrador."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Erro interno",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "erro interno" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "InternalError",
+                        "message" : "Erro interno. Tente novamente mais tarde."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/{id_admin}/permissions" : {
+      "get" : {
+        "tags" : [ "Admin" ],
+        "summary" : "Listar permissions de um admin",
+        "description" : "Esta rota permite listar todas as permissions atreladas a uma conta de administrador. Esta listagem é feita por meio do Id do admin.\n",
         "parameters" : [ {
           "name" : "id_admin",
           "in" : "path",
@@ -1299,6 +1481,451 @@
                       "error" : {
                         "name" : "UnauthorizedError",
                         "message" : "Não autorizado para realizar esta operação."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Admin não encontrado",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não encontrado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "NotFoundError",
+                        "message" : "Erro - Não existe um admin com id x."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Erro interno",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "erro interno" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "InternalError",
+                        "message" : "Erro interno. Tente novamente mais tarde."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/{id_admin}/give-permissions" : {
+      "post" : {
+        "tags" : [ "Admin" ],
+        "summary" : "Adiciona permissions para uma conta de administrador",
+        "description" : "Esta rota permite atrelar permissões existentes no sistema para um administrador específico (através de seu id). A relação de permissões para administradores é de M:N.\n",
+        "parameters" : [ {
+          "name" : "id_admin",
+          "in" : "path",
+          "description" : "Id de um administrador",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "$ref" : "#/components/schemas/Admin_Permissions_GET"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Campos ou valores incorretos",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Erro no campo senha" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo 'permissions' deve ser passado."
+                      }
+                    }
+                  },
+                  "Erro no valor do campo nome" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo permissions não pode ser vazio!"
+                      }
+                    }
+                  },
+                  "Erro lista" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo permissions deve ser um array com ids."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Erro de autenticação",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Usuário não autenticado."
+                      }
+                    }
+                  },
+                  "Sem permissão" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Não autorizado para realizar esta operação."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Permission não encontrada",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não encontrado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "NotFoundError",
+                        "message" : "ERRO - Permission de Id (x) não encontrada no sistema."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Erro interno",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "erro interno" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "InternalError",
+                        "message" : "Erro interno. Tente novamente mais tarde."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/{id_admin}/remove-permissions" : {
+      "post" : {
+        "tags" : [ "Admin" ],
+        "summary" : "Remove permissions de uma conta de administrador",
+        "description" : "Esta rota permite remover permissões previamente atreladas para um administrador. A remoção é feita através do id do administrador.\n",
+        "parameters" : [ {
+          "name" : "id_admin",
+          "in" : "path",
+          "description" : "Id de um administrador",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "$ref" : "#/components/schemas/Admin_Permissions_GET"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Campos ou valores incorretos",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Erro no campo senha" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo 'permissions' deve ser passado."
+                      }
+                    }
+                  },
+                  "Erro no valor do campo nome" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo permissions não pode ser vazio!"
+                      }
+                    }
+                  },
+                  "Erro lista" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo permissions deve ser um array com ids."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Erro de autenticação",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Usuário não autenticado."
+                      }
+                    }
+                  },
+                  "Sem permissão" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Não autorizado para realizar esta operação."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Permission não encontrada",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não encontrado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "NotFoundError",
+                        "message" : "ERRO - Permission de Id (x) não encontrada no sistema."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Erro interno",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "erro interno" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "InternalError",
+                        "message" : "Erro interno. Tente novamente mais tarde."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/login" : {
+      "post" : {
+        "tags" : [ "Admin" ],
+        "summary" : "Login de administradores",
+        "description" : "Esta é uma rota isolada de login para administradores. A rota de login padrão para  clientes e administradores é separada propositalmente, para evitar problemas de  inject, brute force ou até mesmo permissões indevidas.\n",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "properties" : {
+                    "token" : {
+                      "type" : "string"
+                    }
+                  }
+                },
+                "examples" : {
+                  "success" : {
+                    "value" : {
+                      "token" : "eyJhbGciOiJIUzI1NSDksaljhgwaHFUAWAHUISHFJBNSA9.eyJpZCI6MSwiYWRtaW4iOnRydWUsImlhdCI6MTY4MDAxMDgyM30.H1Z5Plbzn4veq4sSjNThZoSlZnSEJ9jPWeDqFLB-om4\n"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Campos ou valores incorretos",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Erro no campo senha" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo 'permissions' deve ser passado."
+                      }
+                    }
+                  },
+                  "Erro no valor do campo nome" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo permissions não pode ser vazio!"
+                      }
+                    }
+                  },
+                  "Erro lista" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo permissions deve ser um array com ids."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Erro de autenticação",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Usuário não autenticado."
+                      }
+                    }
+                  },
+                  "Sem permissão" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Não autorizado para realizar esta operação."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Permission não encontrada",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não encontrado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "NotFoundError",
+                        "message" : "ERRO - Permission de Id (x) não encontrada no sistema."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Erro interno",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "erro interno" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "InternalError",
+                        "message" : "Erro interno. Tente novamente mais tarde."
                       }
                     }
                   }
@@ -1633,9 +2260,9 @@
   },
   "x-tagGroups" : [ {
     "name" : "General",
-    "tags" : [ "Clientes", "Endereços" ]
+    "tags" : [ "Clientes", "Endereços", "Admin" ]
   }, {
     "name" : "Models",
-    "tags" : [ "Cliente_Model", "Endereco_Model" ]
+    "tags" : [ "Cliente_Model", "Endereco_Model", "Admin_Model" ]
   } ]
 }
