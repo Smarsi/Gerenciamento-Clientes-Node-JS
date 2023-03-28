@@ -40,7 +40,7 @@
   }, {
     "name" : "Admin_Model",
     "description" : "<SchemaDefinition schemaRef=\"#/components/schemas/Admin_GET\"/>\n",
-    "x-displayName" : "Endereço Model"
+    "x-displayName" : "Admin Model"
   } ],
   "paths" : {
     "/cliente" : {
