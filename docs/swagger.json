@@ -1270,7 +1270,7 @@
         }
       }
     },
-    "/update/{id_admin}" : {
+    "/admin/update/{id_admin}" : {
       "put" : {
         "tags" : [ "Admin" ],
         "summary" : "Atualizar informações de uma conta admin",
@@ -1432,7 +1432,7 @@
         }
       }
     },
-    "/{id_admin}/permissions" : {
+    "/admin/{id_admin}/permissions" : {
       "get" : {
         "tags" : [ "Admin" ],
         "summary" : "Listar permissions de um admin",
@@ -1531,7 +1531,7 @@
         }
       }
     },
-    "/{id_admin}/give-permissions" : {
+    "/admin/{id_admin}/give-permissions" : {
       "post" : {
         "tags" : [ "Admin" ],
         "summary" : "Adiciona permissions para uma conta de administrador",
@@ -1666,7 +1666,7 @@
         }
       }
     },
-    "/{id_admin}/remove-permissions" : {
+    "/admin/{id_admin}/remove-permissions" : {
       "post" : {
         "tags" : [ "Admin" ],
         "summary" : "Remove permissions de uma conta de administrador",
