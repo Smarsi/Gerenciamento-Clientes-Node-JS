@@ -1100,12 +1100,6 @@
           "email" : {
             "type" : "string"
           },
-          "senha" : {
-            "type" : "string"
-          },
-          "confirmasenha" : {
-            "type" : "string"
-          },
           "updatedAt" : {
             "type" : "string"
           },
