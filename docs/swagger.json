@@ -1246,6 +1246,26 @@
                 }
               }
             }
+          },
+          "500" : {
+            "description" : "Erro interno",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "erro interno" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "InternalError",
+                        "message" : "Erro interno. Tente novamente mais tarde."
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
