@@ -1109,14 +1109,17 @@
       "get" : {
         "tags" : [ "Admin" ],
         "summary" : "Lista todas as contas de admins registrados no sistema.",
-        "description" : "Exibe todas as contas de administradores registradas no sistema. Por ser de caráter 'sigiloso' está rota está permitida apenas para  alguns administradores que tem a permissão de listar contas de admin.\n",
+        "description" : "Exibe todas as contas de administradores registradas no sistema. Por ser de caráter 'sigiloso' está rota está permitida apenas para  alguns administradores que tem a permissão de listar outras contas de admin.\n",
         "responses" : {
           "200" : {
-            "description" : "OK - Sucesso",
+            "description" : "OK",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Admin_GET"
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : null
+                  }
                 }
               }
             }
