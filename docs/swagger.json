@@ -504,34 +504,6 @@
           "200" : {
             "description" : "OK - Sucesso"
           },
-          "400" : {
-            "description" : "Campos ou valores incorretos",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/inline_error_response"
-                },
-                "examples" : {
-                  "Erro no campo senha" : {
-                    "value" : {
-                      "error" : {
-                        "name" : "BadRequestError",
-                        "message" : "O campo 'nome' deve ser passado."
-                      }
-                    }
-                  },
-                  "Erro no valor do campo nome" : {
-                    "value" : {
-                      "error" : {
-                        "name" : "BadRequestError",
-                        "message" : "O campo email não pode ser vazio!"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
           "401" : {
             "description" : "Erro de autenticação",
             "content" : {
