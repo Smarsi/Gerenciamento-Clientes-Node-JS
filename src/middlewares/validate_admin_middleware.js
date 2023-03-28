@@ -4,19 +4,57 @@ const err = require('../errors');
 
 const Permissions = require('../models/Permissions');
 
-const validateFieldsAndValuesOnAdminPermissions  = async (request, response, next) =>{
+const validateFieldsAndValuesOnPost = async (request, response, next) => {
+    const {body} = request;
+
+    //============First Check (Admin fields) ============
+
+    var keys = Object.keys(body);
+    var dictAdminFields = {
+        "nome": "",
+        "email": "",
+        "senha": "",
+        "confirmasenha": ""
+    };
+    var dictAdminKeys = Object.keys(dictAdminFields);
+
+
+    for(var i=0; i < dictAdminKeys.length; i++){
+        if(keys.includes(dictAdminKeys[i]) == false){ //Se não encontrar algum campo que deveria ser passado
+            next(new err.BadRequestError(`O campo '${dictAdminKeys[i]}' deve ser passado.`));
+            return
+        }
+    } 
+
+    //============ Second Check (Admin values) ============
+    for(i in body){
+        if(body[i] == ""){
+            next(new err.BadRequestError(`O campo ${i} não pode ser vazio!`));
+            return
+        }
+    }
+
+    if(body.senha !== body.confirmasenha){
+        next(new err.ForbbidenError(`A senha e confirmação de senha não conferem.`));
+        return
+    }
+
+    next();
+}
+
+const validateFieldsAndValuesOnGiveAdminPermissions  = async (request, response, next) =>{
     const {body} = request;
 
     var keys = Object.keys(body);
-    var dictUserFields = {
+    var dictAdminFields = {
         "permissions": ""
     };
-    var dictUserKeys = Object.keys(dictUserFields);
+    var dictAdminKeys = Object.keys(dictAdminFields);
 
 
-    for(var i=0; i < dictUserKeys.length; i++){
-        if(keys.includes(dictUserKeys[i]) == false){ //Se não encontrar algum campo que deveria ser passado
-            next(new err.BadRequestError(`O campo '${dictUserKeys[i]}' deve ser passado.`));
+    for(var i=0; i < dictAdminKeys.length; i++){
+        if(keys.includes(dictAdminKeys[i]) == false){ //Se não encontrar algum campo que deveria ser passado
+            next(new err.BadRequestError(`O campo '${dictAdminKeys[i]}' deve ser passado.`));
             return 
         }
     }
@@ -70,6 +108,7 @@ const checkPermissionsAndSetupRequest = async (request, response, next) =>{
 };
 
 module.exports = {
-    validateFieldsAndValuesOnAdminPermissions,
+    validateFieldsAndValuesOnPost,
+    validateFieldsAndValuesOnGiveAdminPermissions,
     checkPermissionsAndSetupRequest,
 }

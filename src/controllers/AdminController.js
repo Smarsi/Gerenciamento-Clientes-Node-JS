@@ -1,4 +1,5 @@
 const { Op } = require("sequelize");
+const Error = require('../errors');
 
 const Admin = require('../models/Admin');
 
@@ -9,30 +10,27 @@ const AuthController = require('../controllers/AuthController');
 const Password = require('../utils/Passwords');
 const Token = require('../utils/Token');
 
-const register = async (request, response) => {
-    var { nome, email, senha, confirmasenha } = request.body;
+const register = async (request, response, next) => {
+    var { nome, email, senha } = request.body;
 
-    if (senha === confirmasenha) {
-        try {
-            const newAdmin = await Admin.create({ nome, email });
-            console.log("Aqui id newAdmin");
-            console.log(newAdmin);
-            if (newAdmin) {
-                request.params = { id_admin: newAdmin.id };
-                newPassword = await Password.newPassword(senha);
-                senha = newPassword;
+    try {
+        const newAdmin = await Admin.create({ nome, email });
+        console.log("Aqui id newAdmin");
+        console.log(newAdmin);
+        if (newAdmin) {
+            request.params = { id_admin: newAdmin.id };
+            newPassword = await Password.newPassword(senha);
+            senha = newPassword;
 
-                conta = await AuthController.register(request, response);
-                if (conta != "Erro") {
-                    return response.status(200).json({ newAdmin, id_conta: conta });
-                }
+            conta = await AuthController.register(request, response);
+            if (conta != "Erro") {
+                return response.status(200).json({ newAdmin, id_conta: conta });
             }
-        } catch (error) {
-            console.log(error);
-            return response.status(500).json({ mensagem: "Erro interno. Tente novamente mais tarde." });
         }
-    } else {
-        return response.status(400).json({ mensagem: "A senha e confirmação de senha não conferem." });
+    } catch (error) {
+        console.log(error);
+        next(new Error.InternalError("Erro interno. Tente novamente mais tarde."));
+        return
     }
 };
 

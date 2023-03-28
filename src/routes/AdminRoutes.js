@@ -20,6 +20,7 @@ router.get('/listAccounts',
 router.post('/register',
     check_token_middleware.checkTokenAndSetupPermissions,
     onlyWhoCan_middleware.can(['create-admin']),
+    validate_admin_middleware.validateFieldsAndValuesOnPost,
     AdminController.register
 );
 
@@ -37,7 +38,7 @@ router.get('/:id_admin/permissions',
 router.post('/:id_admin/permissions',
     check_token_middleware.checkTokenAndSetupPermissions,
     onlyWhoCan_middleware.can(['give-permissions']),
-    validate_admin_middleware.validateFieldsAndValuesOnAdminPermissions,
+    validate_admin_middleware.validateFieldsAndValuesOnGiveAdminPermissions,
     validate_admin_middleware.checkPermissionsAndSetupRequest,
     AdminController.givePermissions
 );
@@ -46,7 +47,7 @@ router.post('/:id_admin/permissions',
 router.post('/:id_admin/remove-permissions',
     check_token_middleware.checkTokenAndSetupPermissions,
     onlyWhoCan_middleware.can(['give-permissions']),
-    validate_admin_middleware.validateFieldsAndValuesOnAdminPermissions,
+    validate_admin_middleware.validateFieldsAndValuesOnGiveAdminPermissions,
     validate_admin_middleware.checkPermissionsAndSetupRequest,
     AdminController.removePermissions
 );
