@@ -1800,6 +1800,139 @@
           }
         }
       }
+    },
+    "/admin/login" : {
+      "post" : {
+        "tags" : [ "Admin" ],
+        "summary" : "Login de administradores",
+        "description" : "Esta é uma rota isolada de login para administradores. A rota de login padrão para  clientes e administradores é separada propositalmente, para evitar problemas de  inject, brute force ou até mesmo permissões indevidas.\n",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "properties" : {
+                    "token" : {
+                      "type" : "string"
+                    }
+                  }
+                },
+                "examples" : {
+                  "success" : {
+                    "value" : "eyJhbGciOiJIUzI1NSDksaljhgwaHFUAWAHUISHFJBNSA9.eyJpZCI6MSwiYWRtaW4iOnRydWUsImlhdCI6MTY4MDAxMDgyM30.H1Z5Plbzn4veq4sSjNThZoSlZnSEJ9jPWeDqFLB-om4"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Campos ou valores incorretos",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Erro no campo senha" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo 'permissions' deve ser passado."
+                      }
+                    }
+                  },
+                  "Erro no valor do campo nome" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo permissions não pode ser vazio!"
+                      }
+                    }
+                  },
+                  "Erro lista" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo permissions deve ser um array com ids."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Erro de autenticação",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Usuário não autenticado."
+                      }
+                    }
+                  },
+                  "Sem permissão" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Não autorizado para realizar esta operação."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Permission não encontrada",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não encontrado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "NotFoundError",
+                        "message" : "ERRO - Permission de Id (x) não encontrada no sistema."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Erro interno",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "erro interno" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "InternalError",
+                        "message" : "Erro interno. Tente novamente mais tarde."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
