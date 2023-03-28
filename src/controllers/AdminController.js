@@ -130,26 +130,20 @@ const removePermissions = async (request, response, next) => {
 };
 
 const login = async (request, response, next) => {
-    const { email, senha } = request.body;
+    const { senha } = request.body;
     try {
-        const findByEmail = await Admin.findOne({
-            where: {
-                email: email
-            },
-            include: { association: 'conta' }
-        });
-        if (findByEmail) {
-            const verifyPassword = await Password.checkPassword(senha, findByEmail.conta.senha);
-            if (verifyPassword == true) {
-                const newToken = await Token.generateAdminToken(findByEmail.id);
-                return response.status(200).json({ token: newToken });
-            }
-        }else{
-            next(new Error.NotFoundError("Erro - Conta não encontrada (verifique o e-mail)"));
+        const verifyPassword = await Password.checkPassword(senha, request.account.senha);
+        if (verifyPassword == true) {
+            const newToken = await Token.generateAdminToken(request.id_admin);
+            return response.status(200).json({ token: newToken });
+        } else {
+            next(new Error.UnauthorizedError("Erro - Senha incorreta."));
+            return
         }
     } catch (error) {
         console.log(error);
-        return response.status(401).json({ mensagem: "Erro no login" });
+        next(new Error.InternalError("Erro interno. Tente novamente mais tarde."));
+        return
     }
 };
 

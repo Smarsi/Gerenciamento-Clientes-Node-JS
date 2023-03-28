@@ -41,7 +41,7 @@ const validateFieldsAndValuesOnPost = async (request, response, next) => {
     }
 
     next();
-}
+};
 
 const validateFieldsAndValuesOnPut = async (request, response, next) => {
     const {body} = request;
@@ -71,7 +71,37 @@ const validateFieldsAndValuesOnPut = async (request, response, next) => {
         }
     }
     next();
-}
+};
+
+const validateFieldsAndValuesOnLogin = async (request, response, next) => {
+    const {body} = request;
+
+    //============First Check (Admin fields) ============
+
+    var keys = Object.keys(body);
+    var dictAdminFields = {
+        "email": "",
+        "senha": ""
+    };
+    var dictAdminKeys = Object.keys(dictAdminFields);
+
+
+    for(var i=0; i < dictAdminKeys.length; i++){
+        if(keys.includes(dictAdminKeys[i]) == false){ //Se não encontrar algum campo que deveria ser passado
+            next(new Error.BadRequestError(`O campo '${dictAdminKeys[i]}' deve ser passado.`));
+            return
+        }
+    } 
+
+    //============ Second Check (Admin values) ============
+    for(i in body){
+        if(body[i] == ""){
+            next(new Error.BadRequestError(`O campo ${i} não pode ser vazio!`));
+            return
+        }
+    }
+    next();
+};
 
 const validateFieldsAndValuesOnGiveAdminPermissions  = async (request, response, next) => {
     const {body} = request;
@@ -161,11 +191,33 @@ const checkIfAlreadyRegistred = async (request, response, next) =>{
     }
 };
 
+const checkEmailOnLogin = async (request, response, next) =>{
+    const { email } = request.body;
+
+    const findByEmail = await Admin.findOne({
+        where: {
+            email: email
+        },
+        include: { association: 'conta' }
+    });
+
+    if(findByEmail){
+        request.account = findByEmail.conta;
+        request.id_admin = findByEmail.id;
+        next();
+    }else{
+        next(new Error.NotFoundError("Erro - Conta não encontrada (verifique o e-mail)."));
+        return
+    }
+};
+
 module.exports = {
     validateFieldsAndValuesOnPost,
     validateFieldsAndValuesOnPut,
+    validateFieldsAndValuesOnLogin,
     validateFieldsAndValuesOnGiveAdminPermissions,
     findPermissionsAndSetupRequest,
     checkIfIdExists,
     checkIfAlreadyRegistred,
+    checkEmailOnLogin,
 }

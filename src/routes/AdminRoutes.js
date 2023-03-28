@@ -10,7 +10,7 @@ const check_token_middleware = require('../middlewares/check_token_middleware');
 const onlyWhoCan_middleware = require('../middlewares/can');
 
 //Get all Admins accounts
-router.get('/listAccounts', 
+router.get('/listAccounts',
     check_token_middleware.checkTokenAndSetupPermissions,
     onlyWhoCan_middleware.can(['list-admin']),
     AdminController.list
@@ -36,7 +36,7 @@ router.put('/update/:id_admin',
 );
 
 //Get all permissions from a specific admin
-router.get('/:id_admin/permissions', 
+router.get('/:id_admin/permissions',
     check_token_middleware.checkTokenAndSetupPermissions,
     onlyWhoCan_middleware.can(['list-permissions']),
     validate_admin_middleware.checkIfIdExists,
@@ -62,6 +62,10 @@ router.post('/:id_admin/remove-permissions',
 );
 
 //Login for admins
-router.post('/login', AdminController.login);
+router.post('/login',    
+    validate_admin_middleware.validateFieldsAndValuesOnLogin,
+    validate_admin_middleware.checkEmailOnLogin,
+    AdminController.login
+);
 
 module.exports = router;
