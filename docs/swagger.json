@@ -25,13 +25,13 @@
   } ],
   "tags" : [ {
     "name" : "Clientes",
-    "description" : "Este endpoint diz respeito a todas as operações relacionadas aos clientes do sistema (os clientes são a entidade core da API). Considere os clientes como usuários finais do sistema (que apenas teriam direito de se cadastrar e consultar outras informações não sensíveis no sistema, como produtos por exemplo).\n"
+    "description" : "Essas rotas se referem a todas as operações relacionadas aos clientes do sistema (os clientes são a entidade core da API). Considere os clientes como usuários finais do sistema (que apenas teriam direito de se cadastrar e consultar outras informações não sensíveis no sistema, como produtos por exemplo).\n"
   }, {
     "name" : "Endereços",
     "description" : "Este endpoint diz respeito a todas as operações relacionadas aos endereços cadastrados no sistema. Um endereço está obrigatóriamente atrelado a um cliente.\n### 1:n \nUm cliente pode ter muitos endereços cadastros no sistema, cada qual com um título definido por ele.\n"
   }, {
     "name" : "Admin",
-    "description" : "Este endpoint está relacionado à entidade de administradores do sistema. Os administradores são pessoas com permissões para cadastrar/listar/alterar/deletar clientes, endereços e permissões de todo o universo sistêmico. Administradores com  permissão para atrelar permissões são capazes de atrelar permissões a outros administradores. OBS: Um cliente nunca será um administrador do sistema, pois são duas entidades totalmente distintas.\n"
+    "description" : "Estas rotas são relacionadas à entidade de administradores do sistema. Os administradores são pessoas com permissões para cadastrar/listar/alterar/deletar clientes, endereços e permissões de todo o universo sistêmico. Administradores com  permissão para atrelar permissões são capazes de atrelar permissões a outros administradores. OBS: Um cliente nunca será um administrador do sistema, pois são duas entidades totalmente distintas.\n"
   }, {
     "name" : "Cliente_Model",
     "description" : "<SchemaDefinition schemaRef=\"#/components/schemas/Cliente_GET\" />\n",
@@ -50,7 +50,7 @@
       "get" : {
         "tags" : [ "Clientes" ],
         "summary" : "Listar todos os clientes cadastrados",
-        "description" : "Essa rota retorna informações de id, nome e email de todos os clientes cadastrados no sistema.",
+        "description" : "Essa rota retorna informações de id, nome e email de todos os clientes cadastrados no sistema.\n",
         "responses" : {
           "200" : {
             "description" : "OK",
@@ -984,7 +984,7 @@
                   "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
-                  "EMAIL já registrado" : {
+                  "No Body" : {
                     "value" : {
                       "error" : {
                         "name" : "ConflictError",
@@ -1195,6 +1195,85 @@
                       "type" : "integer"
                     }
                   }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Erro de autenticação",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Usuário não autenticado."
+                      }
+                    }
+                  },
+                  "Sem permissão" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Não autorizado para realizar esta operação."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409" : {
+            "description" : "Já registrado",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "EMAIL já registrado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "ConflictError",
+                        "message" : "Erro - Este email já está registrado para uma conta de administrador."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{id_admin}/permissions" : {
+      "post" : {
+        "tags" : [ "Admin" ],
+        "summary" : "Adiciona permissions para uma conta de administrador",
+        "description" : "Esta rota permite atrelar permissões existentes no sistema para um administrador específico (através de seu id). A relação de permissões para administradores é de M:N.\n",
+        "parameters" : [ {
+          "name" : "id_admin",
+          "in" : "path",
+          "description" : "Id de um administrador",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "$ref" : "#/components/schemas/Admin_Permissions_GET"
                 }
               }
             }
@@ -1437,6 +1516,48 @@
             "type" : "string"
           },
           "confirmasenha" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Admin_Permissions_GET" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "number"
+          },
+          "nome" : {
+            "type" : "string"
+          },
+          "permissions" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Give_Permissions_GET"
+            }
+          }
+        }
+      },
+      "Permissions_GET" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "number"
+          },
+          "titulo" : {
+            "type" : "string"
+          },
+          "descricao" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Give_Permissions_GET" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "number"
+          },
+          "titulo" : {
             "type" : "string"
           }
         }
