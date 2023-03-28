@@ -1313,19 +1313,19 @@
                   "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
-                  "Erro no campo senha" : {
+                  "Erro no campo nome" : {
                     "value" : {
                       "error" : {
                         "name" : "BadRequestError",
-                        "message" : "O campo 'permissions' deve ser passado."
+                        "message" : "O campo 'nome' deve ser passado."
                       }
                     }
                   },
-                  "Erro no valor do campo nome" : {
+                  "Erro no valor do campo email" : {
                     "value" : {
                       "error" : {
                         "name" : "BadRequestError",
-                        "message" : "O campo permissions não pode ser vazio!"
+                        "message" : "O campo email não pode ser vazio!"
                       }
                     }
                   },
@@ -1370,7 +1370,7 @@
             }
           },
           "404" : {
-            "description" : "Permission não encontrada",
+            "description" : "Admin não encontrado",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -1381,7 +1381,7 @@
                     "value" : {
                       "error" : {
                         "name" : "NotFoundError",
-                        "message" : "ERRO - Permission de Id (x) não encontrada no sistema."
+                        "message" : "ERRO - Não existe um admin com id x."
                       }
                     }
                   }
