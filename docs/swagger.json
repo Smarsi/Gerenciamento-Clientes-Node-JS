@@ -2,14 +2,14 @@
   "openapi" : "3.0.0",
   "info" : {
     "title" : "API Gerenciamento de clientes",
-    "description" : "# Introdução\n\nEsta é uma API criada por [Richard Smarsi](https://www.github.com/smarsi) para gerenciamento de clientes, feita para exemplificar conhecimentos de NodeJs, ExpressJs, MySQL e Swagger.\n\nO objetivo core desta aplicação é de ser um sistema simples, porém que permita evoluções para ser implementado dentro de um sistema mais complexo futuramente.\n\nNo momento a API está em sua primeira versão e ainda não tem suporte para autenticação. Em suas próximas versões será implementado o funcionamento com tokens JWT e gerenciamento de sessões de usuários.\n\n\n# Sobre a Documentação\n\nEsta API está documentada seguindo o modelo **Open API**. Toda a documentação foi criada utilizando o **Swagger**. Este template utilizado nesta página de documentação é o Redocly que pode ser encontrado no [Github Redocly](https://www.github.com/Redocly/redoc).\n",
+    "description" : "# Introdução\nEsta é uma API criada por [Richard Smarsi](https://www.github.com/smarsi) para gerenciamento de clientes, feita para exemplificar conhecimentos de NodeJs, ExpressJs, MySQL e Swagger. Além disso, também é oportunidade para exibir  conhecimentos como login, armazenamento de senhas, sessões e permissões dentro de sistemas.\n\nO objetivo core desta aplicação é de ser um sistema simples, porém que permita evoluções para ser implementado dentro de um sistema mais complexo futuramente.\n\nNo momento a API está em sua primeira versão. O tipo de autenticação usada é BarearToken implementado com JWT.\n\n\n# Sobre a Documentação\n\nEsta API está documentada seguindo o modelo **Open API**. Toda a documentação foi criada utilizando o **Swagger**. O template utilizado nesta página de documentação é o Redocly, que pode ser encontrado no [Github Redocly](https://www.github.com/Redocly/redoc).\n",
     "contact" : {
       "email" : "ricsmarsi@gmail.com"
     },
     "version" : "v1.0.0",
     "x-logo" : {
       "url" : "https://user-images.githubusercontent.com/38111460/226025407-0d47cacd-cd6f-41b9-83a5-1c96f9547270.png",
-      "altText" : "Petstore logo"
+      "altText" : "Customers Management Logo"
     }
   },
   "externalDocs" : {
@@ -20,15 +20,18 @@
     "url" : "https://virtserver.swaggerhub.com/RICSMARSI/GerenciamentoDeClientes/v1.0.0",
     "description" : "SwaggerHub"
   }, {
-    "url" : "http://localhost:3000",
+    "url" : "http://localhost:3000/api",
     "description" : "Ambiente de desenvolvimento"
   } ],
   "tags" : [ {
     "name" : "Clientes",
-    "description" : "Tudo sobre clientes"
+    "description" : "Este endpoint diz respeito a todas as operações relacionadas aos clientes do sistema (os clientes são a entidade core da API). Considere os clientes como usuários finais do sistema (que apenas teriam direito de se cadastrar e consultar outras informações não sensíveis no sistema, como produtos por exemplo).\n"
   }, {
     "name" : "Endereços",
-    "description" : "Tudo sobre endereços de clientes"
+    "description" : "Este endpoint diz respeito a todas as operações relacionadas aos endereços cadastrados no sistema. Um endereço está obrigatóriamente atrelado a um cliente.\n### 1:n \nUm cliente pode ter muitos endereços cadastros no sistema, cada qual com um título definido por ele.\n"
+  }, {
+    "name" : "Admin",
+    "description" : "Este endpoint está relacionado à entidade de administradores do sistema. Os administradores são pessoas com permissões para cadastrar/listar/alterar/deletar clientes, endereços e permissões de todo o universo sistêmico. Administradores com  permissão para atrelar permissões são capazes de atrelar permissões a outros administradores. OBS: Um cliente nunca será um administrador do sistema, pois são duas entidades totalmente distintas.\n"
   }, {
     "name" : "Cliente_Model",
     "description" : "<SchemaDefinition schemaRef=\"#/components/schemas/Cliente_GET\" />\n",
@@ -37,13 +40,17 @@
     "name" : "Endereco_Model",
     "description" : "<SchemaDefinition schemaRef=\"#/components/schemas/Endereco_GET\"/>\n",
     "x-displayName" : "Endereço Model"
+  }, {
+    "name" : "Admin_Model",
+    "description" : "<SchemaDefinition schemaRef=\"#/components/schemas/Admin_GET\"/>\n",
+    "x-displayName" : "Admin Model"
   } ],
   "paths" : {
     "/cliente" : {
       "get" : {
         "tags" : [ "Clientes" ],
-        "summary" : "Listagem de clientes",
-        "description" : "Essa rota será responsável por listar todos os clientes cadastrados no sistema",
+        "summary" : "Listar todos os clientes cadastrados",
+        "description" : "Essa rota retorna informações de id, nome e email de todos os clientes cadastrados no sistema.",
         "responses" : {
           "200" : {
             "description" : "OK",
@@ -62,8 +69,8 @@
       },
       "post" : {
         "tags" : [ "Clientes" ],
-        "summary" : "Cadastro de clientes",
-        "description" : "Essa rota será responsável por cadastrar clientes no sistema",
+        "summary" : "Cadastrar um novo cliente",
+        "description" : "Essa rota é responsável por cadastrar clientes no sistema. Vale ressaltar que para um cliente ser cadastrado no sistema ele deve ter obrigatóriamente um endereço atrelado. Quando um novo cliente é cadastrado, automaticamente são inseridos  dados nas tabelas: Cliente, Conta e Enderecos.\n",
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -100,7 +107,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_200_1"
+                  "$ref" : "#/components/schemas/inline_response_200_create_cliente"
                 }
               }
             }
@@ -110,17 +117,23 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_400"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
-                  "erro campo senha" : {
+                  "Erro no campo senha" : {
                     "value" : {
-                      "mensagem" : "O campo 'senha' deve ser passado"
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo 'senha' deve ser passado."
+                      }
                     }
                   },
-                  "erro valor nome" : {
+                  "Erro no valor do campo nome" : {
                     "value" : {
-                      "mensagem" : "O campo 'nome' não deve ser vazio"
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo nome não pode ser vazio!"
+                      }
                     }
                   }
                 }
@@ -128,16 +141,27 @@
             }
           },
           "401" : {
-            "description" : "A senha e confirmação de senha não conferem",
+            "description" : "Erro de autenticação",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_400"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
-                  "erro confirmacao senha" : {
+                  "Não autenticado" : {
                     "value" : {
-                      "mensagem" : "A senha e confirmação de senha não conferem"
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Usuário não autenticado."
+                      }
+                    }
+                  },
+                  "Sem permissão" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Não autorizado para realizar esta operação."
+                      }
                     }
                   }
                 }
@@ -145,21 +169,47 @@
             }
           },
           "403" : {
+            "description" : "Erro na confirmação de senha",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Senha e confirmação de senha" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "ForbiddenError",
+                        "message" : "A senha e confirmação de senha não conferem."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409" : {
             "description" : "CPF ou Email já registrados no sistema",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_400"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
-                  "cpf existente" : {
+                  "CPF já registrado" : {
                     "value" : {
-                      "mensagem" : "ERRO - CPF já registrado"
+                      "error" : {
+                        "name" : "ConflictError",
+                        "message" : "Erro - Este CPF já está registrado no sistema."
+                      }
                     }
                   },
-                  "email existente" : {
+                  "EMAIL já registrado" : {
                     "value" : {
-                      "mensagem" : "ERRO - EMAIL já registrado"
+                      "error" : {
+                        "name" : "ConflictError",
+                        "message" : "Erro - Este email já está registrado no sistema."
+                      }
                     }
                   }
                 }
@@ -171,12 +221,15 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_400"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
-                  "cpf invalido" : {
+                  "CPF inválido" : {
                     "value" : {
-                      "mensagem" : "CPF Inválido"
+                      "error" : {
+                        "name" : "UnprocessableError",
+                        "message" : "ERRO - CPF inválido."
+                      }
                     }
                   }
                 }
@@ -188,12 +241,15 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_400"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
-                  "erro interno" : {
+                  "Internal Error" : {
                     "value" : {
-                      "mensagem" : "Erro interno. Tente novamente mais tarde."
+                      "error" : {
+                        "name" : "InternalError",
+                        "message" : "Erro interno. Tente novamente mais tarde."
+                      }
                     }
                   }
                 }
@@ -206,8 +262,8 @@
     "/cliente/{id_cliente}" : {
       "get" : {
         "tags" : [ "Clientes" ],
-        "summary" : "Pega informações de um cliente específico recebendo o Id",
-        "description" : "Pega cliente pelo Id",
+        "summary" : "Consultar informações de um cliente específico.",
+        "description" : "Este endpoint pega informações de um cliente específico através de seu Id. Retorna dados de Id, Nome, Email e CPF.\n",
         "parameters" : [ {
           "name" : "id_cliente",
           "in" : "path",
@@ -227,7 +283,75 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/inline_response_200_2"
+                    "$ref" : "#/components/schemas/inline_response_200_get_specifc_cliente"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Erro de autenticação",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Usuário não autenticado."
+                      }
+                    }
+                  },
+                  "Sem permissão" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Não autorizado para realizar esta operação."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Não encontrado",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "NotFoundError",
+                        "message" : "ERRO - ID (x) não encontrado no sistema."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Erro interno",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Internal Error" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "InternalError",
+                        "message" : "Erro interno. Tente novamente mais tarde."
+                      }
+                    }
                   }
                 }
               }
@@ -238,7 +362,7 @@
       "put" : {
         "tags" : [ "Clientes" ],
         "summary" : "Altera informações de um cliente específico recebendo o Id",
-        "description" : "Altera informações de um cliente pelo Id",
+        "description" : "Esta rota permite alterar informações de um cliente específico  através de seu Id. Os campos que podem ser alterados são: Nome e Email.\n",
         "parameters" : [ {
           "name" : "id_cliente",
           "in" : "path",
@@ -250,13 +374,35 @@
             "type" : "integer"
           }
         } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Cliente_PUT"
+              },
+              "examples" : {
+                "cliente" : {
+                  "value" : {
+                    "nome" : "Hebert Richards",
+                    "email" : "heds@email.com"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses" : {
           "200" : {
             "description" : "OK - Sucesso",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_400"
+                  "type" : "object",
+                  "properties" : {
+                    "mensagem" : {
+                      "type" : "string"
+                    }
+                  }
                 },
                 "examples" : {
                   "sucesso" : {
@@ -269,16 +415,55 @@
             }
           },
           "400" : {
-            "description" : "Email já registrado",
+            "description" : "Campos ou valores incorretos",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Mensagem"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
-                  "erro" : {
+                  "Erro no campo senha" : {
                     "value" : {
-                      "mensagem" : "ERRO - Este email já registrado por outro usuário no sistema."
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo 'nome' deve ser passado."
+                      }
+                    }
+                  },
+                  "Erro no valor do campo nome" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo email não pode ser vazio!"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Erro de autenticação",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Usuário não autenticado."
+                      }
+                    }
+                  },
+                  "Sem permissão" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Não autorizado para realizar esta operação."
+                      }
                     }
                   }
                 }
@@ -286,16 +471,19 @@
             }
           },
           "404" : {
-            "description" : "Id incorreto",
+            "description" : "Não encontrado",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Mensagem"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
-                  "erro" : {
+                  "Não autenticado" : {
                     "value" : {
-                      "mensagem" : "ERRO - Não existe um cliente com este ID (x) cadastrado no sistema."
+                      "error" : {
+                        "name" : "NotFoundError",
+                        "message" : "ERRO - ID (x) não encontrado no sistema."
+                      }
                     }
                   }
                 }
@@ -303,21 +491,19 @@
             }
           },
           "409" : {
-            "description" : "Erro de campos incorretos",
+            "description" : "Email já registrado por outro usuário",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Mensagem"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
-                  "erro campo" : {
+                  "EMAIL já registrado" : {
                     "value" : {
-                      "mensagem" : "O campo 'x' deve ser passado."
-                    }
-                  },
-                  "erro valor" : {
-                    "value" : {
-                      "mensagem" : "O valor do campo 'x' não pode ser vazio!"
+                      "error" : {
+                        "name" : "ConflictError",
+                        "message" : "Erro - Este email já está registrado no sistema."
+                      }
                     }
                   }
                 }
@@ -329,7 +515,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Mensagem"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
                   "erro interno" : {
@@ -362,17 +548,48 @@
           "200" : {
             "description" : "OK - Sucesso"
           },
-          "404" : {
-            "description" : "Id incorreto",
+          "401" : {
+            "description" : "Erro de autenticação",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Mensagem"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
-                  "erro" : {
+                  "Não autenticado" : {
                     "value" : {
-                      "mensagem" : "ERRO - Não existe um cliente com este ID (x) cadastrado no sistema."
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Usuário não autenticado."
+                      }
+                    }
+                  },
+                  "Sem permissão" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Não autorizado para realizar esta operação."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Não encontrado",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "NotFoundError",
+                        "message" : "ERRO - ID (x) não encontrado no sistema."
+                      }
                     }
                   }
                 }
@@ -384,7 +601,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Mensagem"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
                   "erro interno" : {
@@ -426,17 +643,48 @@
               }
             }
           },
-          "404" : {
-            "description" : "Id incorreto",
+          "401" : {
+            "description" : "Erro de autenticação",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Mensagem"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
-                  "erro" : {
+                  "Não autenticado" : {
                     "value" : {
-                      "mensagem" : "ERRO - Não existe um cliente com este ID (x) cadastrado no sistema."
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Usuário não autenticado."
+                      }
+                    }
+                  },
+                  "Sem permissão" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Não autorizado para realizar esta operação."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Não encontrado",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "NotFoundError",
+                        "message" : "ERRO - ID (x) não encontrado no sistema."
+                      }
                     }
                   }
                 }
@@ -448,12 +696,12 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Mensagem"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
                   "erro" : {
                     "value" : {
-                      "mensagem" : "ERRO - O cliente não contém nenhum endereço cadastrado"
+                      "mensagem" : "ERRO - O cliente não contém nenhum endereço cadastrado."
                     }
                   }
                 }
@@ -464,8 +712,8 @@
       },
       "post" : {
         "tags" : [ "Endereços" ],
-        "summary" : "Cadastro de endereço para um cliente",
-        "description" : "Essa rota será responsável por cadastrar um novo endereço para um cliente recebendo seu Id",
+        "summary" : "Cadastro de endereço para um cliente específico",
+        "description" : "Essa rota será responsável por cadastrar um novo endereço para um cliente através de seu Id",
         "parameters" : [ {
           "name" : "id_cliente",
           "in" : "path",
@@ -516,17 +764,23 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_400"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
-                  "erro campo" : {
+                  "Erro no campo senha" : {
                     "value" : {
-                      "mensagem" : "O campo 'logradouro' do endereco deve ser passado"
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo 'titulo_endereco' deve ser passado."
+                      }
                     }
                   },
-                  "erro valor" : {
+                  "Erro no valor do campo nome" : {
                     "value" : {
-                      "mensagem" : "O campo 'numero' não deve ser vazio"
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo bairro não pode ser vazio!"
+                      }
                     }
                   }
                 }
@@ -534,14 +788,62 @@
             }
           },
           "401" : {
-            "description" : "Sem Body",
+            "description" : "Erro de autenticação",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_400"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
-                  "body error" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Usuário não autenticado."
+                      }
+                    }
+                  },
+                  "Sem permissão" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Não autorizado para realizar esta operação."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Não encontrado",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "NotFoundError",
+                        "message" : "ERRO - ID (x) não encontrado no sistema."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409" : {
+            "description" : "No body",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "erro" : {
                     "value" : {
                       "mensagem" : "ERRO - Um 'body' deve ser passado para esta requisição."
                     }
@@ -603,17 +905,23 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_400"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
-                  "erro campo" : {
+                  "Erro no campo senha" : {
                     "value" : {
-                      "mensagem" : "O campo 'logradouro' do endereco deve ser passado"
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo 'numero' do endereco deve ser passado."
+                      }
                     }
                   },
-                  "erro valor" : {
+                  "Erro no valor do campo nome" : {
                     "value" : {
-                      "mensagem" : "O campo 'numero' não deve ser vazio"
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo titulo_endereco não pode ser vazio!"
+                      }
                     }
                   }
                 }
@@ -621,16 +929,27 @@
             }
           },
           "401" : {
-            "description" : "Sem Body",
+            "description" : "Erro de autenticação",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_400"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
-                  "body error" : {
+                  "Não autenticado" : {
                     "value" : {
-                      "mensagem" : "ERRO - Um 'body' deve ser passado para esta requisição."
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Usuário não autenticado."
+                      }
+                    }
+                  },
+                  "Sem permissão" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Não autorizado para realizar esta operação."
+                      }
                     }
                   }
                 }
@@ -638,16 +957,56 @@
             }
           },
           "404" : {
-            "description" : "Id incorreto",
+            "description" : "Não encontrado",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Mensagem"
+                  "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
-                  "erro" : {
+                  "Não autenticado" : {
                     "value" : {
-                      "mensagem" : "ERRO - Não existe um endereço com o id passado (x)"
+                      "error" : {
+                        "name" : "NotFoundError",
+                        "message" : "ERRO - ID (x) não encontrado no sistema."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409" : {
+            "description" : "No body",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "EMAIL já registrado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "ConflictError",
+                        "message" : "ERRO - Um 'body' deve ser passado para esta requisição."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Erro interno",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "erro interno" : {
+                    "value" : {
+                      "mensagem" : "Erro interno. Tente novamente mais tarde."
                     }
                   }
                 }
@@ -658,8 +1017,8 @@
       },
       "delete" : {
         "tags" : [ "Endereços" ],
-        "summary" : "Deleta as informações de um endereço específico recebendo o Id",
-        "description" : "Deleta informações de um endereço pelo Id",
+        "summary" : "Deleta um endereço específico",
+        "description" : "Apaga um endereço pelo seu Id",
         "parameters" : [ {
           "name" : "id_endereco",
           "in" : "path",
@@ -674,6 +1033,199 @@
         "responses" : {
           "200" : {
             "description" : "OK - Sucesso"
+          },
+          "401" : {
+            "description" : "Erro de autenticação",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Usuário não autenticado."
+                      }
+                    }
+                  },
+                  "Sem permissão" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Não autorizado para realizar esta operação."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Não encontrado",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "NotFoundError",
+                        "message" : "ERRO - ID (x) não encontrado no sistema."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Erro interno",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "erro interno" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "InternalError",
+                        "message" : "Erro interno. Tente novamente mais tarde."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/listAccounts" : {
+      "get" : {
+        "tags" : [ "Admin" ],
+        "summary" : "Lista todas as contas de admins registrados no sistema.",
+        "description" : "Exibe todas as contas de administradores registradas no sistema. Por ser de caráter 'sigiloso' está rota está permitida apenas para  alguns administradores que tem a permissão de listar outras contas de admin.\n",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Admin_GET"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Erro de autenticação",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Usuário não autenticado."
+                      }
+                    }
+                  },
+                  "Sem permissão" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Não autorizado para realizar esta operação."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/register" : {
+      "post" : {
+        "tags" : [ "Admin" ],
+        "summary" : "Cria uma nova conta de administrador",
+        "description" : "Esta rota permite cadastrar um novo administrador no sistema. Vale ressaltar que as tabelas que armazenam as contas de administradores e clientes do sistema são totalmente diferentes, o que impede que qualquer cliente seja um administrador do sistema propositalmente. A ideia aqui é separar ao máximo uma entidade de outra.\n",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Admin_POST"
+              },
+              "examples" : {
+                "admin" : {
+                  "value" : {
+                    "nome" : "Fulano de Tal",
+                    "email" : "novoadministrador@minhaempresa.com.br",
+                    "senha" : "minhasenhapersonalizada",
+                    "confirmasenha" : "minhasenhapersonalizada"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "properties" : {
+                    "newAdmin" : {
+                      "type" : "object",
+                      "$ref" : "#/components/schemas/Admin_GET"
+                    },
+                    "id_conta" : {
+                      "type" : "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Erro de autenticação",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Usuário não autenticado."
+                      }
+                    }
+                  },
+                  "Sem permissão" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Não autorizado para realizar esta operação."
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -695,12 +1247,6 @@
             "description" : "Pode ser passado com ou sem os caracteres especiais (' . ' e ' - ')"
           },
           "email" : {
-            "type" : "string"
-          },
-          "senha" : {
-            "type" : "string"
-          },
-          "confirmasenha" : {
             "type" : "string"
           },
           "updatedAt" : {
@@ -733,6 +1279,18 @@
           },
           "endereco" : {
             "$ref" : "#/components/schemas/Cliente_POST_endereco"
+          }
+        }
+      },
+      "Cliente_PUT" : {
+        "required" : [ "nome", "email" ],
+        "type" : "object",
+        "properties" : {
+          "nome" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
           }
         }
       },
@@ -822,14 +1380,6 @@
           }
         }
       },
-      "Mensagem" : {
-        "type" : "object",
-        "properties" : {
-          "mensagem" : {
-            "type" : "string"
-          }
-        }
-      },
       "Cliente_POST_endereco" : {
         "required" : [ "bairro", "cep", "cidade", "estado", "logradouro", "numero", "titulo_endereco" ],
         "type" : "object",
@@ -860,6 +1410,37 @@
           }
         }
       },
+      "Admin_GET" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "number"
+          },
+          "nome" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Admin_POST" : {
+        "type" : "object",
+        "properties" : {
+          "nome" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "senha" : {
+            "type" : "string"
+          },
+          "confirmasenha" : {
+            "type" : "string"
+          }
+        }
+      },
       "inline_response_200" : {
         "type" : "object",
         "properties" : {
@@ -874,7 +1455,7 @@
           }
         }
       },
-      "inline_response_200_1" : {
+      "inline_response_200_create_cliente" : {
         "type" : "object",
         "properties" : {
           "cliente" : {
@@ -885,15 +1466,7 @@
           }
         }
       },
-      "inline_response_400" : {
-        "type" : "object",
-        "properties" : {
-          "mensagem" : {
-            "type" : "string"
-          }
-        }
-      },
-      "inline_response_200_2" : {
+      "inline_response_200_get_specifc_cliente" : {
         "type" : "object",
         "properties" : {
           "id" : {
@@ -916,6 +1489,22 @@
           },
           "updatedAt" : {
             "type" : "string"
+          }
+        }
+      },
+      "inline_error_response" : {
+        "type" : "object",
+        "properties" : {
+          "error" : {
+            "type" : "object",
+            "properties" : {
+              "name" : {
+                "type" : "string"
+              },
+              "message" : {
+                "type" : "string"
+              }
+            }
           }
         }
       }
