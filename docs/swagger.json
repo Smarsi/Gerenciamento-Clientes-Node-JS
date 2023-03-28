@@ -1160,6 +1160,25 @@
         "tags" : [ "Admin" ],
         "summary" : "Cria uma nova conta de administrador",
         "description" : "Esta rota permite cadastrar um novo administrador no sistema. Vale ressaltar que as tabelas que armazenam as contas de administradores e clientes do sistema são totalmente diferentes, o que impede que qualquer cliente seja um administrador do sistema propositalmente. A ideia aqui é separar ao máximo uma entidade de outra.\n",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Admin_POST"
+              },
+              "examples" : {
+                "admin" : {
+                  "value" : {
+                    "nome" : "Fulano de Tal",
+                    "email" : "novoadministrador@minhaempresa.com.br",
+                    "senha" : "minhasenhapersonalizada",
+                    "confirmasenha" : "minhasenhapersonalizada"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses" : {
           "200" : {
             "description" : "OK",
@@ -1401,6 +1420,23 @@
             "type" : "string"
           },
           "email" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Admin_POST" : {
+        "type" : "object",
+        "properties" : {
+          "nome" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "senha" : {
+            "type" : "string"
+          },
+          "confirmasenha" : {
             "type" : "string"
           }
         }
