@@ -40,7 +40,7 @@ const checkIfAlreadyRegistred = async (request, response, next) => {
     });
 
     if(find_by_titulo.length > 0){
-        next(new err.ConflictError(`Já existe uma permissão (${titulo}) cadastrada no sistema.`));
+        next(new err.ConflictError(`Erro - Já existe uma permissão (${titulo}) cadastrada no sistema.`));
         return
     }else{
         next();
