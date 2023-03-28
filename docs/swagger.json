@@ -353,7 +353,12 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_error_response"
+                  "type" : "object",
+                  "properties" : {
+                    "mensagem" : {
+                      "type" : "string"
+                    }
+                  }
                 },
                 "examples" : {
                   "sucesso" : {
@@ -442,7 +447,7 @@
             }
           },
           "409" : {
-            "description" : "Email já registrados por outro usuário",
+            "description" : "Email já registrado por outro usuário",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -499,17 +504,76 @@
           "200" : {
             "description" : "OK - Sucesso"
           },
-          "404" : {
-            "description" : "Id incorreto",
+          "400" : {
+            "description" : "Campos ou valores incorretos",
             "content" : {
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
-                  "erro" : {
+                  "Erro no campo senha" : {
                     "value" : {
-                      "mensagem" : "ERRO - Não existe um cliente com este ID (x) cadastrado no sistema."
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo 'nome' deve ser passado."
+                      }
+                    }
+                  },
+                  "Erro no valor do campo nome" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "BadRequestError",
+                        "message" : "O campo email não pode ser vazio!"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Erro de autenticação",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Usuário não autenticado."
+                      }
+                    }
+                  },
+                  "Sem permissão" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Não autorizado para realizar esta operação."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Não encontrado",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "NotFoundError",
+                        "message" : "ERRO - ID (x) não encontrado no sistema."
+                      }
                     }
                   }
                 }
