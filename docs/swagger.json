@@ -1116,15 +1116,9 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "object",
-                  "properties" : {
-                    "newAdmin" : {
-                      "type" : "object",
-                      "$ref" : "#/components/schemas/Admin_GET"
-                    },
-                    "id_conta" : {
-                      "type" : "integer"
-                    }
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Admin_GET"
                   }
                 }
               }
@@ -1172,9 +1166,16 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "allOf" : [ {
-                    "$ref" : "#/components/schemas/Admin_GET"
-                  } ]
+                  "type" : "object",
+                  "properties" : {
+                    "newAdmin" : {
+                      "type" : "object",
+                      "$ref" : "#/components/schemas/Admin_GET"
+                    },
+                    "id_conta" : {
+                      "type" : "integer"
+                    }
+                  }
                 }
               }
             }
