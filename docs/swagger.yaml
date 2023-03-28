@@ -1194,7 +1194,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/inline_error_response'
               examples:
-                Erro no campo senha:
+                Erro no campo email:
                   value:
                     error:
                       name: BadRequestError
@@ -1204,11 +1204,6 @@ paths:
                     error:
                       name: BadRequestError
                       message: O campo senha não pode ser vazio!
-                Erro lista:
-                  value:
-                    error:
-                      name: BadRequestError
-                      message: O campo permissions deve ser um array com ids.
         "401":
           description: Senha incorreta
           content:
