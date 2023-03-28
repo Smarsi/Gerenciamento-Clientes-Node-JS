@@ -1435,7 +1435,7 @@
     "/{id_admin}/permissions" : {
       "get" : {
         "tags" : [ "Admin" ],
-        "summary" : "Atualizar informações de uma conta admin",
+        "summary" : "Listar permissions de um admin",
         "description" : "Esta rota permite listar todas as permissions atreladas a uma conta de administrador. Esta listagem é feita por meio do Id do admin.\n",
         "parameters" : [ {
           "name" : "id_admin",
@@ -1456,6 +1456,54 @@
                 "schema" : {
                   "type" : "object",
                   "$ref" : "#/components/schemas/Admin_Permissions_GET"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Erro de autenticação",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Usuário não autenticado."
+                      }
+                    }
+                  },
+                  "Sem permissão" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Não autorizado para realizar esta operação."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Admin não encontrado",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não encontrado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "NotFoundError",
+                        "message" : "Erro - Não existe um admin com id x."
+                      }
+                    }
+                  }
                 }
               }
             }
