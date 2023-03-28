@@ -50,7 +50,7 @@
       "get" : {
         "tags" : [ "Clientes" ],
         "summary" : "Listar todos os clientes cadastrados",
-        "description" : "Essa rota retorna informações de id, nome e email de todos os clientes cadastrados no sistema.",
+        "description" : "Essa rota retorna informações de id, nome e email de todos os clientes cadastrados no sistema.\n",
         "responses" : {
           "200" : {
             "description" : "OK",
