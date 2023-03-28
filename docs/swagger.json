@@ -30,6 +30,9 @@
     "name" : "Endereços",
     "description" : "Este endpoint diz respeito a todas as operações relacionadas aos endereços cadastrados no sistema. Um endereço está obrigatóriamente atrelado a um cliente.\n### 1:n \nUm cliente pode ter muitos endereços cadastros no sistema, cada qual com um título definido por ele.\n"
   }, {
+    "name" : "Admin",
+    "description" : "Este endpoint está relacionado à entidade de administradores do sistema. Os administradores são pessoas com permissões para cadastrar/listar/alterar/deletar clientes, endereços e permissões de todo o universo sistêmico. Administradores com  permissão para atrelar permissões são capazes de atrelar permissões a outros administradores. OBS: Um cliente nunca será um administrador do sistema, pois são duas entidades totalmente distintas.\n"
+  }, {
     "name" : "Cliente_Model",
     "description" : "<SchemaDefinition schemaRef=\"#/components/schemas/Cliente_GET\" />\n",
     "x-displayName" : "Clientes Model"
