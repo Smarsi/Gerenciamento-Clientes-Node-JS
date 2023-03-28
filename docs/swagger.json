@@ -984,7 +984,7 @@
                   "$ref" : "#/components/schemas/inline_error_response"
                 },
                 "examples" : {
-                  "EMAIL já registrado" : {
+                  "No Body" : {
                     "value" : {
                       "error" : {
                         "name" : "ConflictError",
@@ -1226,6 +1226,26 @@
                 }
               }
             }
+          },
+          "409" : {
+            "description" : "Já registrado",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "EMAIL já registrado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "ConflictError",
+                        "message" : "Erro - Este email já está registrado para uma conta de administrador."
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1252,10 +1272,8 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/Admin_Permissions_GET"
-                  }
+                  "type" : "object",
+                  "$ref" : "#/components/schemas/Admin_Permissions_GET"
                 }
               }
             }
