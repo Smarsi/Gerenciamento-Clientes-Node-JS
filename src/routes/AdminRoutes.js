@@ -25,18 +25,26 @@ router.post('/register',
     AdminController.register
 );
 
-//Login for admins
-router.post('/login', AdminController.login);
+//Alter infos from a admin
+router.put('/update/:id_admin',
+    check_token_middleware.checkTokenAndSetupPermissions,
+    onlyWhoCan_middleware.can(['alter-admin']),
+    validate_admin_middleware.validateFieldsAndValuesOnPut,
+    validate_admin_middleware.checkIfIdExists,
+    validate_admin_middleware.checkIfAlreadyRegistred,
+    AdminController.update
+);
 
 //Get all permissions from a specific admin
 router.get('/:id_admin/permissions', 
     check_token_middleware.checkTokenAndSetupPermissions,
     onlyWhoCan_middleware.can(['list-permissions']),
+    validate_admin_middleware.checkIfIdExists,
     AdminController.getPermissionsByAdminId
 );
 
 //Relate new permissions for a admin
-router.post('/:id_admin/permissions',
+router.post('/:id_admin/give-permissions',
     check_token_middleware.checkTokenAndSetupPermissions,
     onlyWhoCan_middleware.can(['give-permissions']),
     validate_admin_middleware.validateFieldsAndValuesOnGiveAdminPermissions,
@@ -53,12 +61,7 @@ router.post('/:id_admin/remove-permissions',
     AdminController.removePermissions
 );
 
-//Alter infos from a admin
-router.put('/update/:id_admin',
-    check_token_middleware.checkTokenAndSetupPermissions,
-    onlyWhoCan_middleware.can(['alter-admin']),
-    AdminController.update
-);
-
+//Login for admins
+router.post('/login', AdminController.login);
 
 module.exports = router;

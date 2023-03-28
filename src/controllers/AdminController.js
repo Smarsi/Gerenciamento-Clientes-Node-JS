@@ -28,6 +28,9 @@ const register = async (request, response, next) => {
             }
         }
     } catch (error) {
+        if (newAdmin) {
+            await Admin.destroy({ where: { id: newAdmin.id } });
+        }
         console.log(error);
         next(new Error.InternalError("Erro interno. Tente novamente mais tarde."));
         return
@@ -44,22 +47,18 @@ const list = async (request, response) => {
     }
 };
 
-const update = async (request, response) => {
+const update = async (request, response, next) => {
     const { id_admin } = request.params;
     const { nome, email } = request.body;
 
-    if (id_admin) {
-        try {
-            const update_admin = await Admin.update({ nome, email }, { where: { id: id_admin } });
-            return response.status(200).json({ mensagem: `Admin ${id_admin} atualizado com sucesso.` });
-        } catch (error) {
-            console.log(error);
-            return response.status(500).json({ mensagem: `Erro interno. Tente novamente mais tarde.` });
-        }
-    } else {
-        return response.status(400).json({ mansagem: "ERRO - Um id válido deve ser passado no Path" });
+    try {
+        const update_admin = await Admin.update({ nome, email }, { where: { id: id_admin } });
+        return response.status(200).json({ mensagem: `Admin ${id_admin} atualizado com sucesso.` });
+    } catch (error) {
+        console.log(error);
+        next(new Error.InternalError("Erro interno. Tente novamente mais tarde."));
+        return
     }
-
 };
 
 const getPermissionsByAdminId = async (request, response) => {
@@ -81,7 +80,7 @@ const getPermissionsByAdminId = async (request, response) => {
     }
 };
 
-const givePermissions = async (request, response) => {
+const givePermissions = async (request, response, next) => {
     const { id_admin } = request.params;
     const { permissions } = request;
     try {
@@ -100,11 +99,12 @@ const givePermissions = async (request, response) => {
         return response.status(200).json(updatedAdmin);
     } catch (error) {
         console.log(error);
-        return response.status(500).json({ mensagem: "Erro interno. Tente novamente mais tarde." });
+        next(new Error.InternalError("Erro interno. Tente novamente mais tarde."));
+        return
     }
 };
 
-const removePermissions = async (request, response) => {
+const removePermissions = async (request, response, next) => {
     const { id_admin } = request.params;
     const { permissions } = request;
     try {
@@ -124,7 +124,8 @@ const removePermissions = async (request, response) => {
         return response.status(200).json(updatedAdmin);
     } catch (error) {
         console.log(error);
-        return response.status(500).json({ mensagem: "Erro interno. Tente novamente mais tarde." });
+        next(new Error.InternalError("Erro interno. Tente novamente mais tade. "));
+        return
     }
 };
 
