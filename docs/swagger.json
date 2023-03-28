@@ -37,6 +37,10 @@
     "name" : "Endereco_Model",
     "description" : "<SchemaDefinition schemaRef=\"#/components/schemas/Endereco_GET\"/>\n",
     "x-displayName" : "Endereço Model"
+  }, {
+    "name" : "Admin_Model",
+    "description" : "<SchemaDefinition schemaRef=\"#/components/schemas/Admin_GET\"/>\n",
+    "x-displayName" : "Endereço Model"
   } ],
   "paths" : {
     "/cliente" : {
@@ -1274,6 +1278,20 @@
             "type" : "string"
           },
           "estado" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Admin_GET" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "number"
+          },
+          "nome" : {
+            "type" : "string"
+          },
+          "email" : {
             "type" : "string"
           }
         }
