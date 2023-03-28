@@ -1435,6 +1435,7 @@
     "/{id_admin}/permissions" : {
       "get" : {
         "tags" : [ "Admin" ],
+        "summary" : "Atualizar informações de uma conta admin",
         "description" : "Esta rota permite listar todas as permissions atreladas a uma conta de administrador. Esta listagem é feita por meio do Id do admin.\n",
         "parameters" : [ {
           "name" : "id_admin",
