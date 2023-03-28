@@ -355,7 +355,7 @@
       "put" : {
         "tags" : [ "Clientes" ],
         "summary" : "Altera informações de um cliente específico recebendo o Id",
-        "description" : "Altera informações de um cliente pelo Id",
+        "description" : "Esta rota permite alterar informações de um cliente específico  através de seu Id. Os campos que podem ser alterados são: Nome e Email.\n",
         "parameters" : [ {
           "name" : "id_cliente",
           "in" : "path",
@@ -367,6 +367,23 @@
             "type" : "integer"
           }
         } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Cliente_PUT"
+              },
+              "examples" : {
+                "cliente" : {
+                  "value" : {
+                    "nome" : "Hebert Richards",
+                    "email" : "heds@email.com"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses" : {
           "200" : {
             "description" : "OK - Sucesso",
@@ -1130,6 +1147,18 @@
           },
           "endereco" : {
             "$ref" : "#/components/schemas/Cliente_POST_endereco"
+          }
+        }
+      },
+      "Cliente_PUT" : {
+        "required" : [ "nome", "email" ],
+        "type" : "object",
+        "properties" : {
+          "nome" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
           }
         }
       },
