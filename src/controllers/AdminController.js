@@ -129,7 +129,7 @@ const removePermissions = async (request, response, next) => {
     }
 };
 
-const login = async (request, response) => {
+const login = async (request, response, next) => {
     const { email, senha } = request.body;
     try {
         const findByEmail = await Admin.findOne({
@@ -144,6 +144,8 @@ const login = async (request, response) => {
                 const newToken = await Token.generateAdminToken(findByEmail.id);
                 return response.status(200).json({ token: newToken });
             }
+        }else{
+            next(new Error.NotFoundError("Erro - Conta não encontrada (verifique o e-mail)"));
         }
     } catch (error) {
         console.log(error);

@@ -6,7 +6,7 @@ router.get('/', (request, response) => {
 });
 
 router.get('/swagger', (request, response) => {
-    return response.sendFile(process.cwd() + "/docs/swagger.json");
+    return response.sendFile(process.cwd() + "/docs/swagger.yaml");
 });
 
 module.exports = router;
