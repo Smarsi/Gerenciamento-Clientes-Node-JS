@@ -1633,9 +1633,9 @@
   },
   "x-tagGroups" : [ {
     "name" : "General",
-    "tags" : [ "Clientes", "Endereços" ]
+    "tags" : [ "Clientes", "Endereços", "Admin" ]
   }, {
     "name" : "Models",
-    "tags" : [ "Cliente_Model", "Endereco_Model" ]
+    "tags" : [ "Cliente_Model", "Endereco_Model", "Admin_Model" ]
   } ]
 }
