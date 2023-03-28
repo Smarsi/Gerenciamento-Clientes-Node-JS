@@ -5,8 +5,7 @@ class Customer extends Model {
         super.init({
             nome: DataTypes.STRING,
             cpf: DataTypes.STRING(11),
-            email: DataTypes.STRING,
-            senha: DataTypes.STRING
+            email: DataTypes.STRING
         }, {
             sequelize: connection,
             tableName: 'cliente'
@@ -15,6 +14,7 @@ class Customer extends Model {
 
     static associate(models) {
         this.hasMany(models.Address, { foreignKey: 'cliente_id', as: 'enderecos' });
+        this.hasOne(models.Account, { foreignKey: 'cliente_id', as: 'conta' });
     }
 }
 
