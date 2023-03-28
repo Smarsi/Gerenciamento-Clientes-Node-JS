@@ -1198,19 +1198,19 @@ paths:
                   value:
                     error:
                       name: BadRequestError
-                      message: O campo 'permissions' deve ser passado.
-                Erro no valor do campo nome:
+                      message: O campo 'email' deve ser passado.
+                Erro no valor do campo senha:
                   value:
                     error:
                       name: BadRequestError
-                      message: O campo permissions não pode ser vazio!
+                      message: O campo senha não pode ser vazio!
                 Erro lista:
                   value:
                     error:
                       name: BadRequestError
                       message: O campo permissions deve ser um array com ids.
         "401":
-          description: Erro de autenticação
+          description: Senha incorreta
           content:
             application/json:
               schema:
@@ -1220,14 +1220,14 @@ paths:
                   value:
                     error:
                       name: UnauthorizedError
-                      message: Usuário não autenticado.
+                      message: Erro - Senha incorreta.
                 Sem permissão:
                   value:
                     error:
                       name: UnauthorizedError
                       message: Não autorizado para realizar esta operação.
         "404":
-          description: Permission não encontrada
+          description: Conta não encontrada
           content:
             application/json:
               schema:
@@ -1237,7 +1237,7 @@ paths:
                   value:
                     error:
                       name: NotFoundError
-                      message: ERRO - Permission de Id (x) não encontrada no sistema.
+                      message: Erro - Conta não encontrada (verifique o e-mail).
         "500":
           description: Erro interno
           content:
