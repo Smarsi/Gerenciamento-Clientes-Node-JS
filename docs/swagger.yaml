@@ -1356,9 +1356,9 @@ paths:
     delete:
       tags:
       - Permissions
-      summary: Criar Permissão
+      summary: Deletar Permissão
       description: |
-        Este endpoint permite criar uma nova permissão no sistema. Apenas administradores com a permissão de 'create-permissions' podem acessar esta rota.
+        Este endpoint permite deletar uma permissão do sistema. Apenas administradores com a permissão de 'create-permissions' podem acessar esta rota.
       parameters:
       - name: id_permission
         in: path
