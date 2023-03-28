@@ -1104,6 +1104,53 @@
           }
         }
       }
+    },
+    "/admin/listAccounts" : {
+      "get" : {
+        "tags" : [ "Admin" ],
+        "summary" : "Lista todas as contas de admins registrados no sistema.",
+        "description" : "Exibe todas as contas de administradores registradas no sistema. Por ser de caráter 'sigiloso' está rota está permitida apenas para  alguns administradores que tem a permissão de listar contas de admin.\n",
+        "responses" : {
+          "200" : {
+            "description" : "OK - Sucesso",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Admin_GET"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Erro de autenticação",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Usuário não autenticado."
+                      }
+                    }
+                  },
+                  "Sem permissão" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Não autorizado para realizar esta operação."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
