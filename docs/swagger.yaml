@@ -1352,6 +1352,66 @@ paths:
                     error:
                       name: InternalError
                       message: Erro interno. Tente novamente mais tarde.
+  /permissions/{id_permission}:
+    delete:
+      tags:
+      - Permissions
+      summary: Criar Permissão
+      description: |
+        Este endpoint permite criar uma nova permissão no sistema. Apenas administradores com a permissão de 'create-permissions' podem acessar esta rota.
+      parameters:
+      - name: id_permission
+        in: path
+        description: Id de uma permission cadastrada no sistema.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: OK - Sucesso
+        "401":
+          description: Erro de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Usuário não autenticado.
+                Sem permissão:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Não autorizado para realizar esta operação.
+        "404":
+          description: Permission não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não encontrado:
+                  value:
+                    error:
+                      name: NotFoundError
+                      message: ERRO - ID (x) não encontrado no sistema.
+        "500":
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                erro interno:
+                  value:
+                    error:
+                      name: InternalError
+                      message: Erro interno. Tente novamente mais tarde.
 components:
   schemas:
     Cliente_GET:
