@@ -1116,10 +1116,65 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : null
+                  "type" : "object",
+                  "properties" : {
+                    "newAdmin" : {
+                      "type" : "object",
+                      "$ref" : "#/components/schemas/Admin_GET"
+                    },
+                    "id_conta" : {
+                      "type" : "integer"
+                    }
                   }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Erro de autenticação",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não autenticado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Usuário não autenticado."
+                      }
+                    }
+                  },
+                  "Sem permissão" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "UnauthorizedError",
+                        "message" : "Não autorizado para realizar esta operação."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/register" : {
+      "post" : {
+        "tags" : [ "Admin" ],
+        "summary" : "Cria uma nova conta de administrador",
+        "description" : "Esta rota permite cadastrar um novo administrador no sistema. Vale ressaltar que as tabelas que armazenam as contas de administradores e clientes do sistema são totalmente diferentes, o que impede que qualquer cliente seja um administrador do sistema propositalmente. A ideia aqui é separar ao máximo uma entidade de outra.\n",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "allOf" : [ {
+                    "$ref" : "#/components/schemas/Admin_GET"
+                  } ]
                 }
               }
             }
