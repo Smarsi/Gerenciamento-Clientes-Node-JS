@@ -1239,7 +1239,7 @@
                     "value" : {
                       "error" : {
                         "name" : "ConflictError",
-                        "message" : "Erro - Este email já está registrado para uma conta de administrador."
+                        "message" : "Erro - Este email já está registrado para outra conta de administrador."
                       }
                     }
                   }
@@ -1389,6 +1389,26 @@
               }
             }
           },
+          "409" : {
+            "description" : "Já registrado",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_error_response"
+                },
+                "examples" : {
+                  "Não encontrado" : {
+                    "value" : {
+                      "error" : {
+                        "name" : "ConflictError",
+                        "message" : "Erro - Este email já está registrado para outra conta de administrador."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
           "500" : {
             "description" : "Erro interno",
             "content" : {
@@ -1405,6 +1425,36 @@
                       }
                     }
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{id_admin}/permissions" : {
+      "get" : {
+        "tags" : [ "Admin" ],
+        "description" : "Esta rota permite listar todas as permissions atreladas a uma conta de administrador. Esta listagem é feita por meio do Id do admin.\n",
+        "parameters" : [ {
+          "name" : "id_admin",
+          "in" : "path",
+          "description" : "Id de um administrador",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "$ref" : "#/components/schemas/Admin_Permissions_GET"
                 }
               }
             }
