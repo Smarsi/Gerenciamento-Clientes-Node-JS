@@ -3,9 +3,9 @@ const Endereco = require('../models/Address');
 const err = require('../errors');
 
 const validateFieldsAndValuesOnPost = async (request, response, next) => {
-    const {body} = request;
+    const { body } = request;
 
-    if(body){
+    if (body) {
         var addressKeys = Object.keys(body);
         var dictAddressFields = {
             "titulo_endereco": "",
@@ -19,32 +19,32 @@ const validateFieldsAndValuesOnPost = async (request, response, next) => {
         }
         var dictAddressKeys = Object.keys(dictAddressFields);
 
-        for(var y=0; y < dictAddressKeys.length; y++ ){
-            if(addressKeys.includes(dictAddressKeys[y]) == false){ //Se não encontrar algum campo que deveria ser passado
+        for (var y = 0; y < dictAddressKeys.length; y++) {
+            if (addressKeys.includes(dictAddressKeys[y]) == false) { //Se não encontrar algum campo que deveria ser passado
                 next(new err.BadRequestError(`O campo '${dictAddressKeys[y]}' do endereco deve ser passado.`));
                 return
             }
         }
-    }else{
+    } else {
         next(new err.ConflictError("ERRO - Um 'body' deve ser passado para esta requisição."));
         return
     }
 
     // ------- Validate Values -------
-    for(i in body){
-        if(body[i] == "" && i != "complemento"){
+    for (i in body) {
+        if (body[i] == "" && i != "complemento") {
             next(new err.BadRequestError(`O campo ${i} não pode ser vazio!`));
             return
-        }           
+        }
     }
 
     next(); //Se não cair em nenhum dos returns de erro continuar para a próxima tarefa.
 };
 
 const validateFieldsAndValuesOnPut = async (request, response, next) => {
-    const {body} = request;
+    const { body } = request;
 
-    if(body){
+    if (body) {
         var addressKeys = Object.keys(body);
         var dictAddressFields = {
             "titulo_endereco": "",
@@ -53,22 +53,23 @@ const validateFieldsAndValuesOnPut = async (request, response, next) => {
         }
         var dictAddressKeys = Object.keys(dictAddressFields);
 
-        for(var y=0; y < dictAddressKeys.length; y++ ){
-            if(addressKeys.includes(dictAddressKeys[y]) == false){ //Se não encontrar algum campo que deveria ser passado
+        // ------- Validate Fields -------
+        for (var y = 0; y < dictAddressKeys.length; y++) {
+            if (addressKeys.includes(dictAddressKeys[y]) == false) { //Se não encontrar algum campo que deveria ser passado
                 next(new err.BadRequestError(`O campo '${dictAddressKeys[y]}' do endereco deve ser passado.`));
             }
         }
-    }else{
+
+        // ------- Validate Values -------
+        for (i in body) {
+            if (body[i] == "" && i != "complemento") {
+                next(new err.BadRequestError(`O campo ${i} não pode ser vazio!`));
+                return
+            }
+        }
+    } else {
         next(new err.ConflictError("ERRO - Um 'body' deve ser passado para esta requisição."));
         return
-    }
-
-    // ------- Validate Values -------
-    for(i in body){
-        if(body[i] == "" && i != "complemento"){
-            next(new err.BadRequestError(`O campo ${i} não pode ser vazio!`));
-            return
-        }           
     }
 
     next(); //Se não cair em nenhum dos returns de erro continuar para a próxima tarefa.

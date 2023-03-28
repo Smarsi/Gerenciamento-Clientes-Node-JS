@@ -1,4 +1,5 @@
 const { Op } = require("sequelize");
+const Error = require('../errors');
 
 const Cliente = require("../models/Customer");
 const Conta = require("../models/Account");
@@ -12,11 +13,11 @@ const getAll = async (request, response) => {
     return response.status(200).json(Clientes);
 }
 
-const create = async (request, response) => {
+const create = async (request, response, next) => {
     var { nome, cpf, email, senha, confirmasenha } = request.body;
-    
-    if (senha === confirmasenha) {   
-        try {            
+
+    if (senha === confirmasenha) {
+        try {
             const cliente = await Cliente.create({ nome, cpf, email });
 
             //preparando parametros para criação do endereco e conta
@@ -28,27 +29,32 @@ const create = async (request, response) => {
                 return response.status(200).json({ cliente, endereco, id_conta: conta });
             } else {
                 const error = _internalDeleteById(cliente.id);
-                return response.status(500).json({ mensagem: "Erro interno. Tente novamente mais tarde." });
+                next(new Error.InternalError("Erro interno. Tente novamente mais tarde."));
             }
         } catch (error) {
             console.log(error);
-
-            return response.status(500).json({ mensagem: "Erro interno. Tente novamente mais tarde." })
+            next(new Error.InternalError("Erro interno. Tente novamente mais tarde."));
         }
 
     } else {
-        return response.status(401).json({ mensagem: "A senha e confirmação de senha não conferem." });
+        next(new Error.ForbiddenError("A senha e confirmação de senha não conferem."));
+        return
     }
 }
 
 const getById = async (request, response) => {
-    const { id_cliente } = request.params;
-    const cliente = await Cliente.findByPk(id_cliente);
-
-    return response.status(200).json(cliente);
+    try {
+        const { id_cliente } = request.params;
+        const cliente = await Cliente.findByPk(id_cliente, { attributes: ['id', 'nome', 'email', 'cpf'] });
+        return response.status(200).json(cliente);
+    } catch (error) {
+        console.log(error);
+        next(new Error.InternalError("Erro interno. Tente novamente mais tarde."));
+        return
+    }
 }
 
-const updateById = async (request, response) => {
+const updateById = async (request, response, next) => {
     const { id_cliente } = request.params;
     const { nome, email } = request.body;
 
@@ -63,10 +69,9 @@ const updateById = async (request, response) => {
     } catch (error) {
         console.log(error);
 
-        return response.status(500).json({ mensagem: "Erro interno. Tente novamente mais tarde" });
+        next(new Error.InternalError("Erro interno. Tente novamente mais tarde."));
+        return
     }
-
-
 }
 
 const deleteById = async (request, response) => {
@@ -74,11 +79,11 @@ const deleteById = async (request, response) => {
 
     try {
         //Deletando a conta do usuário
-        await Conta.destroy({ 
+        await Conta.destroy({
             where: {
                 cliente_id: id_cliente
             }
-         });
+        });
 
         await Cliente.destroy({
             where: {

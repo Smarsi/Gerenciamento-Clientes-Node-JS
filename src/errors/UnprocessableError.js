@@ -2,7 +2,7 @@ class UnprocessableError extends Error {
     constructor(message) {
         super(message);
         this.name = 'UnprocessableError';
-        this.statusCode = 404;
+        this.statusCode = 422;
     }
 }
 

@@ -70,7 +70,7 @@ const validateFieldsAndValuesOnPost = async(request, response, next) => {
     }
 
     if(body.senha !== body.confirmasenha){
-        next(new err.UnauthorizedError(`A senha e confirmação de senha não conferem.`));
+        next(new err.ForbbidenError(`A senha e confirmação de senha não conferem.`));
         return
     }
 
