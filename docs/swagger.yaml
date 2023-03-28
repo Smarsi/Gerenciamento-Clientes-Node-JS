@@ -39,6 +39,9 @@ tags:
 - name: Admin
   description: |
     Estas rotas são relacionadas à entidade de administradores do sistema. Os administradores são pessoas com permissões para cadastrar/listar/alterar/deletar clientes, endereços e permissões de todo o universo sistêmico. Administradores com  permissão para atrelar permissões são capazes de atrelar permissões a outros administradores. OBS: Um cliente nunca será um administrador do sistema, pois são duas entidades totalmente distintas.
+- name: Permissions
+  description: |
+    Estas rotas estão relacionadas à entidade de permissões. As permissões são regras que podem ser atreladas a administradores (e apenas a eles), para realizar operações dentro do sistema. Os clientes não tem permissão pois dentro desta API apenas fazemos o gerenciamento de clientes (ou seja, apenas um administrador poderia fazer isso). Em um ambiente mais completo os clientes teriam permissão de consultar dados não sensíveis (como produtos por exemplo). A API de gerenciamento de clientes não permite alteração (update) de permissões, sendo necessário deletar e criar uma nova em caso de erros.
 - name: Cliente_Model
   description: |
     <SchemaDefinition schemaRef="#/components/schemas/Cliente_GET" />
@@ -51,6 +54,10 @@ tags:
   description: |
     <SchemaDefinition schemaRef="#/components/schemas/Admin_GET"/>
   x-displayName: Admin Model
+- name: Permission_Model
+  description: |
+    <SchemaDefinition schemaRef="#/components/schemas/Permissions_GET"/>
+  x-displayName: Permission Model
 paths:
   /cliente:
     get:
@@ -1194,7 +1201,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/inline_error_response'
               examples:
-                Erro no campo senha:
+                Erro no campo email:
                   value:
                     error:
                       name: BadRequestError
@@ -1204,11 +1211,6 @@ paths:
                     error:
                       name: BadRequestError
                       message: O campo senha não pode ser vazio!
-                Erro lista:
-                  value:
-                    error:
-                      name: BadRequestError
-                      message: O campo permissions deve ser um array com ids.
         "401":
           description: Senha incorreta
           content:
@@ -1238,6 +1240,166 @@ paths:
                     error:
                       name: NotFoundError
                       message: Erro - Conta não encontrada (verifique o e-mail).
+        "500":
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                erro interno:
+                  value:
+                    error:
+                      name: InternalError
+                      message: Erro interno. Tente novamente mais tarde.
+  /permissions:
+    get:
+      tags:
+      - Permissions
+      summary: Listar Permissões
+      description: |
+        Permite relacionar todas as permissões previamente cadastradas no sistema.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Permissions_GET'
+        "500":
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                erro interno:
+                  value:
+                    error:
+                      name: InternalError
+                      message: Erro interno. Tente novamente mais tarde.
+    post:
+      tags:
+      - Permissions
+      summary: Criar Permissão
+      description: |
+        Este endpoint permite criar uma nova permissão no sistema. Apenas administradores com a permissão de 'create-permissions' podem acessar esta rota.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permissions_GET'
+        "400":
+          description: Campos ou valores incorretos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Erro no campo titulo:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo 'titulo' deve ser passado.
+                Erro no valor do campo descricao:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo descricao não pode ser vazio!
+        "401":
+          description: Erro de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Usuário não autenticado.
+                Sem permissão:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Não autorizado para realizar esta operação.
+        "409":
+          description: Já registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não encontrado:
+                  value:
+                    error:
+                      name: ConflictError
+                      message: Erro - Já existe uma permissão (titulo) cadastrada
+                        no sistema.
+        "500":
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                erro interno:
+                  value:
+                    error:
+                      name: InternalError
+                      message: Erro interno. Tente novamente mais tarde.
+  /permissions/{id_permission}:
+    delete:
+      tags:
+      - Permissions
+      summary: Deletar Permissão
+      description: |
+        Este endpoint permite deletar uma permissão do sistema. Apenas administradores com a permissão de 'create-permissions' podem acessar esta rota.
+      parameters:
+      - name: id_permission
+        in: path
+        description: Id de uma permission cadastrada no sistema.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: OK - Sucesso
+        "401":
+          description: Erro de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Usuário não autenticado.
+                Sem permissão:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Não autorizado para realizar esta operação.
+        "404":
+          description: Permission não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não encontrado:
+                  value:
+                    error:
+                      name: NotFoundError
+                      message: ERRO - ID (x) não encontrado no sistema.
         "500":
           description: Erro interno
           content:
@@ -1512,8 +1674,10 @@ x-tagGroups:
   - Clientes
   - Endereços
   - Admin
+  - Permissions
 - name: Models
   tags:
   - Cliente_Model
   - Endereco_Model
   - Admin_Model
+  - Permission_Model
