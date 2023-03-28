@@ -1268,6 +1268,31 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Permissions_GET'
+        "500":
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                erro interno:
+                  value:
+                    error:
+                      name: InternalError
+                      message: Erro interno. Tente novamente mais tarde.
+    post:
+      tags:
+      - Permissions
+      summary: Criar Permissão
+      description: |
+        Este endpoint permite criar uma nova permissão no sistema. Apenas administradores com a permissão de 'create-permissions' podem acessar esta rota.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permissions_GET'
         "400":
           description: Campos ou valores incorretos
           content:
@@ -1275,18 +1300,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/inline_error_response'
               examples:
-                Erro no campo email:
+                Erro no campo titulo:
                   value:
                     error:
                       name: BadRequestError
-                      message: O campo 'email' deve ser passado.
-                Erro no valor do campo senha:
+                      message: O campo 'titulo' deve ser passado.
+                Erro no valor do campo descricao:
                   value:
                     error:
                       name: BadRequestError
-                      message: O campo senha não pode ser vazio!
+                      message: O campo descricao não pode ser vazio!
         "401":
-          description: Senha incorreta
+          description: Erro de autenticação
           content:
             application/json:
               schema:
@@ -1296,14 +1321,14 @@ paths:
                   value:
                     error:
                       name: UnauthorizedError
-                      message: Erro - Senha incorreta.
+                      message: Usuário não autenticado.
                 Sem permissão:
                   value:
                     error:
                       name: UnauthorizedError
                       message: Não autorizado para realizar esta operação.
-        "404":
-          description: Conta não encontrada
+        "409":
+          description: Já registrado
           content:
             application/json:
               schema:
@@ -1312,8 +1337,9 @@ paths:
                 Não encontrado:
                   value:
                     error:
-                      name: NotFoundError
-                      message: Erro - Conta não encontrada (verifique o e-mail).
+                      name: ConflictError
+                      message: Erro - Já existe uma permissão (titulo) cadastrada
+                        no sistema.
         "500":
           description: Erro interno
           content:
