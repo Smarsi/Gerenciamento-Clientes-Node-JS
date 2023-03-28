@@ -39,6 +39,9 @@ tags:
 - name: Admin
   description: |
     Estas rotas são relacionadas à entidade de administradores do sistema. Os administradores são pessoas com permissões para cadastrar/listar/alterar/deletar clientes, endereços e permissões de todo o universo sistêmico. Administradores com  permissão para atrelar permissões são capazes de atrelar permissões a outros administradores. OBS: Um cliente nunca será um administrador do sistema, pois são duas entidades totalmente distintas.
+- name: Permissions
+  description: |
+    Estas rotas estão relacionadas à entidade de permissões. As permissões são regras que podem ser atreladas a administradores (e apenas a eles), para realizar operações dentro do sistema. Os clientes não tem permissão pois dentro desta API apenas fazemos o gerenciamento de clientes (ou seja, apenas um administrador poderia fazer isso). Em um ambiente mais completo os clientes teriam permissão de consultar dados não sensíveis (como produtos por exemplo). A API de gerenciamento de clientes não permite alteração (update) de permissões, sendo necessário deletar e criar uma nova em caso de erros.
 - name: Cliente_Model
   description: |
     <SchemaDefinition schemaRef="#/components/schemas/Cliente_GET" />
@@ -51,6 +54,10 @@ tags:
   description: |
     <SchemaDefinition schemaRef="#/components/schemas/Admin_GET"/>
   x-displayName: Admin Model
+- name: Permission_Model
+  description: |
+    <SchemaDefinition schemaRef="#/components/schemas/Permissions_GET"/>
+  x-displayName: Permission Model
 paths:
   /cliente:
     get:
@@ -1507,8 +1514,10 @@ x-tagGroups:
   - Clientes
   - Endereços
   - Admin
+  - Permissions
 - name: Models
   tags:
   - Cliente_Model
   - Endereco_Model
   - Admin_Model
+  - Permission_Model
