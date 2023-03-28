@@ -1068,7 +1068,10 @@
                 "examples" : {
                   "erro interno" : {
                     "value" : {
-                      "mensagem" : "Erro interno. Tente novamente mais tarde."
+                      "error" : {
+                        "name" : "InternalError",
+                        "message" : "Erro interno. Tente novamente mais tarde."
+                      }
                     }
                   }
                 }
