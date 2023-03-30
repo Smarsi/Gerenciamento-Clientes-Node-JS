@@ -36,6 +36,9 @@ tags:
     os cadastrados no sistema. Um endereço está obrigatóriamente atrelado a um cliente.\n\
     ### 1:n \nUm cliente pode ter muitos endereços cadastros no sistema, cada qual\
     \ com um título definido por ele.\n"
+- name: Autenticação
+  description: |
+    As rotas de autenticação dizem respeito aos endpoints relacionados a registro de contas, login de clientes e criação de tokens de acesso no sistema. Estas rotas estão ligadas apenas à entidade de clientes (uma vez que o login e registro de contas de administradores é feito totalmente separado para evitar falhas de segurança).
 - name: Admin
   description: |
     Estas rotas são relacionadas à entidade de administradores do sistema. Os administradores são pessoas com permissões para cadastrar/listar/alterar/deletar clientes, endereços e permissões de todo o universo sistêmico. Administradores com  permissão para atrelar permissões são capazes de atrelar permissões a outros administradores. OBS: Um cliente nunca será um administrador do sistema, pois são duas entidades totalmente distintas.
@@ -50,6 +53,10 @@ tags:
   description: |
     <SchemaDefinition schemaRef="#/components/schemas/Endereco_GET"/>
   x-displayName: Endereço Model
+- name: Auth_Model
+  description: |
+    <SchemaDefinition schemaRef="#/components/schemas/Auth_POST"/>
+  x-displayName: Autenticação Model
 - name: Admin_Model
   description: |
     <SchemaDefinition schemaRef="#/components/schemas/Admin_GET"/>
@@ -737,6 +744,79 @@ paths:
                     error:
                       name: InternalError
                       message: Erro interno. Tente novamente mais tarde.
+  /auth/login:
+    post:
+      tags:
+      - Autenticação
+      summary: Rota para login de clientes
+      description: "Esta rota permite o login dos clientes (através da tabela clientes\
+        \ e contas), disponibilizando um token de acesso (JWT) em caso de login bem\
+        \ sucedido. \n"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_2'
+              examples:
+                success:
+                  value:
+                    token: |
+                      eyJhbGciOiJIUzI1NSDksaljhgwaHFUAWAHUISHFJBNSA9.eyJpZCI6MSwiYWRtaW4iOnRydWUsImlhdCI6MTY4MDAxMDgyM30.H1Z5Plbzn4veq4sSjNThZoSlZnSEJ9jPWeDqFLB-om4
+        "400":
+          description: Campos ou valores incorretos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Erro no campo email:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo 'email' deve ser passado.
+                Erro no valor do campo senha:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo senha não pode ser vazio!
+        "401":
+          description: Senha incorreta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Senha Incorreta:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: ERRO - Senha incorreta.
+        "404":
+          description: Conta não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não encontrado:
+                  value:
+                    error:
+                      name: NotFoundError
+                      message: ERRO - Não existe uma conta com o e-mail informado.
+        "500":
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                erro interno:
+                  value:
+                    error:
+                      name: InternalError
+                      message: Erro interno. Tente novamente mais tarde.
   /admin/listAccounts:
     get:
       tags:
@@ -795,7 +875,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_2'
+                $ref: '#/components/schemas/inline_response_200_3'
         "401":
           description: Erro de autenticação
           content:
@@ -1188,7 +1268,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_3'
+                $ref: '#/components/schemas/inline_response_200_2'
               examples:
                 success:
                   value:
@@ -1559,6 +1639,13 @@ components:
           type: string
         estado:
           type: string
+    Auth_POST:
+      type: object
+      properties:
+        email:
+          type: string
+        senha:
+          type: string
     Admin_GET:
       type: object
       properties:
@@ -1652,15 +1739,15 @@ components:
     inline_response_200_2:
       type: object
       properties:
+        token:
+          type: string
+    inline_response_200_3:
+      type: object
+      properties:
         newAdmin:
           $ref: '#/components/schemas/Admin_GET'
         id_conta:
           type: integer
-    inline_response_200_3:
-      type: object
-      properties:
-        token:
-          type: string
     inline_error_response_error:
       type: object
       properties:
@@ -1673,11 +1760,13 @@ x-tagGroups:
   tags:
   - Clientes
   - Endereços
+  - Autenticação
   - Admin
   - Permissions
 - name: Models
   tags:
   - Cliente_Model
   - Endereco_Model
+  - Auth_Model
   - Admin_Model
   - Permission_Model
