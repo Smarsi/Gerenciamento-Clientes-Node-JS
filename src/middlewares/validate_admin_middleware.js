@@ -1,47 +1,140 @@
 const { Op } = require("sequelize");
 
-const err = require('../errors');
+const Error = require('../errors');
 
 const Permissions = require('../models/Permissions');
+const Admin = require('../models/Admin');
 
-const validateFieldsAndValuesOnAdminPermissions  = async (request, response, next) =>{
+const validateFieldsAndValuesOnPost = async (request, response, next) => {
+    const {body} = request;
+
+    //============First Check (Admin fields) ============
+
+    var keys = Object.keys(body);
+    var dictAdminFields = {
+        "nome": "",
+        "email": "",
+        "senha": "",
+        "confirmasenha": ""
+    };
+    var dictAdminKeys = Object.keys(dictAdminFields);
+
+
+    for(var i=0; i < dictAdminKeys.length; i++){
+        if(keys.includes(dictAdminKeys[i]) == false){ //Se não encontrar algum campo que deveria ser passado
+            next(new Error.BadRequestError(`O campo '${dictAdminKeys[i]}' deve ser passado.`));
+            return
+        }
+    } 
+
+    //============ Second Check (Admin values) ============
+    for(i in body){
+        if(body[i] == ""){
+            next(new Error.BadRequestError(`O campo ${i} não pode ser vazio!`));
+            return
+        }
+    }
+
+    if(body.senha !== body.confirmasenha){
+        next(new Error.ForbbidenError(`A senha e confirmação de senha não conferem.`));
+        return
+    }
+
+    next();
+};
+
+const validateFieldsAndValuesOnPut = async (request, response, next) => {
+    const {body} = request;
+
+    //============First Check (Admin fields) ============
+
+    var keys = Object.keys(body);
+    var dictAdminFields = {
+        "nome": "",
+        "email": ""
+    };
+    var dictAdminKeys = Object.keys(dictAdminFields);
+
+
+    for(var i=0; i < dictAdminKeys.length; i++){
+        if(keys.includes(dictAdminKeys[i]) == false){ //Se não encontrar algum campo que deveria ser passado
+            next(new Error.BadRequestError(`O campo '${dictAdminKeys[i]}' deve ser passado.`));
+            return
+        }
+    } 
+
+    //============ Second Check (Admin values) ============
+    for(i in body){
+        if(body[i] == ""){
+            next(new Error.BadRequestError(`O campo ${i} não pode ser vazio!`));
+            return
+        }
+    }
+    next();
+};
+
+const validateFieldsAndValuesOnLogin = async (request, response, next) => {
+    const {body} = request;
+
+    //============First Check (Admin fields) ============
+
+    var keys = Object.keys(body);
+    var dictAdminFields = {
+        "email": "",
+        "senha": ""
+    };
+    var dictAdminKeys = Object.keys(dictAdminFields);
+
+
+    for(var i=0; i < dictAdminKeys.length; i++){
+        if(keys.includes(dictAdminKeys[i]) == false){ //Se não encontrar algum campo que deveria ser passado
+            next(new Error.BadRequestError(`O campo '${dictAdminKeys[i]}' deve ser passado.`));
+            return
+        }
+    } 
+
+    //============ Second Check (Admin values) ============
+    for(i in body){
+        if(body[i] == ""){
+            next(new Error.BadRequestError(`O campo ${i} não pode ser vazio!`));
+            return
+        }
+    }
+    next();
+};
+
+const validateFieldsAndValuesOnGiveAdminPermissions  = async (request, response, next) => {
     const {body} = request;
 
     var keys = Object.keys(body);
-    var dictUserFields = {
+    var dictAdminFields = {
         "permissions": ""
     };
-    var dictUserKeys = Object.keys(dictUserFields);
+    var dictAdminKeys = Object.keys(dictAdminFields);
 
 
-    for(var i=0; i < dictUserKeys.length; i++){
-        if(keys.includes(dictUserKeys[i]) == false){ //Se não encontrar algum campo que deveria ser passado
-            next(new err.BadRequestError(`O campo '${dictUserKeys[i]}' deve ser passado.`));
+    for(var i=0; i < dictAdminKeys.length; i++){
+        if(keys.includes(dictAdminKeys[i]) == false){ //Se não encontrar algum campo que deveria ser passado
+            next(new Error.BadRequestError(`O campo '${dictAdminKeys[i]}' deve ser passado.`));
             return 
         }
     }
 
     for(i in body){
         if(body[i] == ""){
-            next(new err.BadRequestError(`O campo ${i} não pode ser vazio!`));
+            next(new Error.BadRequestError(`O campo ${i} não pode ser vazio!`));
             return
         }
         if(typeof(body[i]) != 'object') {
-            next(new err.BadRequestError(`O campo ${i} deve ser um array com ids.`));
+            next(new Error.BadRequestError(`O campo ${i} deve ser um array com ids.`));
             return
         }
     }
-
-    if(body.senha !== body.confirmasenha){
-        next(new err.UnauthorizedError("A senha e confirmação de senha não conferem."));
-        return
-    }
-
 
     next(); //Se não cair em nenhum dos returns de erro continuar para a próxima tarefa.
 };
 
-const checkPermissionsAndSetupRequest = async (request, response, next) =>{
+const findPermissionsAndSetupRequest = async (request, response, next) => {
     const { permissions } = request.body;
 
     var findPermissions = await Permissions.findAll({
@@ -59,7 +152,7 @@ const checkPermissionsAndSetupRequest = async (request, response, next) =>{
     if (permissions.length > findPermissions.length) {
         for (var i = 0; i < permissions.length; i++) {
             if (!findPermissions.includes(permissions[i])) {
-                next(new err.NotFoundError(`ERRO - ID (${id_permission}) não encontrado no sistema.`));
+                next(new Error.NotFoundError(`ERRO - Permission de Id (${id_permission}) não encontrada no sistema.`));
                 return
             }
         }
@@ -69,7 +162,62 @@ const checkPermissionsAndSetupRequest = async (request, response, next) =>{
     }
 };
 
+const checkIfIdExists = async (request, response, next) => {
+    const { id_admin } = request.params;
+
+    const findAdmin = Admin.findByPk(id_admin);
+    if(findAdmin){
+        next();
+    }else{
+        next(new Error.NotFoundError(`Erro - Não existe um admin com id ${id_admin}.`));
+        return
+    }
+};
+
+const checkIfAlreadyRegistred = async (request, response, next) =>{
+    const { id_admin } = request.params;
+    const { email } = request.body;
+
+    const findAdmin = Admin.findOne({
+        where:{
+            email: email.toString()
+        }
+    });
+
+    if(findAdmin && findAdmin.id != id_admin){
+        return next(new Error.ConflictError("Erro - Este email já está registrado para outra conta de administrador."));
+    }else{
+        next();
+    }
+};
+
+const checkEmailOnLogin = async (request, response, next) =>{
+    const { email } = request.body;
+
+    const findByEmail = await Admin.findOne({
+        where: {
+            email: email
+        },
+        include: { association: 'conta' }
+    });
+
+    if(findByEmail){
+        request.account = findByEmail.conta;
+        request.id_admin = findByEmail.id;
+        next();
+    }else{
+        next(new Error.NotFoundError("Erro - Conta não encontrada (verifique o e-mail)."));
+        return
+    }
+};
+
 module.exports = {
-    validateFieldsAndValuesOnAdminPermissions,
-    checkPermissionsAndSetupRequest,
+    validateFieldsAndValuesOnPost,
+    validateFieldsAndValuesOnPut,
+    validateFieldsAndValuesOnLogin,
+    validateFieldsAndValuesOnGiveAdminPermissions,
+    findPermissionsAndSetupRequest,
+    checkIfIdExists,
+    checkIfAlreadyRegistred,
+    checkEmailOnLogin,
 }
