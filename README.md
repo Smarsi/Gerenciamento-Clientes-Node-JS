@@ -37,7 +37,7 @@ Em caso de dúvidas ou sugestões entre em contato.
 
 <div id="requisitos"/>
 
-### 📋 Pré-requisitos para rodar o projeto (localmente)
+## 📋 Pré-requisitos para rodar o projeto (localmente)
 
 * <b>Git</b> instalado
 * <b>NodeJS</b> instalado
@@ -54,7 +54,7 @@ Em caso de dúvidas ou problemas entre em contato.
 
 <div id="instalacao"/>
 
-### 🔧 Instalação
+## 🔧 Instalação
 
 Aqui será considerado a instalação e execução do projeto por meio do sistema operacional <span style="color: blue; font-weight: 800">Windows</span>. Caso necessite executar este projeto em outro sistema operacional utilize o passo a passo trocando as variáveis do windows pelas de seu sistema operacional.
 

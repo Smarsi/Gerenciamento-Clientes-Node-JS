@@ -1,4 +1,5 @@
 const { Op } = require("sequelize");
+const err = require('../errors');
 
 const Cliente = require('../models/Customer');
 
@@ -21,7 +22,8 @@ const validateFieldsAndValuesOnPost = async(request, response, next) => {
 
     for(var i=0; i < dictUserKeys.length; i++){
         if(keys.includes(dictUserKeys[i]) == false){ //Se não encontrar algum campo que deveria ser passado
-            return response.status(400).json({ mensagem: `O campo '${dictUserKeys[i]}' deve ser passado.` });
+            next(new err.BadRequestError(`O campo '${dictUserKeys[i]}' deve ser passado.`));
+            return
         }
     }
 
@@ -42,30 +44,34 @@ const validateFieldsAndValuesOnPost = async(request, response, next) => {
 
         for(var y=0; y < dictAddressKeys.length; y++ ){
             if(addressKeys.includes(dictAddressKeys[y]) == false){ //Se não encontrar algum campo que deveria ser passado
-                return response.status(400).json({ mensagem: `O campo '${dictAddressKeys[y]}' do endereco deve ser passado.` })
+                next(new err.BadRequestError(`O campo '${dictAddressFields[y]}' do endereco deve ser passado.`));                
+                return
             }
         }
     }else{
-        return response.status(400).json({ mensagem: "O valor do campo 'endereco' deve ser passado." })
+        next(new err.BadRequestError(`O valor do campo 'endereco' deve ser passado.`));
     }
 
     //============ Third Check (Customer and Address values) ============
     for(i in body){
         if(body[i] == ""){
-            return response.status(400).json({ mensagem: `O campo ${i} não pode ser vazio!` })
+            next(new err.BadRequestError(`O campo ${i} não pode ser vazio!`));
+            return
         }
 
         if(typeof(body[i]) == 'object'){
             for(y in body[i]){
                 if(body[i][y] == "" && y != "complemento"){
-                    return response.status(400).json({ mensagem: `O campo ${y} não pode ser vazio!` })
+                    next(new err.BadRequestError(`O campo ${y} não pode ser vazio!`));
+                    return
                 }
             }            
         }
     }
 
     if(body.senha !== body.confirmasenha){
-        return response.status(401).json({ mensagem: "A senha e confirmação de senha não conferem." });
+        next(new err.ForbbidenError(`A senha e confirmação de senha não conferem.`));
+        return
     }
 
 
@@ -87,14 +93,16 @@ const validateFieldsAndValuesOnPut = async (request, response, next) => {
 
     for(var i=0; i < dictUserKeys.length; i++){
         if(keys.includes(dictUserKeys[i]) == false){ //Se não encontrar algum campo que deveria ser passado
-            return response.status(409).json({ mensagem: `O campo '${dictUserKeys[i]}' deve ser passado.` });
+            next(new err.ConflictError(`O campo '${dictUserKeys[i]}' deve ser passado.`));
+            return
         }
     }    
 
     //============ Third Check (Fields values) ============
     for(i in body){
         if(body[i] == ""){
-            return response.status(409).json({ mensagem: `O valor do campo ${i} não pode ser vazio!` })
+            next(new err.ConflictError(`O valor do campo ${i} não pode ser vazio!`));
+            return
         }        
     }
 
@@ -108,7 +116,8 @@ const checkIfIdExists = async (request, response, next) => { //Verifica se o ID 
     if (cliente) {
         next();
     } else {
-        return response.status(404).json({ mensagem: `ERRO - Não existe um cliente com este ID (${id_cliente}) cadastrado no sistema.` })
+        next(new err.NotFoundError(`ERRO - ID (${id_cliente}) não encontrado no sistema.`))
+        return
     }
 
 };
@@ -125,9 +134,10 @@ const checkEmailOnUpdate = async (request, response, next) => { //Verifica se j�
         });
 
         if (cliente.length > 0) {
-            if (cliente[0].id != id_cliente) {               
-                return response.status(400).json({ mensagem: "ERRO - Este email já registrado por outro usuário no sistema." });
-            } else {
+            if (cliente[0].id != id_cliente) {    
+                next(new err.ConflictError("Erro - Este email já está registrado no sistema."));      
+                return
+            } else { //Requester é o dono do e-mail
                 next();
             }
         } else {
@@ -150,10 +160,11 @@ const checkIfAlreadyRegistred = async(request, response, next) => {
 
     if (clienteJaRegistrado.length > 0) {
         if (clienteJaRegistrado[0].cpf == cpf) {
-            return response.status(403).json({ mensagem: "ERRO - CPF já registrado" });
+            next(new err.ConflictError("Erro - Este CPF já está registrado no sistema."));
+            return
         }
-        if (clienteJaRegistrado[0].email == email) {
-            return response.status(403).json({ mensagem: "ERRO - Email já registrado" });
+        if ((clienteJaRegistrado[0].email).toLowerCase() == email.toLowerCase()) {
+            next(new err.ConflictError("Erro - Este email já está registrado no sistema."));
         }
     }else{
         next();

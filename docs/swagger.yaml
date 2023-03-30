@@ -1,0 +1,1771 @@
+openapi: 3.0.0
+info:
+  title: API Gerenciamento de clientes
+  description: |
+    # Introdução
+    Esta é uma API criada por [Richard Smarsi](https://www.github.com/smarsi) para gerenciamento de clientes, feita para exemplificar conhecimentos de NodeJs, ExpressJs, MySQL e Swagger. Além disso, também é oportunidade para exibir  conhecimentos como login, armazenamento de senhas, sessões e permissões dentro de sistemas.
+
+    O objetivo core desta aplicação é de ser um sistema simples, porém que permita evoluções para ser implementado dentro de um sistema mais complexo futuramente.
+
+    No momento a API está em sua primeira versão. O tipo de autenticação usada é BarearToken implementado com JWT.
+
+
+    # Sobre a Documentação
+
+    Esta API está documentada seguindo o modelo **Open API**. Toda a documentação foi criada utilizando o **Swagger**. O template utilizado nesta página de documentação é o Redocly, que pode ser encontrado no [Github Redocly](https://www.github.com/Redocly/redoc).
+  contact:
+    email: ricsmarsi@gmail.com
+  version: v1.0.0
+  x-logo:
+    url: https://user-images.githubusercontent.com/38111460/226025407-0d47cacd-cd6f-41b9-83a5-1c96f9547270.png
+    altText: Customers Management Logo
+externalDocs:
+  description: Descubra como criar um repositório do github para seu modelo OpenAPI.
+  url: https://github.com/Rebilly/generator-openapi-repo
+servers:
+- url: https://virtserver.swaggerhub.com/RICSMARSI/GerenciamentoDeClientes/v1.0.0
+  description: SwaggerHub
+- url: http://localhost:3000/api
+  description: Ambiente de desenvolvimento
+tags:
+- name: Clientes
+  description: |
+    Essas rotas se referem a todas as operações relacionadas aos clientes do sistema (os clientes são a entidade core da API). Considere os clientes como usuários finais do sistema (que apenas teriam direito de se cadastrar e consultar outras informações não sensíveis no sistema, como produtos por exemplo).
+- name: Endereços
+  description: "Este endpoint diz respeito a todas as operações relacionadas aos endereç\
+    os cadastrados no sistema. Um endereço está obrigatóriamente atrelado a um cliente.\n\
+    ### 1:n \nUm cliente pode ter muitos endereços cadastros no sistema, cada qual\
+    \ com um título definido por ele.\n"
+- name: Autenticação
+  description: |
+    As rotas de autenticação dizem respeito aos endpoints relacionados a registro de contas, login de clientes e criação de tokens de acesso no sistema. Estas rotas estão ligadas apenas à entidade de clientes (uma vez que o login e registro de contas de administradores é feito totalmente separado para evitar falhas de segurança).
+- name: Admin
+  description: |
+    Estas rotas são relacionadas à entidade de administradores do sistema. Os administradores são pessoas com permissões para cadastrar/listar/alterar/deletar clientes, endereços e permissões de todo o universo sistêmico. Administradores com  permissão para atrelar permissões são capazes de atrelar permissões a outros administradores. OBS: Um cliente nunca será um administrador do sistema, pois são duas entidades totalmente distintas.
+- name: Permissions
+  description: |
+    Estas rotas estão relacionadas à entidade de permissões. As permissões são regras que podem ser atreladas a administradores (e apenas a eles), para realizar operações dentro do sistema. Os clientes não tem permissão pois dentro desta API apenas fazemos o gerenciamento de clientes (ou seja, apenas um administrador poderia fazer isso). Em um ambiente mais completo os clientes teriam permissão de consultar dados não sensíveis (como produtos por exemplo). A API de gerenciamento de clientes não permite alteração (update) de permissões, sendo necessário deletar e criar uma nova em caso de erros.
+- name: Cliente_Model
+  description: |
+    <SchemaDefinition schemaRef="#/components/schemas/Cliente_GET" />
+  x-displayName: Clientes Model
+- name: Endereco_Model
+  description: |
+    <SchemaDefinition schemaRef="#/components/schemas/Endereco_GET"/>
+  x-displayName: Endereço Model
+- name: Auth_Model
+  description: |
+    <SchemaDefinition schemaRef="#/components/schemas/Auth_POST"/>
+  x-displayName: Autenticação Model
+- name: Admin_Model
+  description: |
+    <SchemaDefinition schemaRef="#/components/schemas/Admin_GET"/>
+  x-displayName: Admin Model
+- name: Permission_Model
+  description: |
+    <SchemaDefinition schemaRef="#/components/schemas/Permissions_GET"/>
+  x-displayName: Permission Model
+paths:
+  /cliente:
+    get:
+      tags:
+      - Clientes
+      summary: Listar todos os clientes cadastrados
+      description: |
+        Essa rota retorna informações de id, nome e email de todos os clientes cadastrados no sistema.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200'
+    post:
+      tags:
+      - Clientes
+      summary: Cadastrar um novo cliente
+      description: |
+        Essa rota é responsável por cadastrar clientes no sistema. Vale ressaltar que para um cliente ser cadastrado no sistema ele deve ter obrigatóriamente um endereço atrelado. Quando um novo cliente é cadastrado, automaticamente são inseridos  dados nas tabelas: Cliente, Conta e Enderecos.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cliente_POST'
+            examples:
+              cliente:
+                value:
+                  nome: Hebert Richards
+                  email: heds@email.com
+                  senha: umasenhapersonalizada
+                  confirmasenha: umasenhapersonalizada
+                  cpf: 482.905.810-25
+                  endereco:
+                    titulo_endereco: Meu Rancho
+                    cep: "12345678"
+                    logradouro: Rua Inventada
+                    numero: "4845"
+                    complemento: ""
+                    bairro: Centro
+                    cidade: Ponte Branca
+                    estado: MT
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_create_cliente'
+        "400":
+          description: Campos ou valores incorretos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Erro no campo senha:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo 'senha' deve ser passado.
+                Erro no valor do campo nome:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo nome não pode ser vazio!
+        "401":
+          description: Erro de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Usuário não autenticado.
+                Sem permissão:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Não autorizado para realizar esta operação.
+        "403":
+          description: Erro na confirmação de senha
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Senha e confirmação de senha:
+                  value:
+                    error:
+                      name: ForbiddenError
+                      message: A senha e confirmação de senha não conferem.
+        "409":
+          description: CPF ou Email já registrados no sistema
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                CPF já registrado:
+                  value:
+                    error:
+                      name: ConflictError
+                      message: Erro - Este CPF já está registrado no sistema.
+                EMAIL já registrado:
+                  value:
+                    error:
+                      name: ConflictError
+                      message: Erro - Este email já está registrado no sistema.
+        "422":
+          description: CPF Inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                CPF inválido:
+                  value:
+                    error:
+                      name: UnprocessableError
+                      message: ERRO - CPF inválido.
+        "500":
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Internal Error:
+                  value:
+                    error:
+                      name: InternalError
+                      message: Erro interno. Tente novamente mais tarde.
+  /cliente/{id_cliente}:
+    get:
+      tags:
+      - Clientes
+      summary: Consultar informações de um cliente específico.
+      description: |
+        Este endpoint pega informações de um cliente específico através de seu Id. Retorna dados de Id, Nome, Email e CPF.
+      parameters:
+      - name: id_cliente
+        in: path
+        description: Id de um cliente
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_get_specifc_cliente'
+        "401":
+          description: Erro de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Usuário não autenticado.
+                Sem permissão:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Não autorizado para realizar esta operação.
+        "404":
+          description: Não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: NotFoundError
+                      message: ERRO - ID (x) não encontrado no sistema.
+        "500":
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Internal Error:
+                  value:
+                    error:
+                      name: InternalError
+                      message: Erro interno. Tente novamente mais tarde.
+    put:
+      tags:
+      - Clientes
+      summary: Altera informações de um cliente específico recebendo o Id
+      description: |
+        Esta rota permite alterar informações de um cliente específico  através de seu Id. Os campos que podem ser alterados são: Nome e Email.
+      parameters:
+      - name: id_cliente
+        in: path
+        description: Id de um cliente
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cliente_PUT'
+            examples:
+              cliente:
+                value:
+                  nome: Hebert Richards
+                  email: heds@email.com
+      responses:
+        "200":
+          description: OK - Sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_1'
+              examples:
+                sucesso:
+                  value:
+                    mensagem: Cliente com id x atualizado com sucesso.
+        "400":
+          description: Campos ou valores incorretos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Erro no campo senha:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo 'nome' deve ser passado.
+                Erro no valor do campo nome:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo email não pode ser vazio!
+        "401":
+          description: Erro de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Usuário não autenticado.
+                Sem permissão:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Não autorizado para realizar esta operação.
+        "404":
+          description: Não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: NotFoundError
+                      message: ERRO - ID (x) não encontrado no sistema.
+        "409":
+          description: Email já registrado por outro usuário
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                EMAIL já registrado:
+                  value:
+                    error:
+                      name: ConflictError
+                      message: Erro - Este email já está registrado no sistema.
+        "500":
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                erro interno:
+                  value:
+                    mensagem: Erro interno. Tente novamente mais tarde.
+    delete:
+      tags:
+      - Clientes
+      summary: Deleta as informações de um cliente específico recebendo o Id
+      description: Deleta informações de um cliente pelo Id
+      parameters:
+      - name: id_cliente
+        in: path
+        description: Id de um cliente
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: OK - Sucesso
+        "401":
+          description: Erro de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Usuário não autenticado.
+                Sem permissão:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Não autorizado para realizar esta operação.
+        "404":
+          description: Não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: NotFoundError
+                      message: ERRO - ID (x) não encontrado no sistema.
+        "500":
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                erro interno:
+                  value:
+                    mensagem: Erro interno. Tente novamente mais tarde.
+  /cliente/{id_cliente}/endereco:
+    get:
+      tags:
+      - Endereços
+      summary: Pega o endereço de um cliente em específico recebendo o Id
+      description: Pega o endereço de um cliente pelo Id
+      parameters:
+      - name: id_cliente
+        in: path
+        description: Id de um cliente
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Endereco_GET'
+        "401":
+          description: Erro de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Usuário não autenticado.
+                Sem permissão:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Não autorizado para realizar esta operação.
+        "404":
+          description: Não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: NotFoundError
+                      message: ERRO - ID (x) não encontrado no sistema.
+        "409":
+          description: Sem endereço
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                erro:
+                  value:
+                    mensagem: ERRO - O cliente não contém nenhum endereço cadastrado.
+    post:
+      tags:
+      - Endereços
+      summary: Cadastro de endereço para um cliente específico
+      description: Essa rota será responsável por cadastrar um novo endereço para
+        um cliente através de seu Id
+      parameters:
+      - name: id_cliente
+        in: path
+        description: Id de um cliente
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Endereco_POST'
+            examples:
+              cliente:
+                value:
+                  titulo_endereco: Trabalho
+                  cep: "03478423"
+                  logradouro: Av Express
+                  numero: "385"
+                  complemento: ""
+                  bairro: Centro
+                  cidade: Rio de Janeiro
+                  estado: RJ
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Endereco_GET'
+        "400":
+          description: Campos ou valores incorretos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Erro no campo senha:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo 'titulo_endereco' deve ser passado.
+                Erro no valor do campo nome:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo bairro não pode ser vazio!
+        "401":
+          description: Erro de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Usuário não autenticado.
+                Sem permissão:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Não autorizado para realizar esta operação.
+        "404":
+          description: Não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: NotFoundError
+                      message: ERRO - ID (x) não encontrado no sistema.
+        "409":
+          description: No body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                erro:
+                  value:
+                    mensagem: ERRO - Um 'body' deve ser passado para esta requisição.
+  /endereco/{id_endereco}:
+    put:
+      tags:
+      - Endereços
+      summary: Altera informações de um endereço específico recebendo o Id
+      description: Altera informações de um endereço pelo Id
+      parameters:
+      - name: id_endereco
+        in: path
+        description: Id de um endereço
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Endereco_PUT'
+            examples:
+              cliente:
+                value:
+                  titulo_endereco: Trabalho
+                  numero: "1456"
+                  complemento: Escritório 98
+      responses:
+        "200":
+          description: OK - Sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Endereco_GET'
+        "400":
+          description: Campos ou valores incorretos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Erro no campo senha:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo 'numero' do endereco deve ser passado.
+                Erro no valor do campo nome:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo titulo_endereco não pode ser vazio!
+        "401":
+          description: Erro de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Usuário não autenticado.
+                Sem permissão:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Não autorizado para realizar esta operação.
+        "404":
+          description: Não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: NotFoundError
+                      message: ERRO - ID (x) não encontrado no sistema.
+        "409":
+          description: No body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                No Body:
+                  value:
+                    error:
+                      name: ConflictError
+                      message: ERRO - Um 'body' deve ser passado para esta requisição.
+        "500":
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                erro interno:
+                  value:
+                    mensagem: Erro interno. Tente novamente mais tarde.
+    delete:
+      tags:
+      - Endereços
+      summary: Deleta um endereço específico
+      description: Apaga um endereço pelo seu Id
+      parameters:
+      - name: id_endereco
+        in: path
+        description: Id de um endereço
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: OK - Sucesso
+        "401":
+          description: Erro de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Usuário não autenticado.
+                Sem permissão:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Não autorizado para realizar esta operação.
+        "404":
+          description: Não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: NotFoundError
+                      message: ERRO - ID (x) não encontrado no sistema.
+        "500":
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                erro interno:
+                  value:
+                    error:
+                      name: InternalError
+                      message: Erro interno. Tente novamente mais tarde.
+  /auth/login:
+    post:
+      tags:
+      - Autenticação
+      summary: Rota para login de clientes
+      description: |
+        Esta rota permite o login dos clientes (através da tabela clientes e contas), disponibilizando um token de acesso (JWT) em caso de login bem sucedido.  Um registro na tabela conta é criado sempre que um novo cliente é registrado no sistema, por este motivo, não existe um endpoint específico para registro de novas contas.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_2'
+              examples:
+                success:
+                  value:
+                    token: |
+                      eyJhbGciOiJIUzI1NSDksaljhgwaHFUAWAHUISHFJBNSA9.eyJpZCI6MSwiYWRtaW4iOnRydWUsImlhdCI6MTY4MDAxMDgyM30.H1Z5Plbzn4veq4sSjNThZoSlZnSEJ9jPWeDqFLB-om4
+        "400":
+          description: Campos ou valores incorretos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Erro no campo email:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo 'email' deve ser passado.
+                Erro no valor do campo senha:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo senha não pode ser vazio!
+        "401":
+          description: Senha incorreta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Senha Incorreta:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: ERRO - Senha incorreta.
+        "404":
+          description: Conta não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não encontrado:
+                  value:
+                    error:
+                      name: NotFoundError
+                      message: ERRO - Não existe uma conta com o e-mail informado.
+        "500":
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                erro interno:
+                  value:
+                    error:
+                      name: InternalError
+                      message: Erro interno. Tente novamente mais tarde.
+  /admin/listAccounts:
+    get:
+      tags:
+      - Admin
+      summary: Lista todas as contas de admins registrados no sistema.
+      description: |
+        Exibe todas as contas de administradores registradas no sistema. Por ser de caráter 'sigiloso' está rota está permitida apenas para  alguns administradores que tem a permissão de listar outras contas de admin.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Admin_GET'
+        "401":
+          description: Erro de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Usuário não autenticado.
+                Sem permissão:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Não autorizado para realizar esta operação.
+  /admin/register:
+    post:
+      tags:
+      - Admin
+      summary: Cria uma nova conta de administrador
+      description: |
+        Esta rota permite cadastrar um novo administrador no sistema. Vale ressaltar que as tabelas que armazenam as contas de administradores e clientes do sistema são totalmente diferentes, o que impede que qualquer cliente seja um administrador do sistema propositalmente. A ideia aqui é separar ao máximo uma entidade de outra.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Admin_POST'
+            examples:
+              admin:
+                value:
+                  nome: Fulano de Tal
+                  email: novoadministrador@minhaempresa.com.br
+                  senha: minhasenhapersonalizada
+                  confirmasenha: minhasenhapersonalizada
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_3'
+        "401":
+          description: Erro de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Usuário não autenticado.
+                Sem permissão:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Não autorizado para realizar esta operação.
+        "409":
+          description: Já registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                EMAIL já registrado:
+                  value:
+                    error:
+                      name: ConflictError
+                      message: Erro - Este email já está registrado para outra conta
+                        de administrador.
+        "500":
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                erro interno:
+                  value:
+                    error:
+                      name: InternalError
+                      message: Erro interno. Tente novamente mais tarde.
+  /admin/update/{id_admin}:
+    put:
+      tags:
+      - Admin
+      summary: Atualizar informações de uma conta admin
+      description: |
+        Esta rota permite atualizar informaçoes de um administrador. A atualização é feita através do id do administrador.
+      parameters:
+      - name: id_admin
+        in: path
+        description: Id de um administrador
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_1'
+              example:
+                mensagem: Admin x atualizado com sucesso.
+        "400":
+          description: Campos ou valores incorretos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Erro no campo nome:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo 'nome' deve ser passado.
+                Erro no valor do campo email:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo email não pode ser vazio!
+                Erro lista:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo permissions deve ser um array com ids.
+        "401":
+          description: Erro de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Usuário não autenticado.
+                Sem permissão:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Não autorizado para realizar esta operação.
+        "404":
+          description: Admin não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não encontrado:
+                  value:
+                    error:
+                      name: NotFoundError
+                      message: ERRO - Não existe um admin com id x.
+        "409":
+          description: Já registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não encontrado:
+                  value:
+                    error:
+                      name: ConflictError
+                      message: Erro - Este email já está registrado para outra conta
+                        de administrador.
+        "500":
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                erro interno:
+                  value:
+                    error:
+                      name: InternalError
+                      message: Erro interno. Tente novamente mais tarde.
+  /admin/{id_admin}/permissions:
+    get:
+      tags:
+      - Admin
+      summary: Listar permissions de um admin
+      description: |
+        Esta rota permite listar todas as permissions atreladas a uma conta de administrador. Esta listagem é feita por meio do Id do admin.
+      parameters:
+      - name: id_admin
+        in: path
+        description: Id de um administrador
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin_Permissions_GET'
+        "401":
+          description: Erro de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Usuário não autenticado.
+                Sem permissão:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Não autorizado para realizar esta operação.
+        "404":
+          description: Admin não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não encontrado:
+                  value:
+                    error:
+                      name: NotFoundError
+                      message: Erro - Não existe um admin com id x.
+        "500":
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                erro interno:
+                  value:
+                    error:
+                      name: InternalError
+                      message: Erro interno. Tente novamente mais tarde.
+  /admin/{id_admin}/give-permissions:
+    post:
+      tags:
+      - Admin
+      summary: Adiciona permissions para uma conta de administrador
+      description: |
+        Esta rota permite atrelar permissões existentes no sistema para um administrador específico (através de seu id). A relação de permissões para administradores é de M:N.
+      parameters:
+      - name: id_admin
+        in: path
+        description: Id de um administrador
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin_Permissions_GET'
+        "400":
+          description: Campos ou valores incorretos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Erro no campo senha:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo 'permissions' deve ser passado.
+                Erro no valor do campo nome:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo permissions não pode ser vazio!
+                Erro lista:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo permissions deve ser um array com ids.
+        "401":
+          description: Erro de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Usuário não autenticado.
+                Sem permissão:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Não autorizado para realizar esta operação.
+        "404":
+          description: Permission não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não encontrado:
+                  value:
+                    error:
+                      name: NotFoundError
+                      message: ERRO - Permission de Id (x) não encontrada no sistema.
+        "500":
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                erro interno:
+                  value:
+                    error:
+                      name: InternalError
+                      message: Erro interno. Tente novamente mais tarde.
+  /admin/{id_admin}/remove-permissions:
+    post:
+      tags:
+      - Admin
+      summary: Remove permissions de uma conta de administrador
+      description: |
+        Esta rota permite remover permissões previamente atreladas para um administrador. A remoção é feita através do id do administrador.
+      parameters:
+      - name: id_admin
+        in: path
+        description: Id de um administrador
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin_Permissions_GET'
+        "400":
+          description: Campos ou valores incorretos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Erro no campo senha:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo 'permissions' deve ser passado.
+                Erro no valor do campo nome:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo permissions não pode ser vazio!
+                Erro lista:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo permissions deve ser um array com ids.
+        "401":
+          description: Erro de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Usuário não autenticado.
+                Sem permissão:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Não autorizado para realizar esta operação.
+        "404":
+          description: Permission não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não encontrado:
+                  value:
+                    error:
+                      name: NotFoundError
+                      message: ERRO - Permission de Id (x) não encontrada no sistema.
+        "500":
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                erro interno:
+                  value:
+                    error:
+                      name: InternalError
+                      message: Erro interno. Tente novamente mais tarde.
+  /admin/login:
+    post:
+      tags:
+      - Admin
+      summary: Login de administradores
+      description: |
+        Esta é uma rota isolada de login para administradores. A rota de login padrão para  clientes e administradores é separada propositalmente para evitar problemas de  inject, brute force ou até mesmo permissões indevidas. Um novo registro na tabela conta é criado sempre que um novo administrador é adicionado no sistema.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_2'
+              examples:
+                success:
+                  value:
+                    token: |
+                      eyJhbGciOiJIUzI1NSDksaljhgwaHFUAWAHUISHFJBNSA9.eyJpZCI6MSwiYWRtaW4iOnRydWUsImlhdCI6MTY4MDAxMDgyM30.H1Z5Plbzn4veq4sSjNThZoSlZnSEJ9jPWeDqFLB-om4
+        "400":
+          description: Campos ou valores incorretos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Erro no campo email:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo 'email' deve ser passado.
+                Erro no valor do campo senha:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo senha não pode ser vazio!
+        "401":
+          description: Senha incorreta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Erro - Senha incorreta.
+                Sem permissão:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Não autorizado para realizar esta operação.
+        "404":
+          description: Conta não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não encontrado:
+                  value:
+                    error:
+                      name: NotFoundError
+                      message: Erro - Conta não encontrada (verifique o e-mail).
+        "500":
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                erro interno:
+                  value:
+                    error:
+                      name: InternalError
+                      message: Erro interno. Tente novamente mais tarde.
+  /permissions:
+    get:
+      tags:
+      - Permissions
+      summary: Listar Permissões
+      description: |
+        Permite relacionar todas as permissões previamente cadastradas no sistema.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Permissions_GET'
+        "500":
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                erro interno:
+                  value:
+                    error:
+                      name: InternalError
+                      message: Erro interno. Tente novamente mais tarde.
+    post:
+      tags:
+      - Permissions
+      summary: Criar Permissão
+      description: |
+        Este endpoint permite criar uma nova permissão no sistema. Apenas administradores com a permissão de 'create-permissions' podem acessar esta rota.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permissions_GET'
+        "400":
+          description: Campos ou valores incorretos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Erro no campo titulo:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo 'titulo' deve ser passado.
+                Erro no valor do campo descricao:
+                  value:
+                    error:
+                      name: BadRequestError
+                      message: O campo descricao não pode ser vazio!
+        "401":
+          description: Erro de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Usuário não autenticado.
+                Sem permissão:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Não autorizado para realizar esta operação.
+        "409":
+          description: Já registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não encontrado:
+                  value:
+                    error:
+                      name: ConflictError
+                      message: Erro - Já existe uma permissão (titulo) cadastrada
+                        no sistema.
+        "500":
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                erro interno:
+                  value:
+                    error:
+                      name: InternalError
+                      message: Erro interno. Tente novamente mais tarde.
+  /permissions/{id_permission}:
+    delete:
+      tags:
+      - Permissions
+      summary: Deletar Permissão
+      description: |
+        Este endpoint permite deletar uma permissão do sistema. Apenas administradores com a permissão de 'create-permissions' podem acessar esta rota.
+      parameters:
+      - name: id_permission
+        in: path
+        description: Id de uma permission cadastrada no sistema.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: OK - Sucesso
+        "401":
+          description: Erro de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não autenticado:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Usuário não autenticado.
+                Sem permissão:
+                  value:
+                    error:
+                      name: UnauthorizedError
+                      message: Não autorizado para realizar esta operação.
+        "404":
+          description: Permission não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                Não encontrado:
+                  value:
+                    error:
+                      name: NotFoundError
+                      message: ERRO - ID (x) não encontrado no sistema.
+        "500":
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_error_response'
+              examples:
+                erro interno:
+                  value:
+                    error:
+                      name: InternalError
+                      message: Erro interno. Tente novamente mais tarde.
+components:
+  schemas:
+    Cliente_GET:
+      type: object
+      properties:
+        id:
+          type: number
+        nome:
+          type: string
+        cpf:
+          type: string
+          description: Pode ser passado com ou sem os caracteres especiais (' . '
+            e ' - ')
+        email:
+          type: string
+        updatedAt:
+          type: string
+        createdAt:
+          type: string
+    Cliente_POST:
+      required:
+      - confirmasenha
+      - cpf
+      - email
+      - endereco
+      - nome
+      - senha
+      type: object
+      properties:
+        nome:
+          type: string
+        cpf:
+          type: string
+          description: Pode ser passado com ou sem os caracteres especiais (' . '
+            e ' - ')
+        email:
+          type: string
+        senha:
+          type: string
+        confirmasenha:
+          type: string
+        endereco:
+          $ref: '#/components/schemas/Cliente_POST_endereco'
+    Cliente_PUT:
+      required:
+      - email
+      - nome
+      type: object
+      properties:
+        nome:
+          type: string
+        email:
+          type: string
+    Endereco_GET:
+      type: object
+      properties:
+        id:
+          type: number
+        titulo_endereco:
+          type: string
+        cep:
+          type: string
+        logradouro:
+          type: string
+        numero:
+          type: number
+        complemento:
+          type: string
+        bairro:
+          type: string
+        cidade:
+          type: string
+        estado:
+          type: string
+        cliente_id:
+          type: number
+        updatedAt:
+          type: string
+        createdAt:
+          type: string
+    Endereco_POST:
+      required:
+      - bairro
+      - cep
+      - cidade
+      - estado
+      - logradouro
+      - numero
+      - titulo_endereco
+      type: object
+      properties:
+        titulo_endereco:
+          type: string
+        cep:
+          type: string
+        logradouro:
+          type: string
+        numero:
+          type: number
+        complemento:
+          type: string
+        bairro:
+          type: string
+        cidade:
+          type: string
+        estado:
+          type: string
+    Endereco_PUT:
+      required:
+      - complemento
+      - numero
+      - titulo_endereco
+      type: object
+      properties:
+        titulo_endereco:
+          type: string
+        numero:
+          type: number
+        complemento:
+          type: string
+    Cliente_POST_endereco:
+      required:
+      - bairro
+      - cep
+      - cidade
+      - estado
+      - logradouro
+      - numero
+      - titulo_endereco
+      type: object
+      properties:
+        titulo_endereco:
+          type: string
+        cep:
+          type: string
+        logradouro:
+          type: string
+        numero:
+          type: number
+        complemento:
+          type: string
+        bairro:
+          type: string
+        cidade:
+          type: string
+        estado:
+          type: string
+    Auth_POST:
+      type: object
+      properties:
+        email:
+          type: string
+        senha:
+          type: string
+    Admin_GET:
+      type: object
+      properties:
+        id:
+          type: number
+        nome:
+          type: string
+        email:
+          type: string
+    Admin_POST:
+      type: object
+      properties:
+        nome:
+          type: string
+        email:
+          type: string
+        senha:
+          type: string
+        confirmasenha:
+          type: string
+    Admin_Permissions_GET:
+      type: object
+      properties:
+        id:
+          type: number
+        nome:
+          type: string
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Give_Permissions_GET'
+    Permissions_GET:
+      type: object
+      properties:
+        id:
+          type: number
+        titulo:
+          type: string
+        descricao:
+          type: string
+    Give_Permissions_GET:
+      type: object
+      properties:
+        id:
+          type: number
+        titulo:
+          type: string
+    inline_response_200:
+      type: object
+      properties:
+        id:
+          type: number
+        nome:
+          type: string
+        email:
+          type: string
+    inline_response_200_create_cliente:
+      type: object
+      properties:
+        cliente:
+          $ref: '#/components/schemas/Cliente_GET'
+        endereco:
+          $ref: '#/components/schemas/Endereco_GET'
+    inline_response_200_get_specifc_cliente:
+      type: object
+      properties:
+        id:
+          type: number
+        nome:
+          type: string
+        cpf:
+          type: string
+        email:
+          type: string
+        senha:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+    inline_error_response:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/inline_error_response_error'
+    inline_response_200_1:
+      type: object
+      properties:
+        mensagem:
+          type: string
+    inline_response_200_2:
+      type: object
+      properties:
+        token:
+          type: string
+    inline_response_200_3:
+      type: object
+      properties:
+        newAdmin:
+          $ref: '#/components/schemas/Admin_GET'
+        id_conta:
+          type: integer
+    inline_error_response_error:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: string
+x-tagGroups:
+- name: General
+  tags:
+  - Clientes
+  - Endereços
+  - Autenticação
+  - Admin
+  - Permissions
+- name: Models
+  tags:
+  - Cliente_Model
+  - Endereco_Model
+  - Auth_Model
+  - Admin_Model
+  - Permission_Model

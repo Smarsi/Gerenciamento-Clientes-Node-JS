@@ -1,8 +1,10 @@
 const { response } = require("express");
+const Error = require('../errors');
+
 const Endereco = require("../models/Address");
 const Cliente = require("../models/Customer");
 
-const getCostumerAddress = async (request, response) => {
+const getCostumerAddress = async (request, response, next) => {
     const { id_cliente } = request.params;
 
     const cliente = await Cliente.findByPk(id_cliente, {
@@ -12,7 +14,8 @@ const getCostumerAddress = async (request, response) => {
     if (cliente.enderecos.length > 0 && cliente.enderecos !== null && cliente.enderecos !== "") {
         return response.status(200).json(cliente.enderecos);
     } else {
-        return response.status(409).json({ mensagem: "ERRO - O cliente não contém nenhum endereço cadastrado" });
+        next(new Error.ConflictError("ERRO - O cliente não contém nenhum endereço cadastrado."));
+        return
     }
 }
 
@@ -66,7 +69,7 @@ const _internalCreate = async (request, response) => { //Usado durante a criaç�
     }
 }
 
-const updateAddress = async (request, response) => {
+const updateAddress = async (request, response, next) => {
     const { id_endereco } = request.params;
     const { titulo_endereco, numero, complemento } = request.body;
 
@@ -85,7 +88,8 @@ const updateAddress = async (request, response) => {
         return response.status(200).json(newEndereco);
     } catch (error) {
         console.log(error);
-        return response.status(500).json({ mensagem: "ERRO - Tente novamente mais tarde." });
+        next(new Error.InternalError("Erro - Tente novamente mais tarde."));
+        return
     }
 }
 
@@ -104,7 +108,8 @@ const deleteAddress = async (request, response) => {
 
     } catch (error) {
         console.log(error);
-        return response.status(500).json({ mensagem: "Erro interno. Tente novamente mais tarde." });
+        next(new Error.InternalError("Erro interno. Tente novamente mais tarde."));
+        return
     }
 }
 
