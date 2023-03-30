@@ -749,9 +749,8 @@ paths:
       tags:
       - Autenticação
       summary: Rota para login de clientes
-      description: "Esta rota permite o login dos clientes (através da tabela clientes\
-        \ e contas), disponibilizando um token de acesso (JWT) em caso de login bem\
-        \ sucedido. \n"
+      description: |
+        Esta rota permite o login dos clientes (através da tabela clientes e contas), disponibilizando um token de acesso (JWT) em caso de login bem sucedido.  Um registro na tabela conta é criado sempre que um novo cliente é registrado no sistema, por este motivo, não existe um endpoint específico para registro de novas contas.
       responses:
         "200":
           description: OK
@@ -1261,7 +1260,7 @@ paths:
       - Admin
       summary: Login de administradores
       description: |
-        Esta é uma rota isolada de login para administradores. A rota de login padrão para  clientes e administradores é separada propositalmente, para evitar problemas de  inject, brute force ou até mesmo permissões indevidas.
+        Esta é uma rota isolada de login para administradores. A rota de login padrão para  clientes e administradores é separada propositalmente para evitar problemas de  inject, brute force ou até mesmo permissões indevidas. Um novo registro na tabela conta é criado sempre que um novo administrador é adicionado no sistema.
       responses:
         "200":
           description: OK
