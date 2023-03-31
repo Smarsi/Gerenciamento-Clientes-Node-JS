@@ -19,7 +19,7 @@ Para ver a API em funcionamento e ter uma breve explicação sobre o projeto ass
 [![Video de apresentação da API]()](https://)
 O vídeo estará disponível em breve.
 
-Esta API gerencia e controla o CRUD de duas entidades: <b>Clientes</b> e <b>Endereços</b>. Além disso, gera tokens de acesso, gerencia o sistema de login e criptografa as senhas cadastradas. (Neste versão 1.0.0 o sistema de Tokens e Login está em desenvolvimento).
+Esta API gerencia e controla algumas entidades, são elas: <b>Clientes</b>, <b>Endereços</b>, <b>Administradores</b> e <b>Permissões</b>.Além disso, gera tokens de acesso, gerencia o sistema de login e criptografa as senhas cadastradas.
 O sistema foi todo construído em cima do NodeJs usando o framework ExpressJs. Além disso, no início as querys eram feitas no banco de dados através de *strings*, porém, com a complexidade aumentando o Sequelize foi escolhido e implantado como ORM do projeto.
 Existe um módulo de validação de CPFs e controle de duplicidade. O projeto conta com diversos middlewares que impedem erros e quebras de código.
 
